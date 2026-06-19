@@ -1,0 +1,12 @@
+# Google service account — NEVER commit this
+cron/service_account.json
+_temp_creds.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Logs
+*.log
+refresh_log.txt

@@ -1,0 +1,43 @@
+name: Furever Home — Nightly Pet Sync
+
+on:
+  # Runs at 1:00 AM Pacific Time (09:00 UTC) every night
+  schedule:
+    - cron: "0 9 * * *"
+
+  # Allow manual trigger from GitHub Actions tab for testing
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install requests gspread google-auth
+
+      - name: Run Petfinder sync
+        env:
+          PETFINDER_API_KEY:       ${{ secrets.PETFINDER_API_KEY }}
+          PETFINDER_SECRET:        ${{ secrets.PETFINDER_SECRET }}
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+          SHEET_ID:                ${{ secrets.SHEET_ID }}
+        run: python cron/petfinder_sync.py
+
+      - name: Upload sync log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sync-log-${{ github.run_number }}
+          retention-days: 7
+          path: cron/

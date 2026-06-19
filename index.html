@@ -1,0 +1,935 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Furever Home</title>
+<style>
+:root {
+  --gunmetal: #29303E;
+  --pink: #F13AB1;
+  --red: #E72744;
+  --orange: #FD913C;
+  --deep-orange: #F05524;
+  --white: #FFFFFF;
+  --cream: #FFF9F5;https://docs.google.com/spreadsheets/d/1Xg4T3vmhoLxN0C2lEBFaN88Y2LSvoF6DQVoCxL3dt80/edit?gid=0#gid=0
+  --light-pink: #FFF0F7;
+  --light-orange: #FFF4EC;
+  --gray: #F5F5F5;
+  --gray-mid: #888;
+  --gray-border: #EEE;
+  --text: #29303E;
+  --text-light: #666;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: system-ui, -apple-system, sans-serif; background: var(--cream); color: var(--text); line-height: 1.6; }
+
+input[name="pg"] { display: none; }
+
+.topbar { background: var(--gunmetal); padding: 6px 24px; display: flex; justify-content: flex-end; align-items: center; gap: 16px; font-size: 11px; color: #ccc; }
+.topbar .pill { background: var(--pink); color: #fff; padding: 4px 14px; border-radius: 12px; font-weight: 600; }
+
+nav { background: var(--white); padding: 8px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 200; border-bottom: 1px solid var(--gray-border); box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+
+/* Logo area */
+.logo-area { display: flex; align-items: center; gap: 14px; }
+.logo-area img.logo-img { height: 72px; width: auto; display: block; }
+.logo-tagline-img {
+  height: 72px;
+  width: auto;
+  display: block;
+}
+
+.mnav { display: flex; gap: 2px; align-items: center; }
+.ni { position: relative; }
+.ni > label { display: block; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text); transition: all 0.2s; }
+.ni > label:hover { background: var(--light-pink); color: var(--pink); }
+.dd { position: absolute; top: calc(100% + 4px); left: 0; background: var(--white); border: 1px solid var(--gray-border); border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.12); padding: 8px 0; min-width: 200px; opacity: 0; visibility: hidden; transform: translateY(6px); transition: all 0.2s; z-index: 300; }
+.ni:hover .dd { opacity: 1; visibility: visible; transform: translateY(0); }
+.dd label { display: block; padding: 10px 18px; font-size: 13px; color: var(--text); cursor: pointer; transition: all 0.15s; }
+.dd label:hover { background: var(--light-pink); color: var(--pink); }
+
+#pg-home:checked ~ nav .mnav .nh > label { background: var(--pink); color: #fff; }
+#pg-dogs:checked ~ nav .mnav .na > label,
+#pg-cats:checked ~ nav .mnav .na > label,
+#pg-quiz:checked ~ nav .mnav .na > label { background: var(--pink); color: #fff; }
+#pg-vision:checked ~ nav .mnav .nab > label,
+#pg-stories:checked ~ nav .mnav .nab > label,
+#pg-process:checked ~ nav .mnav .nab > label,
+#pg-partners:checked ~ nav .mnav .nab > label,
+#pg-faq:checked ~ nav .mnav .nab > label { background: var(--pink); color: #fff; }
+#pg-tips:checked ~ nav .mnav .nhp > label,
+#pg-checklist:checked ~ nav .mnav .nhp > label { background: var(--pink); color: #fff; }
+#pg-wishlist:checked ~ nav .mnav .nw > label { background: var(--pink); color: #fff; }
+
+.page { display: none; padding: 24px; max-width: 1140px; margin: 0 auto; }
+#pg-home:checked ~ .pg-home { display: block; }
+#pg-dogs:checked ~ .pg-dogs { display: block; }
+#pg-cats:checked ~ .pg-cats { display: block; }
+#pg-quiz:checked ~ .pg-quiz { display: block; }
+#pg-vision:checked ~ .pg-vision { display: block; }
+#pg-stories:checked ~ .pg-stories { display: block; }
+#pg-process:checked ~ .pg-process { display: block; }
+#pg-partners:checked ~ .pg-partners { display: block; }
+#pg-faq:checked ~ .pg-faq { display: block; }
+#pg-tips:checked ~ .pg-tips { display: block; }
+#pg-checklist:checked ~ .pg-checklist { display: block; }
+#pg-wishlist:checked ~ .pg-wishlist { display: block; }
+
+/* Pet detail page */
+.pdp { display: none; padding: 24px; max-width: 1100px; margin: 0 auto; }
+.pdp.active { display: block; }
+/* Hide listing pages when a detail page is active */
+body.detail-open .pg-dogs,
+body.detail-open .pg-cats { display: none !important; }
+
+.banner { position: relative; height: 320px; border-radius: 16px; overflow: hidden; margin-bottom: 28px; }
+.banner-track { display: flex; width: 400%; height: 100%; animation: slide 16s infinite; }
+.banner-slide { width: 25%; height: 100%; position: relative; flex-shrink: 0; }
+.banner-slide img { width: 100%; height: 100%; object-fit: cover; }
+.bover { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(41,48,62,0.7), rgba(241,58,177,0.3)); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px; }
+.bover h2 { color: #fff; font-size: 28px; margin-bottom: 8px; text-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+.bover p { color: #fff; font-size: 14px; opacity: 0.9; max-width: 400px; }
+.bover label { display: inline-block; margin-top: 14px; background: var(--pink); color: #fff; padding: 10px 24px; border-radius: 22px; font-weight: 600; font-size: 13px; cursor: pointer; }
+.bover label:hover { background: var(--red); }
+@keyframes slide {
+  0%,22% { transform: translateX(0); }
+  25%,47% { transform: translateX(-25%); }
+  50%,72% { transform: translateX(-50%); }
+  75%,97% { transform: translateX(-75%); }
+  100% { transform: translateX(0); }
+}
+
+.stats-row { display: flex; gap: 14px; margin-bottom: 28px; }
+.stat-box { flex: 1; background: var(--white); border-radius: 12px; padding: 18px; text-align: center; border: 1px solid var(--gray-border); }
+.stat-box .snum { font-size: 28px; font-weight: 800; color: var(--pink); }
+.stat-box .stxt { font-size: 11px; color: var(--gray-mid); margin-top: 2px; }
+
+.quiz-sec { background: var(--white); border-radius: 14px; margin-bottom: 28px; border: 1px solid var(--gray-border); }
+.quiz-sec summary { padding: 18px 24px; cursor: pointer; font-size: 16px; font-weight: 600; list-style: none; }
+.quiz-sec summary::-webkit-details-marker { display: none; }
+.quiz-sec summary::after { content: ' ▼'; font-size: 12px; color: var(--pink); }
+.quiz-sec details[open] summary::after { content: ' ▲'; }
+.qbody { padding: 0 24px 24px; }
+.qq { margin-bottom: 14px; }
+.qq .ql { display: block; font-weight: 600; margin-bottom: 6px; font-size: 13px; }
+.qopts { display: flex; flex-wrap: wrap; gap: 6px; }
+.qopts span { padding: 6px 14px; border: 2px solid var(--light-pink); border-radius: 16px; font-size: 12px; cursor: pointer; transition: all 0.15s; }
+.qopts span:hover { border-color: var(--pink); background: var(--light-pink); }
+.qopts span.selected { border-color: var(--pink); background: var(--pink); color: #fff; font-weight: 600; }
+.qbtn { display: inline-block; background: linear-gradient(135deg, var(--pink), var(--deep-orange)); color: #fff; padding: 10px 24px; border-radius: 20px; font-weight: 600; font-size: 13px; cursor: pointer; margin-top: 8px; }
+
+.find-layout { display: flex; gap: 20px; }
+.filters { width: 210px; flex-shrink: 0; background: var(--white); border-radius: 12px; padding: 16px; border: 1px solid var(--gray-border); height: fit-content; position: sticky; top: 90px; }
+.filters h3 { font-size: 14px; margin-bottom: 12px; }
+.fg { margin-bottom: 10px; }
+.fg .fl { display: block; font-size: 9px; font-weight: 700; color: var(--gray-mid); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.6px; }
+.fg select { width: 100%; padding: 8px 10px; border: 1px solid var(--gray-border); border-radius: 8px; font-size: 12px; background: var(--gray); }
+
+.pet-results { flex: 1; }
+.pet-results > h2 { font-size: 18px; margin-bottom: 14px; }
+.pgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+.pc { background: var(--white); border-radius: 14px; overflow: hidden; border: 1px solid var(--gray-border); transition: transform 0.2s, box-shadow 0.2s; position: relative; }
+.pc:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(241,58,177,0.1); }
+.pc label { display: block; cursor: pointer; }
+.pc img { width: 100%; height: 155px; object-fit: cover; background: var(--light-pink); }
+.pc .mbadge { position: absolute; top: 8px; right: 8px; background: linear-gradient(135deg, var(--pink), var(--deep-orange)); color: #fff; padding: 3px 9px; border-radius: 10px; font-size: 10px; font-weight: 700; }
+.pc .hbadge { position: absolute; top: 8px; left: 8px; background: var(--white); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+.pci { padding: 12px; }
+.pci h4 { font-size: 14px; margin-bottom: 2px; }
+.pci .pm { font-size: 10px; color: var(--gray-mid); margin-bottom: 3px; }
+.pci .pl { font-size: 10px; color: var(--pink); margin-bottom: 3px; }
+.pci .pf { font-size: 13px; font-weight: 700; }
+.ptags { display: flex; gap: 3px; margin-top: 5px; flex-wrap: wrap; }
+.ptags span { font-size: 9px; padding: 2px 7px; border-radius: 8px; background: var(--light-pink); color: var(--pink); font-weight: 500; }
+.wl-btn { background: linear-gradient(90deg, var(--light-pink), var(--light-orange)); padding: 7px; text-align: center; font-size: 10px; color: var(--red); font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.wl-btn:hover { background: linear-gradient(90deg, #ffd6f0, #ffe8d0); }
+.wl-btn.wishlisted { background: linear-gradient(90deg, var(--pink), var(--deep-orange)); color: #fff; }
+.pc .hbadge.wishlisted { background: var(--pink); color: #fff; }
+
+.back-link { display: inline-block; color: var(--pink); font-size: 13px; cursor: pointer; margin-bottom: 14px; font-weight: 500; }
+.back-link:hover { text-decoration: underline; }
+.dlayout { display: flex; gap: 28px; }
+.dphoto { flex: 1; max-width: 460px; }
+.dphoto img { width: 100%; height: 320px; object-fit: cover; border-radius: 14px; background: var(--light-pink); }
+.dinfo { flex: 1; }
+.dinfo h1 { font-size: 26px; margin-bottom: 4px; }
+.dinfo .dbr { font-size: 13px; color: var(--gray-mid); margin-bottom: 14px; }
+.cbox { background: linear-gradient(135deg, var(--light-pink), var(--light-orange)); border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 14px; }
+.ccirc { width: 54px; height: 54px; border-radius: 50%; border: 4px solid var(--pink); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; color: var(--pink); flex-shrink: 0; background: var(--white); }
+.ctxt { font-size: 12px; }
+.ctxt strong { display: block; color: var(--pink); font-size: 13px; }
+.sgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.si { background: var(--gray); border-radius: 8px; padding: 10px 12px; }
+.si .sl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-mid); font-weight: 600; }
+.si .sv { font-size: 12px; font-weight: 600; }
+.dacts { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-main { background: linear-gradient(135deg, var(--pink), var(--deep-orange)); color: #fff; padding: 10px 20px; border-radius: 20px; font-weight: 600; font-size: 12px; text-decoration: none; }
+.btn-main:hover { opacity: 0.9; }
+.btn-wl { background: var(--light-pink); color: var(--red); padding: 10px 20px; border-radius: 20px; font-weight: 600; font-size: 12px; }
+.dstory { background: var(--white); border: 1px solid var(--gray-border); border-radius: 12px; padding: 18px; margin-top: 18px; }
+.dstory h3 { font-size: 14px; margin-bottom: 8px; }
+.dstory p { font-size: 13px; color: var(--text-light); line-height: 1.7; }
+.shcard { background: var(--white); border: 1px solid var(--gray-border); border-radius: 10px; padding: 14px; margin-top: 10px; font-size: 12px; color: var(--text-light); }
+.shcard h4 { font-size: 13px; margin-bottom: 4px; }
+
+.cp { max-width: 780px; margin: 0 auto; }
+.cp h2 { font-size: 22px; margin-bottom: 16px; }
+.cp h3 { font-size: 16px; color: var(--pink); margin: 18px 0 8px; }
+.cp p { font-size: 14px; color: var(--text-light); line-height: 1.7; margin-bottom: 10px; }
+.cp ul { padding-left: 20px; margin-bottom: 12px; }
+.cp li { font-size: 13px; color: var(--text-light); margin-bottom: 6px; }
+
+.tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.tc { background: var(--white); border-radius: 14px; padding: 20px; border: 1px solid var(--gray-border); }
+.tc:hover { box-shadow: 0 6px 16px rgba(0,0,0,0.05); }
+.tc .ticon { font-size: 24px; width: 44px; height: 44px; background: var(--light-pink); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+.tc h4 { font-size: 14px; margin-bottom: 4px; }
+.tc p { font-size: 12px; color: var(--text-light); line-height: 1.5; }
+
+.clbox { background: var(--white); border-radius: 14px; padding: 24px; border: 1px solid var(--gray-border); max-width: 620px; margin: 0 auto; }
+.clbox h3 { font-size: 16px; margin-bottom: 14px; }
+.cli { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--gray-border); }
+.cli input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--pink); }
+.cli label { font-size: 13px; cursor: pointer; }
+.cli label small { display: block; font-size: 11px; color: var(--gray-mid); }
+
+.fqi { margin-bottom: 8px; }
+.fqi details { background: var(--white); border: 1px solid var(--gray-border); border-radius: 10px; }
+.fqi summary { padding: 14px 18px; cursor: pointer; font-size: 14px; font-weight: 500; }
+.fqi details[open] summary { color: var(--pink); }
+.fqi .fa { padding: 0 18px 14px; font-size: 13px; color: var(--text-light); line-height: 1.6; }
+
+.sc { background: var(--white); border: 1px solid var(--gray-border); border-radius: 12px; padding: 20px; margin-bottom: 14px; }
+.sc h4 { font-size: 15px; color: var(--pink); margin-bottom: 6px; }
+.sc p { font-size: 13px; color: var(--text-light); line-height: 1.6; }
+
+.pcard { background: var(--white); border: 1px solid var(--gray-border); border-radius: 12px; padding: 18px; margin-bottom: 12px; }
+.pcard h4 { font-size: 15px; color: var(--pink); margin-bottom: 4px; }
+.pcard p { font-size: 12px; color: var(--text-light); line-height: 1.5; }
+
+.wl-empty { text-align: center; padding: 60px 24px; }
+.wl-empty .big { font-size: 56px; margin-bottom: 12px; opacity: 0.4; }
+.wl-empty p { color: var(--gray-mid); font-size: 14px; }
+
+footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-top: 36px; }
+.finner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 24px; }
+.fbrand .flogo { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.fbrand .fdesc { font-size: 11px; line-height: 1.5; opacity: 0.7; }
+.fcol h4 { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--pink); margin-bottom: 8px; }
+.fcol label, .fcol span { display: block; font-size: 12px; color: #bbb; margin-bottom: 5px; cursor: pointer; }
+.fcol label:hover { color: #fff; }
+.fbot { max-width: 1100px; margin: 16px auto 0; padding-top: 14px; border-top: 1px solid #444; text-align: center; font-size: 10px; opacity: 0.6; }
+
+@media (max-width: 768px) {
+  .find-layout { flex-direction: column; }
+  .filters { width: 100%; position: static; }
+  .dlayout { flex-direction: column; }
+  .finner { grid-template-columns: 1fr; }
+  .mnav { gap: 0; }
+  .ni > label { padding: 6px 10px; font-size: 11px; }
+  .topbar { display: none; }
+  .banner { height: 220px; }
+  .stats-row { flex-wrap: wrap; }
+  .stat-box { min-width: 45%; }
+  .logo-area img.logo-img { height: 52px; }
+  .logo-tagline-img { height: 52px; }
+}
+</style>
+</head>
+<body>
+
+<input type="radio" name="pg" id="pg-home" checked>
+<input type="radio" name="pg" id="pg-dogs">
+<input type="radio" name="pg" id="pg-cats">
+<input type="radio" name="pg" id="pg-quiz">
+<input type="radio" name="pg" id="pg-vision">
+<input type="radio" name="pg" id="pg-stories">
+<input type="radio" name="pg" id="pg-process">
+<input type="radio" name="pg" id="pg-partners">
+<input type="radio" name="pg" id="pg-faq">
+<input type="radio" name="pg" id="pg-tips">
+<input type="radio" name="pg" id="pg-checklist">
+<input type="radio" name="pg" id="pg-wishlist">
+
+
+
+<div class="topbar">
+  <span>New Pet Parent?</span>
+  <span>&#x2705; Ready Checklist</span>
+  <span class="pill">Sign Up / Sign In</span>
+</div>
+
+<nav>
+  <div class="logo-area">
+    <img src="logoTop.png" alt="The Furever Home" class="logo-img">
+    <img src="logoBottom.png" alt="The Furever Home tagline" class="logo-tagline-img">
+  </div>
+  <div class="mnav">
+    <div class="ni nh"><label for="pg-home">Home</label></div>
+    <div class="ni na">
+      <label>Adopt &#9660;</label>
+      <div class="dd">
+        <label for="pg-dogs">&#x1F436; Adopt a Dog</label>
+        <label for="pg-cats">&#x1F431; Adopt a Cat</label>
+        <label for="pg-quiz">&#x1F3AF; Find a Match</label>
+      </div>
+    </div>
+    <div class="ni nab">
+      <label>About &#9660;</label>
+      <div class="dd">
+        <label for="pg-vision">Vision, Mission &amp; Values</label>
+        <label for="pg-stories">Success Stories</label>
+        <label for="pg-process">Adoption Process</label>
+        <label for="pg-partners">Partner Shelters</label>
+        <label for="pg-faq">FAQs</label>
+      </div>
+    </div>
+    <div class="ni nhp">
+      <label>Help &#9660;</label>
+      <div class="dd">
+        <label for="pg-tips">Tips for New Parents</label>
+        <label for="pg-checklist">Adoption Checklist</label>
+      </div>
+    </div>
+    <div class="ni nw"><label for="pg-wishlist">&#9825; Wishlist</label></div>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div class="page pg-home">
+  <div class="banner">
+    <div class="banner-track">
+      <div class="banner-slide">
+        <img src="https://cdn.pixabay.com/photo/2016/12/13/05/15/puppy-1903313_640.jpg" alt="Puppy" loading="eager">
+        <div class="bover"><h2>Adopt Today! &#x1F43E;</h2><p>Give a shelter pet the loving home they deserve</p><label for="pg-dogs">Browse Dogs &rarr;</label></div>
+      </div>
+      <div class="banner-slide">
+        <img src="https://cdn.pixabay.com/photo/2017/02/20/18/03/cat-2083492_640.jpg" alt="Cat" loading="lazy">
+        <div class="bover"><h2>Purrfect Companions Await &#x1F431;</h2><p>Cats of all ages looking for their forever family</p><label for="pg-cats">Browse Cats &rarr;</label></div>
+      </div>
+      <div class="banner-slide">
+        <img src="https://cdn.pixabay.com/photo/2019/08/19/07/45/dog-4415649_640.jpg" alt="Dog" loading="lazy">
+        <div class="bover"><h2>Find Your Perfect Match &#x1F3AF;</h2><p>Take our quiz and discover your ideal companion</p><label for="pg-quiz">Take the Quiz &rarr;</label></div>
+      </div>
+      <div class="banner-slide">
+        <img src="https://cdn.pixabay.com/photo/2019/11/08/11/36/kitten-4611189_640.jpg" alt="Kitten" loading="lazy">
+        <div class="bover"><h2>Every Pet Deserves Love &#x2764;&#xFE0F;</h2><p>Over 50 pets in Bay Area shelters need you right now</p><label for="pg-dogs">Start Browsing &rarr;</label></div>
+      </div>
+    </div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-box"><div class="snum">50+</div><div class="stxt">Pets Available</div></div>
+    <div class="stat-box"><div class="snum">3</div><div class="stxt">Partner Shelters</div></div>
+    <div class="stat-box"><div class="snum">200+</div><div class="stxt">Happy Adoptions</div></div>
+    <div class="stat-box"><div class="snum">96%</div><div class="stxt">Match Accuracy</div></div>
+  </div>
+  <div class="quiz-sec"><details><summary>&#x1F43E; Pet Match Quiz &mdash; Find Your Perfect Companion</summary><div class="qbody">
+    <div class="qq"><span class="ql">Are you a...</span><div class="qopts"><span>First-time owner</span><span>Current owner</span><span>Previous owner</span></div></div>
+    <div class="qq"><span class="ql">Would you like to adopt a...</span><div class="qopts"><span>&#x1F436; Dog</span><span>&#x1F431; Cat</span><span>Either!</span></div></div>
+    <div class="qq"><span class="ql">Do you currently have pets?</span><div class="qopts"><span>Dog(s)</span><span>Cat(s)</span><span>None</span></div></div>
+    <div class="qq"><span class="ql">Nearby amenities?</span><div class="qopts"><span>Park</span><span>Yard</span><span>None</span></div></div>
+    <div class="qq"><span class="ql">Gender preference?</span><div class="qopts"><span>Male</span><span>Female</span><span>No preference</span></div></div>
+    <div class="qq"><span class="ql">Open to special needs?</span><div class="qopts"><span>Yes!</span><span>Not right now</span></div></div>
+    <label for="pg-dogs" class="qbtn">See My Matches &rarr;</label>
+  </div></details></div>
+</div>
+
+<!-- ADOPT A DOG -->
+<div class="page pg-dogs">
+  <label for="pg-home" class="back-link">&larr; Back to Home</label>
+  <div class="find-layout">
+    <div class="filters">
+      <h3>&#x1F3AF; Filters</h3>
+      <div class="fg"><span class="fl">Size</span><select id="dog-filter-size"><option value="">All Sizes</option><option value="small">Small (0-25 lbs)</option><option value="medium">Medium (25-50)</option><option value="large">Large (50+)</option></select></div>
+      <div class="fg"><span class="fl">Energy</span><select id="dog-filter-energy"><option value="">Any</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></div>
+      <div class="fg"><span class="fl">Age</span><select id="dog-filter-age"><option value="">Any</option><option value="puppy">Puppy</option><option value="young">Young</option><option value="adult">Adult</option><option value="senior">Senior</option></select></div>
+      <div class="fg"><span class="fl">Gender</span><select id="dog-filter-gender"><option value="">Any</option><option value="male">Male</option><option value="female">Female</option></select></div>
+      <div class="fg"><span class="fl">Shelter</span><select id="dog-filter-shelter"><option value="">All Shelters</option></select></div>
+    </div>
+    <div class="pet-results">
+      <h2>&#x1F436; Dogs Available &mdash; Best Match First</h2>
+      <div id="dogs-updated" style="font-size:11px;color:var(--gray-mid);margin-bottom:8px;"></div>
+      <div id="dogs-loading" style="padding:24px;color:var(--gray-mid);font-size:13px;">&#x23F3; Loading pets from database...</div>
+      <div class="pgrid" id="dogs-grid"></div>
+      <div id="dogs-noresult" style="display:none;padding:24px;color:var(--gray-mid);font-size:13px;">No pets match your filters. Try adjusting the options.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ADOPT A CAT -->
+<div class="page pg-cats">
+  <label for="pg-home" class="back-link">&larr; Back to Home</label>
+  <div class="find-layout">
+    <div class="filters">
+      <h3>&#x1F3AF; Filters</h3>
+      <div class="fg"><span class="fl">Size</span><select id="cat-filter-size"><option value="">All Sizes</option><option value="small">Small</option><option value="medium">Medium</option><option value="large">Large</option></select></div>
+      <div class="fg"><span class="fl">Energy</span><select id="cat-filter-energy"><option value="">Any</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></div>
+      <div class="fg"><span class="fl">Age</span><select id="cat-filter-age"><option value="">Any</option><option value="kitten">Kitten</option><option value="young">Young</option><option value="adult">Adult</option><option value="senior">Senior</option></select></div>
+      <div class="fg"><span class="fl">Gender</span><select id="cat-filter-gender"><option value="">Any</option><option value="male">Male</option><option value="female">Female</option></select></div>
+    </div>
+    <div class="pet-results">
+      <h2>&#x1F431; Cats Available &mdash; Best Match First</h2>
+      <div id="cats-updated" style="font-size:11px;color:var(--gray-mid);margin-bottom:8px;"></div>
+      <div id="cats-loading" style="padding:24px;color:var(--gray-mid);font-size:13px;">&#x23F3; Loading pets from database...</div>
+      <div class="pgrid" id="cats-grid"></div>
+      <div id="cats-noresult" style="display:none;padding:24px;color:var(--gray-mid);font-size:13px;">No pets match your filters. Try adjusting the options.</div>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="page pg-quiz"><div class="cp">
+  <h2>&#x1F3AF; Find Your Perfect Match</h2>
+  <div class="quiz-sec"><details open><summary>&#x1F43E; Pet Match Quiz</summary><div class="qbody">
+    <div class="qq"><span class="ql">Are you a...</span><div class="qopts"><span>First-time owner</span><span>Current owner</span><span>Previous owner</span></div></div>
+    <div class="qq"><span class="ql">Would you like to adopt a...</span><div class="qopts"><span>&#x1F436; Dog</span><span>&#x1F431; Cat</span><span>Either!</span></div></div>
+    <div class="qq"><span class="ql">Do you currently have pets?</span><div class="qopts"><span>Dog(s)</span><span>Cat(s)</span><span>None</span></div></div>
+    <div class="qq"><span class="ql">Nearby amenities?</span><div class="qopts"><span>Park</span><span>Yard</span><span>None</span></div></div>
+    <div class="qq"><span class="ql">Gender preference?</span><div class="qopts"><span>Male</span><span>Female</span><span>No preference</span></div></div>
+    <div class="qq"><span class="ql">Open to special needs?</span><div class="qopts"><span>Yes!</span><span>Not right now</span></div></div>
+    <label for="pg-dogs" class="qbtn">See Dog Matches &rarr;</label>
+    <label for="pg-cats" class="qbtn" style="margin-left:6px;background:linear-gradient(135deg,#FD913C,#E72744);">See Cat Matches &rarr;</label>
+  </div></details></div>
+</div></div>
+
+<!-- VISION -->
+<div class="page pg-vision"><div class="cp">
+  <h2>Our Vision, Mission &amp; Values</h2>
+  <h3>&#x1F31F; Vision</h3><p>A Bay Area where every adoptable pet finds a loving forever home.</p>
+  <h3>&#x1F3AF; Mission</h3><p>To increase pet adoption by aggregating Bay Area shelters into one platform, making it simple for families to discover and connect with their perfect pet match.</p>
+  <h3>&#x1F49C; Values</h3>
+  <ul>
+    <li><strong>Compassion First</strong> &mdash; Every animal deserves love</li>
+    <li><strong>Transparency</strong> &mdash; Honest info about each pet</li>
+    <li><strong>Accessibility</strong> &mdash; Making adoption easy for everyone</li>
+    <li><strong>Community</strong> &mdash; Partnering with local shelters</li>
+    <li><strong>Responsibility</strong> &mdash; Encouraging lifelong commitments</li>
+  </ul>
+</div></div>
+
+<!-- STORIES -->
+<div class="page pg-stories"><div class="cp">
+  <h2>&#x2764;&#xFE0F; Success Stories</h2>
+  <div class="sc"><h4>&#x1F436; Biscuit &amp; The Patel Family</h4><p>"The Furever Home showed us Biscuit with a 94% match &mdash; love at first sight! Best addition to our family."</p></div>
+  <div class="sc"><h4>&#x1F431; Mittens &amp; Sarah K.</h4><p>"The quiz helped me find Mittens. She's the perfect calm companion &mdash; greets me at the door every day!"</p></div>
+  <div class="sc"><h4>&#x1F436; Duke &amp; The Nguyen Family</h4><p>"Duke was a senior nobody wanted. Two years later, he's the gentlest soul. Best decision ever."</p></div>
+</div></div>
+
+<!-- PROCESS -->
+<div class="page pg-process"><div class="cp">
+  <h2>&#x1F4CB; The Adoption Process</h2>
+  <h3>Step 1: Browse &amp; Match</h3><p>Use filters or take the quiz. Save favorites to your wishlist.</p>
+  <h3>Step 2: Visit the Shelter</h3><p>Visit during open hours and spend time with the animal.</p>
+  <h3>Step 3: Complete Application</h3><p>Fill out the shelter's adoption application.</p>
+  <h3>Step 4: Home Check</h3><p>Some shelters may require a brief home visit.</p>
+  <h3>Step 5: Pay Fee &amp; Take Home!</h3><p>Fees include spay/neuter, vaccinations, and microchipping.</p>
+  <h3>Step 6: Post-Adoption Support</h3><p>Shelters offer support during the adjustment period.</p>
+</div></div>
+
+<!-- PARTNERS -->
+<div class="page pg-partners"><div class="cp">
+  <h2>&#x1F3E0; Partner Shelters</h2>
+  <div class="pcard"><h4>Valley Humane Society</h4><p>&#x1F4CD; 3670 Nevada St, Pleasanton, CA &middot; &#x1F550; Tues&ndash;Sat 10am&ndash;4pm &middot; &#x260E;&#xFE0F; (925) 426-8656</p></div>
+  <div class="pcard"><h4>East Bay SPCA</h4><p>&#x1F4CD; Oakland &amp; Dublin &middot; &#x260E;&#xFE0F; (510) 563-9000</p></div>
+  <div class="pcard"><h4>Humane Society Silicon Valley</h4><p>&#x1F4CD; 901 Ames Ave, Milpitas, CA &middot; &#x260E;&#xFE0F; (408) 262-5921</p></div>
+</div></div>
+
+<!-- FAQ -->
+<div class="page pg-faq"><div class="cp">
+  <h2>&#x2753; FAQs</h2>
+  <div class="fqi"><details><summary>What does the match percentage mean?</summary><div class="fa">Based on your quiz answers and pet characteristics. Higher = more compatible. Always visit in person!</div></details></div>
+  <div class="fqi"><details><summary>How much does adoption cost?</summary><div class="fa">Dogs: $200&ndash;$350, Cats: $75&ndash;$150. Includes spay/neuter, vaccines, and microchip.</div></details></div>
+  <div class="fqi"><details><summary>Can I adopt in an apartment?</summary><div class="fa">Yes! Use size and energy filters to find apartment-friendly pets.</div></details></div>
+  <div class="fqi"><details><summary>What if it doesn't work out?</summary><div class="fa">All partner shelters have return policies. No judgment.</div></details></div>
+  <div class="fqi"><details><summary>Do you house animals directly?</summary><div class="fa">No. We aggregate listings from partner shelters.</div></details></div>
+</div></div>
+
+<!-- TIPS -->
+<div class="page pg-tips"><div class="cp">
+  <h2>&#x1F4A1; Tips for New Pet Parents</h2>
+  <div class="tgrid">
+    <div class="tc"><div class="ticon">&#x1F3E1;</div><h4>Prepare Your Home</h4><p>Remove toxic plants, secure wires, set up a cozy area.</p></div>
+    <div class="tc"><div class="ticon">&#x1FA7A;</div><h4>First Vet Visit</h4><p>Schedule within the first week. Bring shelter records.</p></div>
+    <div class="tc"><div class="ticon">&#x1F37D;&#xFE0F;</div><h4>Nutrition</h4><p>Transition food slowly over 7&ndash;10 days.</p></div>
+    <div class="tc"><div class="ticon">&#x23F0;</div><h4>Establish Routine</h4><p>Consistent times for feeding, walks, play, and sleep.</p></div>
+    <div class="tc"><div class="ticon">&#x1F49B;</div><h4>3-3-3 Rule</h4><p>3 days to decompress, 3 weeks to learn routine, 3 months to feel at home.</p></div>
+    <div class="tc"><div class="ticon">&#x1F4CB;</div><h4>Get Licensed</h4><p>Required in most Bay Area cities. Helps reunite if lost.</p></div>
+  </div>
+</div></div>
+
+<!-- CHECKLIST -->
+<div class="page pg-checklist"><div class="cp">
+  <h2>&#x2705; Adoption Checklist</h2>
+  <div class="clbox">
+    <h3>Before Bringing Pet Home</h3>
+    <div class="cli"><input type="checkbox" id="c1"><label for="c1">Food &amp; water bowls<small>Stainless steel or ceramic</small></label></div>
+    <div class="cli"><input type="checkbox" id="c2"><label for="c2">Quality pet food<small>Ask shelter what brand</small></label></div>
+    <div class="cli"><input type="checkbox" id="c3"><label for="c3">Collar with ID tag</label></div>
+    <div class="cli"><input type="checkbox" id="c4"><label for="c4">Leash (dogs) / Litter box (cats)</label></div>
+    <div class="cli"><input type="checkbox" id="c5"><label for="c5">Bed or crate</label></div>
+    <div class="cli"><input type="checkbox" id="c6"><label for="c6">Toys</label></div>
+    <div class="cli"><input type="checkbox" id="c7"><label for="c7">Pet-proof home</label></div>
+    <h3 style="margin-top:18px;">After Adoption</h3>
+    <div class="cli"><input type="checkbox" id="c8"><label for="c8">Schedule vet appointment</label></div>
+    <div class="cli"><input type="checkbox" id="c9"><label for="c9">Register microchip</label></div>
+    <div class="cli"><input type="checkbox" id="c10"><label for="c10">Get pet license</label></div>
+    <div class="cli"><input type="checkbox" id="c11"><label for="c11">Set feeding schedule</label></div>
+    <div class="cli"><input type="checkbox" id="c12"><label for="c12">Find local &amp; emergency vet</label></div>
+    <div class="cli"><input type="checkbox" id="c13"><label for="c13">Consider pet insurance</label></div>
+  </div>
+</div></div>
+
+<!-- WISHLIST -->
+<div class="page pg-wishlist"><div class="cp">
+  <h2>&#9825; Your Wishlist</h2>
+  <div id="wl-content">
+    <div class="wl-empty" id="wl-empty">
+      <div class="big">&#x1F43E;</div>
+      <p>Click the &#9825; on any pet card to save them here!<br>Your wishlist helps you compare and decide which pet to visit.</p>
+      <br>
+      <label for="pg-dogs" style="display:inline-block;background:linear-gradient(135deg,var(--pink),var(--deep-orange));color:#fff;padding:10px 22px;border-radius:20px;font-weight:600;font-size:13px;cursor:pointer;">Browse Dogs &rarr;</label>
+      <label for="pg-cats" style="display:inline-block;background:linear-gradient(135deg,var(--orange),var(--red));color:#fff;padding:10px 22px;border-radius:20px;font-weight:600;font-size:13px;cursor:pointer;margin-left:8px;">Browse Cats &rarr;</label>
+    </div>
+    <div class="pgrid" id="wl-grid" style="display:none;"></div>
+  </div>
+</div></div>
+
+<!-- PET DETAIL: dynamically rendered from Google Sheet -->
+<div class="pdp" id="pet-detail-container"></div>
+
+<footer>
+  <div class="finner">
+    <div class="fbrand">
+      <div class="flogo">&#x1F43E; The Furever Home</div>
+      <div class="fdesc">Connecting Bay Area families with shelter pets who need a loving home. We aggregate listings from trusted local shelters.</div>
+    </div>
+    <div class="fcol">
+      <h4>Adopt</h4>
+      <label for="pg-dogs">&#x1F436; Adopt a Dog</label>
+      <label for="pg-cats">&#x1F431; Adopt a Cat</label>
+      <label for="pg-quiz">&#x1F3AF; Find a Match</label>
+    </div>
+    <div class="fcol">
+      <h4>About</h4>
+      <label for="pg-vision">Our Vision</label>
+      <label for="pg-stories">Success Stories</label>
+      <label for="pg-process">Adoption Process</label>
+      <label for="pg-partners">Partner Shelters</label>
+      <label for="pg-faq">FAQs</label>
+    </div>
+    <div class="fcol">
+      <h4>Help</h4>
+      <label for="pg-tips">Tips for New Parents</label>
+      <label for="pg-checklist">Adoption Checklist</label>
+      <label for="pg-wishlist">Your Wishlist</label>
+    </div>
+  </div>
+  <div class="fbot">&copy; 2025 The Furever Home &mdash; All rights reserved. Not affiliated with any shelter. All adoption inquiries go directly to partner shelters.</div>
+</footer>
+
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// GOOGLE SHEET DATABASE
+// Sheet ID extracted from your published URL
+// To update: File > Share > Publish to web > Sheet1 > CSV > copy the URL
+// ─────────────────────────────────────────────────────────────────────────────
+var SHEET_ID  = '1Xg4T3vmhoLxN0C2lEBFaN88Y2LSvoF6DQVoCxL3dt80';
+var SHEET_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&sheet=Sheet1';
+
+// All pets loaded from sheet
+var ALL_PETS  = [];
+var LOAD_TIME = null;
+
+// ── PARSE gviz JSON ────────────────────────────────────────────────────────────
+function parseGvizTable(table) {
+  if (!table || !table.cols || !table.rows) return [];
+  var headers = table.cols.map(function(c) { return (c.label || c.id || '').trim(); });
+  return table.rows.filter(function(r) { return r && r.c; }).map(function(row) {
+    var obj = {};
+    headers.forEach(function(h, i) {
+      var cell = row.c[i];
+      obj[h] = (cell && cell.v !== null && cell.v !== undefined) ? String(cell.v).trim() : '';
+    });
+    return obj;
+  });
+}
+
+// ── FETCH FROM GOOGLE SHEET — with localStorage cache ─────────────────────────
+var CACHE_KEY = 'furever_pets_cache';
+var CACHE_TTL = 30 * 60 * 1000; // 30 minutes in milliseconds
+
+function loadPets() {
+  // Check cache first — avoids unnecessary fetch on every page load
+  var cached = null;
+  try {
+    var raw = localStorage.getItem(CACHE_KEY);
+    if (raw) {
+      cached = JSON.parse(raw);
+      if (Date.now() - cached.timestamp < CACHE_TTL) {
+        ALL_PETS  = cached.pets;
+        LOAD_TIME = new Date(cached.timestamp);
+        renderListings();
+        populateShelterDropdown();
+        bindFilterEvents();
+        refreshWishlistUI();
+        showLastUpdated(true); // true = from cache
+        // Refresh in background silently so next load gets fresh data
+        fetchSheet(true);
+        return;
+      }
+    }
+  } catch(e) { /* ignore bad cache */ }
+
+  // No valid cache — fetch fresh
+  fetchSheet(false);
+}
+
+function fetchSheet(silent) {
+  fetch(SHEET_URL)
+    .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+    .then(function(text) {
+      var start = text.indexOf('{'), end = text.lastIndexOf('}');
+      if (start === -1 || end === -1) throw new Error('Unexpected response format');
+      var data = JSON.parse(text.substring(start, end + 1));
+      ALL_PETS = parseGvizTable(data.table).filter(function(p) {
+        return (p.available || '').toLowerCase() !== 'no';
+      });
+      LOAD_TIME = new Date();
+      // Save to cache
+      try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify({
+          pets: ALL_PETS, timestamp: LOAD_TIME.getTime()
+        }));
+      } catch(e) { /* ignore quota errors */ }
+
+      if (!silent) {
+        renderListings();
+        populateShelterDropdown();
+        bindFilterEvents();
+        refreshWishlistUI();
+      }
+      showLastUpdated(false);
+    })
+    .catch(function(err) {
+      if (!silent) {
+        var msg = '<p style="color:var(--red);padding:16px;font-size:13px;">&#x26A0;&#xFE0F; Could not load pets from Google Sheet.<br><small>' + err.message + '</small></p>';
+        ['dogs-loading','cats-loading'].forEach(function(id) {
+          var el = document.getElementById(id); if (el) el.innerHTML = msg;
+        });
+      }
+    });
+}
+
+// ── LAST UPDATED TIMESTAMP ─────────────────────────────────────────────────────
+function showLastUpdated(fromCache) {
+  if (!LOAD_TIME) return;
+  var str = (fromCache ? '⚡ Loaded from cache · ' : '🔄 Live from database · ')
+    + LOAD_TIME.toLocaleString();
+  ['dogs-updated','cats-updated'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.textContent = str;
+  });
+}
+
+// ── POPULATE SHELTER FILTER FROM LIVE DATA ─────────────────────────────────────
+function populateShelterDropdown() {
+  var sel = document.getElementById('dog-filter-shelter');
+  if (!sel) return;
+  var shelters = [];
+  ALL_PETS.filter(function(p) { return p.species.toLowerCase() === 'dog'; })
+    .forEach(function(p) {
+      var s = (p.shelterName || '').trim();
+      if (s && shelters.indexOf(s) === -1) shelters.push(s);
+    });
+  shelters.forEach(function(s) {
+    var opt = document.createElement('option');
+    opt.value = s; opt.textContent = s;
+    sel.appendChild(opt);
+  });
+}
+
+// ── GET CURRENT FILTER VALUES ──────────────────────────────────────────────────
+function getFilters(prefix) {
+  function val(id) { var el = document.getElementById(id); return el ? el.value.toLowerCase() : ''; }
+  return {
+    size:    val(prefix + '-filter-size'),
+    energy:  val(prefix + '-filter-energy'),
+    age:     val(prefix + '-filter-age'),
+    gender:  val(prefix + '-filter-gender'),
+    shelter: val(prefix + '-filter-shelter')
+  };
+}
+
+// ── FILTER PETS AGAINST CURRENT SELECTS ───────────────────────────────────────
+function applyFilters(pets, f) {
+  return pets.filter(function(p) {
+    if (f.size && !(p.size    || '').toLowerCase().includes(f.size))    return false;
+    if (f.energy && !(p.energy || '').toLowerCase().includes(f.energy)) return false;
+    if (f.age  && !(p.age    || '').toLowerCase().includes(f.age))      return false;
+    if (f.gender && !(p.gender || '').toLowerCase().includes(f.gender)) return false;
+    if (f.shelter && !(p.shelterName || '').toLowerCase().includes(f.shelter)) return false;
+    return true;
+  });
+}
+
+// ── BIND FILTER CHANGE EVENTS ──────────────────────────────────────────────────
+function bindFilterEvents() {
+  ['dog-filter-size','dog-filter-energy','dog-filter-age','dog-filter-gender','dog-filter-shelter'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('change', function() { renderGrid('dog'); });
+  });
+  ['cat-filter-size','cat-filter-energy','cat-filter-age','cat-filter-gender'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('change', function() { renderGrid('cat'); });
+  });
+}
+
+// ── BUILD ONE LISTING CARD ─────────────────────────────────────────────────────
+function buildCard(pet) {
+  var pid    = pet.petId;
+  var name   = pet.petName  || pet.name  || '';
+  var species= (pet.species || '').toLowerCase();
+  var breed  = pet.breed    || '';
+  var age    = pet.age      || '';
+  var weight = pet.weight   || '';
+  var loc    = pet.location || '';
+  var price  = pet.price    ? '$' + pet.price : '';
+  var match  = pet.match    ? pet.match + '%' : '';
+  var tags   = pet.tags     || '';
+  var img    = pet.imageUrl || pet.image || '';
+  var saved  = isWishlisted(pid);
+  var breedLine = [breed, age, weight].filter(Boolean).join(' · ');
+  var tagsHtml  = tags.split(',').filter(Boolean).map(function(t) {
+    return '<span>' + t.trim() + '</span>';
+  }).join('');
+  var emoji = species === 'cat' ? '🐱' : '🐶';
+  return '<div class="pc"'
+    + ' data-pid="'    + pid    + '" data-name="'  + name
+    + '" data-breed="' + breedLine + '" data-loc="'+ loc
+    + '" data-price="' + price  + '" data-img="'  + img
+    + '" data-tags="'  + tags   + '" data-match="' + match + '">'
+    + '<div class="pc-click" data-pid="' + pid + '" style="cursor:pointer;">'
+      + '<img src="' + img + '" alt="' + name + '" loading="lazy" onerror="this.src=\'https://placehold.co/300x155?text=No+Photo\'">'
+      + (match ? '<span class="mbadge">' + match + '</span>' : '')
+      + '<span class="hbadge wl-heart' + (saved?' wishlisted':'') + '" data-pid="' + pid + '">' + (saved?'♥':'♡') + '</span>'
+      + '<div class="pci"><h4>' + name + ' ' + emoji + '</h4>'
+        + '<p class="pm">' + breedLine + '</p>'
+        + '<p class="pl">📍 ' + loc + '</p>'
+        + '<p class="pf">' + price + '</p>'
+        + (tagsHtml ? '<div class="ptags">' + tagsHtml + '</div>' : '')
+      + '</div>'
+    + '</div>'
+    + '<div class="wls wl-btn' + (saved?' wishlisted':'') + '" data-pid="' + pid + '">'
+      + (saved ? '♥ Wishlisted!' : '♡ Add to Wishlist')
+    + '</div>'
+    + '</div>';
+}
+
+// ── RENDER GRID FOR A SPECIES ──────────────────────────────────────────────────
+function renderGrid(type) {
+  var gridId    = type + 's-grid';
+  var noResId   = type + 's-noresult';
+  var loadId    = type + 's-loading';
+  var grid      = document.getElementById(gridId);
+  var noRes     = document.getElementById(noResId);
+  var loading   = document.getElementById(loadId);
+  if (!grid) return;
+  if (loading) loading.style.display = 'none';
+
+  var pets      = ALL_PETS.filter(function(p) { return p.species.toLowerCase() === type; });
+  var filters   = getFilters(type);
+  var filtered  = applyFilters(pets, filters);
+
+  grid.innerHTML = filtered.map(buildCard).join('');
+  if (noRes) noRes.style.display = filtered.length === 0 ? '' : 'none';
+  bindCardEvents();
+}
+
+// ── RENDER BOTH GRIDS ──────────────────────────────────────────────────────────
+function renderListings() {
+  renderGrid('dog');
+  renderGrid('cat');
+}
+
+// ── BIND CLICK EVENTS ON CARDS ─────────────────────────────────────────────────
+function bindCardEvents() {
+  document.querySelectorAll('.pc-click[data-pid]').forEach(function(el) {
+    el.addEventListener('click', function() { openDetail(el.dataset.pid); });
+  });
+  document.querySelectorAll('.wl-btn[data-pid]').forEach(function(btn) {
+    btn.addEventListener('click', function(e) { e.stopPropagation(); toggleWishlist(btn.dataset.pid); });
+  });
+  document.querySelectorAll('.hbadge.wl-heart[data-pid]').forEach(function(h) {
+    h.addEventListener('click', function(e) { e.stopPropagation(); toggleWishlist(h.dataset.pid); });
+  });
+}
+
+// ── PET DETAIL PAGE ────────────────────────────────────────────────────────────
+function openDetail(pid) {
+  var pet = ALL_PETS.find(function(p) { return String(p.petId) === String(pid); });
+  if (!pet) return;
+  var species  = (pet.species || '').toLowerCase();
+  var name     = pet.petName  || pet.name || '';
+  var breed    = pet.breed    || '';
+  var age      = pet.age      || '';
+  var weight   = pet.weight   || '';
+  var loc      = pet.location || '';
+  var price    = pet.price    ? '$' + pet.price : '';
+  var match    = pet.match    ? pet.match + '%' : '';
+  var img      = pet.imageUrl || pet.image || '';
+  var story    = pet.story    || '';
+  var shelter  = pet.shelterName  || '';
+  var phone    = pet.shelterPhone || '';
+  var url      = pet.shelterUrl   || '#';
+  var tags     = pet.tags         || '';
+  var gender   = pet.gender       || '';
+  var energy   = pet.energy       || '';
+  var emoji    = species === 'cat' ? '🐱' : '🐶';
+  var backPage = species === 'cat' ? 'pg-cats' : 'pg-dogs';
+  var backText = species === 'cat' ? 'Back to Cats' : 'Back to Dogs';
+  var saved    = isWishlisted(pid);
+
+  var container = document.getElementById('pet-detail-container');
+  container.innerHTML =
+    '<button class="back-link" id="detail-back">← ' + backText + '</button>'
+    + '<div class="dlayout">'
+      + '<div class="dphoto"><img src="' + img + '" alt="' + name
+        + '" loading="eager" onerror="this.src=\'https://placehold.co/460x320?text=No+Photo\'"></div>'
+      + '<div class="dinfo">'
+        + '<h1>' + name + ' ' + emoji + '</h1>'
+        + '<p class="dbr">' + breed + (loc ? ' · ' + loc : '') + '</p>'
+        + (match ? '<div class="cbox"><div class="ccirc">' + match + '</div><div class="ctxt"><strong>Compatibility Match!</strong> Based on your quiz answers</div></div>' : '')
+        + '<div class="sgrid">'
+          + (weight ? '<div class="si"><div class="sl">Weight</div><div class="sv">' + weight + '</div></div>' : '')
+          + (age    ? '<div class="si"><div class="sl">Age</div><div class="sv">' + age + '</div></div>' : '')
+          + (gender ? '<div class="si"><div class="sl">Gender</div><div class="sv">' + gender + '</div></div>' : '')
+          + (energy ? '<div class="si"><div class="sl">Energy</div><div class="sv">' + energy + '</div></div>' : '')
+          + (price  ? '<div class="si"><div class="sl">Fee</div><div class="sv">' + price + '</div></div>' : '')
+          + '<div class="si"><div class="sl">Includes</div><div class="sv">Spay/Neuter, Vaccines, Chip</div></div>'
+        + '</div>'
+        + '<div class="dacts">'
+          + (url !== '#' ? '<a href="' + url + '" target="_blank" class="btn-main">Visit ' + shelter + ' →</a>' : '')
+          + '<span class="wl-btn' + (saved?' wishlisted':'') + '" data-pid="' + pid + '" style="cursor:pointer;border-radius:20px;padding:10px 20px;">'
+            + (saved ? '♥ Wishlisted!' : '♡ Add to Wishlist')
+          + '</span>'
+        + '</div>'
+      + '</div>'
+    + '</div>'
+    + (story ? '<div class="dstory"><h3>📖 ' + name + '\'s Story</h3><p>' + story + '</p></div>' : '')
+    + (shelter ? '<div class="shcard"><h4>🏠 ' + shelter + '</h4>'
+        + '<p>📍 ' + loc + (phone ? ' · ☎️ ' + phone : '') + '</p></div>' : '');
+
+  container.classList.add('active');
+  document.body.classList.add('detail-open');
+  window.scrollTo(0, 0);
+
+  document.getElementById('detail-back').addEventListener('click', function() {
+    closeDetail(backPage);
+  });
+  container.querySelectorAll('.wl-btn[data-pid]').forEach(function(btn) {
+    btn.addEventListener('click', function(e) { e.stopPropagation(); toggleWishlist(btn.dataset.pid); });
+  });
+}
+
+function closeDetail(backPageId) {
+  var c = document.getElementById('pet-detail-container');
+  c.classList.remove('active'); c.innerHTML = '';
+  document.body.classList.remove('detail-open');
+  var t = document.getElementById(backPageId); if (t) t.checked = true;
+  window.scrollTo(0, 0);
+}
+
+// ── QUIZ OPTION SELECTION ──────────────────────────────────────────────────────
+document.querySelectorAll('.qopts').forEach(function(group) {
+  group.querySelectorAll('span').forEach(function(opt) {
+    opt.addEventListener('click', function(e) {
+      e.stopPropagation();
+      group.querySelectorAll('span').forEach(function(s) { s.classList.remove('selected'); });
+      opt.classList.add('selected');
+    });
+  });
+});
+
+// ── WISHLIST ───────────────────────────────────────────────────────────────────
+var WL_KEY = 'furever_wishlist';
+function getWishlist()     { try { return JSON.parse(localStorage.getItem(WL_KEY)) || {}; } catch(e) { return {}; } }
+function saveWishlist(wl)  { localStorage.setItem(WL_KEY, JSON.stringify(wl)); }
+function isWishlisted(pid) { return !!getWishlist()[String(pid)]; }
+
+function toggleWishlist(pid) {
+  pid = String(pid);
+  var wl  = getWishlist();
+  var pet = ALL_PETS.find(function(p) { return String(p.petId) === pid; });
+  if (wl[pid]) {
+    delete wl[pid];
+  } else if (pet) {
+    wl[pid] = {
+      pid:   pid,
+      name:  pet.petName  || pet.name || '',
+      breed: pet.breed    || '',
+      loc:   pet.location || '',
+      price: pet.price    ? '$' + pet.price : '',
+      img:   pet.imageUrl || pet.image || '',
+      tags:  pet.tags     || '',
+      match: pet.match    ? pet.match + '%' : ''
+    };
+  }
+  saveWishlist(wl);
+  refreshWishlistUI();
+  if (document.getElementById('pg-wishlist').checked) renderWishlistPage();
+}
+
+function refreshWishlistUI() {
+  document.querySelectorAll('.wl-btn[data-pid]').forEach(function(btn) {
+    var s = isWishlisted(btn.dataset.pid);
+    btn.innerHTML = s ? '♥ Wishlisted!' : '♡ Add to Wishlist';
+    btn.classList.toggle('wishlisted', s);
+  });
+  document.querySelectorAll('.hbadge.wl-heart[data-pid]').forEach(function(h) {
+    var s = isWishlisted(h.dataset.pid);
+    h.classList.toggle('wishlisted', s);
+    h.innerHTML = s ? '♥' : '♡';
+  });
+}
+
+function renderWishlistPage() {
+  var wl = getWishlist(), pets = Object.values(wl);
+  var empty = document.getElementById('wl-empty'), grid = document.getElementById('wl-grid');
+  if (!empty || !grid) return;
+  if (pets.length === 0) { empty.style.display=''; grid.style.display='none'; grid.innerHTML=''; return; }
+  empty.style.display = 'none'; grid.style.display = '';
+  grid.innerHTML = pets.map(function(p) {
+    var tags = (p.tags||'').split(',').filter(Boolean).map(function(t){return '<span>'+t.trim()+'</span>';}).join('');
+    return '<div class="pc" data-pid="'+p.pid+'" data-name="'+p.name+'" data-breed="'+p.breed
+      +'" data-loc="'+p.loc+'" data-price="'+p.price+'" data-img="'+p.img
+      +'" data-tags="'+p.tags+'" data-match="'+p.match+'">'
+      +'<div class="pc-click" data-pid="'+p.pid+'" style="cursor:pointer;">'
+        +'<img src="'+p.img+'" alt="'+p.name+'" style="width:100%;height:155px;object-fit:cover;">'
+        +(p.match?'<span class="mbadge">'+p.match+'</span>':'')
+        +'<div class="pci"><h4>'+p.name+'</h4><p class="pm">'+p.breed+'</p>'
+        +'<p class="pl">📍 '+p.loc+'</p><p class="pf">'+p.price+'</p>'
+        +(tags?'<div class="ptags">'+tags+'</div>':'')+'</div>'
+      +'</div>'
+      +'<div class="wls wl-btn wishlisted" data-pid="'+p.pid+'" style="cursor:pointer;">♥ Remove</div>'
+      +'</div>';
+  }).join('');
+  grid.querySelectorAll('.pc-click[data-pid]').forEach(function(el) {
+    el.addEventListener('click', function() { openDetail(el.dataset.pid); });
+  });
+  grid.querySelectorAll('.wl-btn[data-pid]').forEach(function(btn) {
+    btn.addEventListener('click', function(e) { e.stopPropagation(); toggleWishlist(btn.dataset.pid); });
+  });
+}
+
+document.querySelectorAll('input[name="pg"]').forEach(function(r) {
+  r.addEventListener('change', function() { if (r.id==='pg-wishlist') renderWishlistPage(); });
+});
+
+// ── INIT ───────────────────────────────────────────────────────────────────────
+loadPets();
+if (document.getElementById('pg-wishlist').checked) renderWishlistPage();
+</script>
+
+</body>
+</html>

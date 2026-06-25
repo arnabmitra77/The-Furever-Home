@@ -12,7 +12,7 @@
   --orange: #FD913C;
   --deep-orange: #F05524;
   --white: #FFFFFF;
-  --cream: #FFF9F5;https://docs.google.com/spreadsheets/d/1Xg4T3vmhoLxN0C2lEBFaN88Y2LSvoF6DQVoCxL3dt80/edit?gid=0#gid=0
+  --cream: #FFF9F5;
   --light-pink: #FFF0F7;
   --light-orange: #FFF4EC;
   --gray: #F5F5F5;
@@ -22,14 +22,15 @@
   --text-light: #666;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: system-ui, -apple-system, sans-serif; background: var(--cream); color: var(--text); line-height: 1.6; }
+html { overflow-x: hidden; }
+body { font-family: system-ui, -apple-system, sans-serif; background: var(--cream); color: var(--text); line-height: 1.6; overflow-x: hidden; }
 
 input[name="pg"] { display: none; }
 
 .topbar { background: var(--gunmetal); padding: 6px 24px; display: flex; justify-content: flex-end; align-items: center; gap: 16px; font-size: 11px; color: #ccc; }
 .topbar .pill { background: var(--pink); color: #fff; padding: 4px 14px; border-radius: 12px; font-weight: 600; }
 
-nav { background: var(--white); padding: 8px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 200; border-bottom: 1px solid var(--gray-border); box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+nav { background: var(--white); padding: 8px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 200; border-bottom: 1px solid var(--gray-border); box-shadow: 0 2px 12px rgba(0,0,0,0.04); max-width: 100vw; }
 
 /* Logo area */
 .logo-area { display: flex; align-items: center; gap: 14px; }
@@ -46,10 +47,12 @@ nav { background: var(--white); padding: 8px 24px; display: flex; align-items: c
 .ni > label:hover { background: var(--light-pink); color: var(--pink); }
 .dd { position: absolute; top: calc(100% + 4px); left: 0; background: var(--white); border: 1px solid var(--gray-border); border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.12); padding: 8px 0; min-width: 200px; opacity: 0; visibility: hidden; transform: translateY(6px); transition: all 0.2s; z-index: 300; }
 .ni:hover .dd { opacity: 1; visibility: visible; transform: translateY(0); }
+.ni .dd.dd-open { opacity: 1; visibility: visible; transform: translateY(0); }
 .dd label { display: block; padding: 10px 18px; font-size: 13px; color: var(--text); cursor: pointer; transition: all 0.15s; }
 .dd label:hover { background: var(--light-pink); color: var(--pink); }
 
 #pg-home:checked ~ nav .mnav .nh > label { background: var(--pink); color: #fff; }
+#pg-adopt:checked ~ nav .mnav .na > label,
 #pg-dogs:checked ~ nav .mnav .na > label,
 #pg-cats:checked ~ nav .mnav .na > label,
 #pg-quiz:checked ~ nav .mnav .na > label { background: var(--pink); color: #fff; }
@@ -64,6 +67,7 @@ nav { background: var(--white); padding: 8px 24px; display: flex; align-items: c
 
 .page { display: none; padding: 24px; max-width: 1140px; margin: 0 auto; }
 #pg-home:checked ~ .pg-home { display: block; }
+#pg-adopt:checked ~ .pg-adopt { display: block; }
 #pg-dogs:checked ~ .pg-dogs { display: block; }
 #pg-cats:checked ~ .pg-cats { display: block; }
 #pg-quiz:checked ~ .pg-quiz { display: block; }
@@ -75,6 +79,10 @@ nav { background: var(--white); padding: 8px 24px; display: flex; align-items: c
 #pg-tips:checked ~ .pg-tips { display: block; }
 #pg-checklist:checked ~ .pg-checklist { display: block; }
 #pg-wishlist:checked ~ .pg-wishlist { display: block; }
+
+/* Petfinder widget container */
+.pf-widget-wrap { margin-top: 8px; }
+.pf-widget-wrap pet-scroller { display: block; width: 100%; }
 
 /* Pet detail page */
 .pdp { display: none; padding: 24px; max-width: 1100px; margin: 0 auto; }
@@ -151,7 +159,11 @@ body.detail-open .pg-cats { display: none !important; }
 .back-link:hover { text-decoration: underline; }
 .dlayout { display: flex; gap: 28px; }
 .dphoto { flex: 1; max-width: 460px; }
-.dphoto img { width: 100%; height: 320px; object-fit: cover; border-radius: 14px; background: var(--light-pink); }
+.dphoto > img { width: 100%; height: 320px; object-fit: contain; border-radius: 14px; background: var(--cream); }
+.detail-thumbs { display: flex; gap: 6px; margin-top: 10px; overflow-x: auto; padding: 4px 0; }
+.detail-thumb { width: 38px !important; height: 38px !important; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid transparent; opacity: 0.7; transition: all 0.2s; }
+.detail-thumb:hover { opacity: 1; border-color: var(--pink); }
+.detail-thumb.active { opacity: 1; border-color: var(--pink); box-shadow: 0 2px 8px rgba(241,58,177,0.3); }
 .dinfo { flex: 1; }
 .dinfo h1 { font-size: 26px; margin-bottom: 4px; }
 .dinfo .dbr { font-size: 13px; color: var(--gray-mid); margin-bottom: 14px; }
@@ -167,6 +179,41 @@ body.detail-open .pg-cats { display: none !important; }
 .btn-main { background: linear-gradient(135deg, var(--pink), var(--deep-orange)); color: #fff; padding: 10px 20px; border-radius: 20px; font-weight: 600; font-size: 12px; text-decoration: none; }
 .btn-main:hover { opacity: 0.9; }
 .btn-wl { background: var(--light-pink); color: var(--red); padding: 10px 20px; border-radius: 20px; font-weight: 600; font-size: 12px; }
+.btn-interest { background: var(--white); color: var(--pink); border: 2px solid var(--pink); padding: 9px 18px; border-radius: 20px; font-weight: 600; font-size: 12px; cursor: pointer; text-decoration: none; transition: all 0.2s; display: inline-block; }
+.btn-interest:hover { background: var(--light-pink); }
+
+/* ── INTEREST FORM MODAL ─────────────────────────────────────────────────── */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(41,48,62,0.55); z-index: 1000; align-items: center; justify-content: center; padding: 16px; }
+.modal-overlay.open { display: flex; }
+.modal-box { background: var(--white); border-radius: 18px; padding: 28px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,0.18); position: relative; animation: modalIn 0.2s ease; }
+@keyframes modalIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.modal-close { position: absolute; top: 14px; right: 16px; font-size: 20px; cursor: pointer; color: var(--gray-mid); background: none; border: none; line-height: 1; }
+.modal-close:hover { color: var(--text); }
+.modal-box h3 { font-size: 17px; margin-bottom: 4px; }
+.modal-box .modal-sub { font-size: 12px; color: var(--gray-mid); margin-bottom: 20px; }
+.modal-pet-strip { display: flex; align-items: center; gap: 12px; background: var(--light-pink); border-radius: 10px; padding: 10px 12px; margin-bottom: 20px; }
+.modal-pet-strip img { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+.modal-pet-strip .mpname { font-size: 14px; font-weight: 700; }
+.modal-pet-strip .mpbreed { font-size: 11px; color: var(--text-light); }
+.form-row { margin-bottom: 14px; }
+.form-row label { display: block; font-size: 11px; font-weight: 700; color: var(--gray-mid); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+.form-row input, .form-row select, .form-row textarea {
+  width: 100%; padding: 10px 12px; border: 1.5px solid var(--gray-border);
+  border-radius: 10px; font-size: 13px; background: var(--gray);
+  font-family: inherit; transition: border-color 0.2s;
+}
+.form-row input:focus, .form-row select:focus, .form-row textarea:focus {
+  outline: none; border-color: var(--pink); background: var(--white);
+}
+.form-row textarea { resize: vertical; min-height: 72px; }
+.form-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.btn-submit { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--pink), var(--deep-orange)); color: #fff; border: none; border-radius: 20px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 6px; transition: opacity 0.2s; }
+.btn-submit:hover { opacity: 0.9; }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+.form-success { display: none; text-align: center; padding: 20px 0; }
+.form-success .fs-icon { font-size: 48px; margin-bottom: 10px; }
+.form-success h4 { font-size: 16px; margin-bottom: 6px; }
+.form-success p { font-size: 13px; color: var(--text-light); }
 .dstory { background: var(--white); border: 1px solid var(--gray-border); border-radius: 12px; padding: 18px; margin-top: 18px; }
 .dstory h3 { font-size: 14px; margin-bottom: 8px; }
 .dstory p { font-size: 13px; color: var(--text-light); line-height: 1.7; }
@@ -221,43 +268,362 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
 .fcol label:hover { color: #fff; }
 .fbot { max-width: 1100px; margin: 16px auto 0; padding-top: 14px; border-top: 1px solid #444; text-align: center; font-size: 10px; opacity: 0.6; }
 
+/* ── Chatbot Promo Card ────────────────────────────────────────────────────── */
+.chatbot-promo-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: linear-gradient(135deg, var(--light-pink), var(--light-orange));
+  border: 1.5px solid var(--pink);
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 18px;
+}
+.chatbot-promo-icon { font-size: 28px; }
+.chatbot-promo-text { flex: 1; }
+.chatbot-promo-text strong { font-size: 14px; color: var(--gunmetal); }
+.chatbot-promo-text p { font-size: 12px; color: var(--gunmetal); margin: 2px 0 0; opacity: 0.8; }
+.chatbot-promo-btn {
+  background: linear-gradient(135deg, var(--pink), var(--deep-orange));
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.chatbot-promo-btn:hover { opacity: 0.9; }
+
+/* ── Quiz Result ──────────────────────────────────────────────────────────── */
+.quiz-result {
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--light-pink);
+  border-radius: 12px;
+  border: 1.5px solid var(--pink);
+}
+.quiz-result h4 { margin: 0 0 8px; font-size: 15px; color: var(--gunmetal); }
+.quiz-result p { margin: 0 0 12px; font-size: 13px; color: var(--gunmetal); line-height: 1.5; }
+.quiz-result .qbtn { display: inline-block; margin-top: 8px; }
+
 @media (max-width: 768px) {
   .find-layout { flex-direction: column; }
   .filters { width: 100%; position: static; }
   .dlayout { flex-direction: column; }
   .finner { grid-template-columns: 1fr; }
-  .mnav { gap: 0; }
-  .ni > label { padding: 6px 10px; font-size: 11px; }
+  .mnav { gap: 0; flex-wrap: wrap; justify-content: center; }
+  .ni > label { padding: 5px 6px; font-size: 9px; }
+  .ni .dd { position: fixed; top: auto; left: 8px; right: 8px; bottom: 0; min-width: auto; width: calc(100% - 16px); border-radius: 14px 14px 0 0; box-shadow: 0 -8px 32px rgba(0,0,0,0.2); z-index: 500; max-height: 50vh; overflow-y: auto; }
   .topbar { display: none; }
   .banner { height: 220px; }
   .stats-row { flex-wrap: wrap; }
   .stat-box { min-width: 45%; }
-  .logo-area img.logo-img { height: 52px; }
-  .logo-tagline-img { height: 52px; }
+  .logo-area img.logo-img { height: 40px; }
+  .logo-tagline-img { height: 40px; }
+  nav { padding: 6px 10px; flex-wrap: wrap; }
+  .chatbot-promo-card { flex-direction: column; text-align: center; gap: 8px; padding: 14px; }
+  .page { padding: 16px 12px; }
+  body { overflow-x: hidden; }
+}
+
+/* ── Like Button Card ──────────────────────────────────────────────────────── */
+.like-card {
+  text-align: right;
+  margin-bottom: 12px;
+}
+.like-btn {
+  background: linear-gradient(135deg, var(--light-pink), var(--light-orange));
+  border: 2px solid var(--pink);
+  border-radius: 24px;
+  padding: 12px 28px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--pink);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.like-btn:hover { background: var(--pink); color: #fff; transform: scale(1.03); }
+.like-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; background: var(--light-pink); }
+.like-thanks {
+  display: inline-block;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--pink);
+  animation: likeThanksFade 0.3s ease;
+}
+@keyframes likeThanksFade { from { opacity:0; transform:scale(0.8); } to { opacity:1; transform:scale(1); } }
+
+/* ── Adoption Roadmap ──────────────────────────────────────────────────────── */
+.roadmap-section {
+  background: var(--white);
+  border: 1px solid var(--gray-border);
+  border-radius: 14px;
+  padding: 28px 24px;
+  margin-bottom: 28px;
+}
+.roadmap-title {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 24px;
+  color: var(--text);
+}
+.roadmap-steps {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: nowrap;
+}
+.roadmap-step {
+  text-align: center;
+  flex: 0 1 140px;
+  min-width: 100px;
+  transition: transform 0.3s ease;
+}
+.roadmap-step:hover {
+  transform: translateY(-4px);
+}
+.roadmap-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--light-pink), var(--light-orange));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 8px;
+  font-size: 22px;
+  border: 2px solid var(--pink);
+  overflow: hidden;
+}
+.roadmap-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+.roadmap-step:hover .roadmap-icon img {
+  transform: scale(1.15);
+}
+.roadmap-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+.roadmap-desc {
+  font-size: 10px;
+  color: var(--text-light);
+  line-height: 1.3;
+}
+.roadmap-connector {
+  width: 28px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--pink), var(--deep-orange));
+  margin-top: 26px;
+  flex-shrink: 0;
+  border-radius: 2px;
+}
+@media (max-width: 768px) {
+  .roadmap-steps { flex-direction: column; align-items: center; gap: 0; }
+  .roadmap-connector { width: 2px; height: 20px; margin: 4px 0; }
+  .roadmap-step { flex: none; width: 100%; max-width: 200px; }
+}
+
+/* ── Adoption Process Page ─────────────────────────────────────────────────── */
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 18px;
+}
+.process-card {
+  background: var(--white);
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--gray-border);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.process-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px rgba(241, 58, 177, 0.12);
+}
+.process-card-img-wrap {
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+  background: var(--cream);
+}
+.process-card-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.process-card:hover .process-card-img-wrap img {
+  transform: scale(1.08);
+}
+.process-card-content {
+  padding: 16px;
+}
+.process-card-title {
+  font-size: 15px;
+  color: var(--gunmetal);
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+.process-card-desc {
+  font-size: 12px;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
+
+/* ── Auth Modal Tabs ───────────────────────────────────────────────────────── */
+.auth-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 18px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1.5px solid var(--gray-border);
+}
+.auth-tab {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  background: var(--gray);
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.auth-tab.active {
+  background: var(--pink);
+  color: #fff;
+}
+
+/* ── General Interest Form (Petfinder page) ────────────────────────────────── */
+.general-interest-form {
+  background: var(--white);
+  border: 1px solid var(--gray-border);
+  border-radius: 14px;
+  padding: 24px;
+  margin-top: 28px;
+}
+.general-interest-form h3 {
+  font-size: 17px;
+  margin-bottom: 4px;
 }
 </style>
 </head>
 <body>
 
-<input type="radio" name="pg" id="pg-home" checked>
-<input type="radio" name="pg" id="pg-dogs">
-<input type="radio" name="pg" id="pg-cats">
-<input type="radio" name="pg" id="pg-quiz">
-<input type="radio" name="pg" id="pg-vision">
-<input type="radio" name="pg" id="pg-stories">
-<input type="radio" name="pg" id="pg-process">
-<input type="radio" name="pg" id="pg-partners">
-<input type="radio" name="pg" id="pg-faq">
-<input type="radio" name="pg" id="pg-tips">
-<input type="radio" name="pg" id="pg-checklist">
-<input type="radio" name="pg" id="pg-wishlist">
+<!-- Petfinder Widget Script — loaded once, used by pg-adopt page -->
+<script src="https://www.petfinder.com/pet-scroller.bundle.js"></script>
+
+<input type="radio" name="pg" id="pg-home" checked aria-label="Home page">
+<input type="radio" name="pg" id="pg-adopt" aria-label="Adopt page">
+<input type="radio" name="pg" id="pg-dogs" aria-label="Dogs page">
+<input type="radio" name="pg" id="pg-cats" aria-label="Cats page">
+<input type="radio" name="pg" id="pg-quiz" aria-label="Quiz page">
+<input type="radio" name="pg" id="pg-vision" aria-label="Vision page">
+<input type="radio" name="pg" id="pg-stories" aria-label="Stories page">
+<input type="radio" name="pg" id="pg-process" aria-label="Process page">
+<input type="radio" name="pg" id="pg-partners" aria-label="Partners page">
+<input type="radio" name="pg" id="pg-faq" aria-label="FAQ page">
+<input type="radio" name="pg" id="pg-tips" aria-label="Tips page">
+<input type="radio" name="pg" id="pg-checklist" aria-label="Checklist page">
+<input type="radio" name="pg" id="pg-wishlist" aria-label="Wishlist page">
 
 
+
+<!-- ── INTEREST FORM MODAL ──────────────────────────────────────────────── -->
+<div class="modal-overlay" id="interest-modal">
+  <div class="modal-box">
+    <button class="modal-close" id="modal-close-btn" aria-label="Close">&#x2715;</button>
+    <div id="form-view">
+      <h3>&#x1F43E; I'm Interested in Adopting!</h3>
+      <p class="modal-sub">Fill in your details and we'll connect you with the shelter.</p>
+      <div class="modal-pet-strip">
+        <img id="form-pet-img" src="" alt="" loading="lazy">
+        <div><div class="mpname" id="form-pet-name"></div><div class="mpbreed" id="form-pet-breed"></div></div>
+      </div>
+      <input type="hidden" id="form-pet-id">
+      <input type="hidden" id="form-shelter-name">
+      <input type="hidden" id="form-shelter-phone">
+      <form id="interest-form" novalidate>
+        <div class="form-two-col">
+          <div class="form-row"><label for="f-firstname">First Name *</label><input type="text" id="f-firstname" placeholder="First Name" required></div>
+          <div class="form-row"><label for="f-lastname">Last Name *</label><input type="text" id="f-lastname" placeholder="Last Name" required></div>
+        </div>
+        <div class="form-row"><label for="f-email">Email Address *</label><input type="email" id="f-email" placeholder="EmailID@email.com" required></div>
+        <div class="form-row"><label for="f-phone">Phone Number</label><input type="tel" id="f-phone" placeholder="(555) 123-4567"></div>
+        <div class="form-two-col">
+          <div class="form-row"><label for="f-city">City</label><input type="text" id="f-city" placeholder="City Name"></div>
+          <div class="form-row">
+            <label for="f-housing">Housing Type</label>
+            <select id="f-housing"><option value="">Select...</option><option>House with yard</option><option>Apartment</option><option>House no yard</option><option>Condo/Townhouse</option></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="f-experience">Pet Experience</label>
+          <select id="f-experience"><option value="">Select...</option><option>First-time pet owner</option><option>Previous pet owner</option><option>Current pet owner</option></select>
+        </div>
+        <div class="form-row"><label for="f-message">Message to Shelter (optional)</label><textarea id="f-message" placeholder="Tell the shelter a little about yourself and why you're interested..."></textarea></div>
+        <button type="submit" class="btn-submit" id="form-submit-btn">Send Adoption Inquiry &#x2192;</button>
+        <p id="form-error" style="display:none;color:var(--red);font-size:12px;margin-top:8px;text-align:center;"></p>
+      </form>
+    </div>
+    <div class="form-success" id="success-view">
+      <div class="fs-icon">&#x1F43E;</div>
+      <h4>Inquiry Sent!</h4>
+      <p>Your interest in <strong id="success-pet-name"></strong> has been recorded.<br>The shelter will be in touch with you shortly.</p>
+      <br>
+      <button class="btn-submit" id="success-close-btn" style="max-width:200px;margin:0 auto;display:block;">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── AUTH MODAL (Sign Up / Sign In) ───────────────────────────────────── -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal-box" style="max-width:400px;">
+    <button class="modal-close" onclick="closeAuthModal()" aria-label="Close">&#x2715;</button>
+    <h3 id="auth-modal-title">🐾 Welcome to Furever Home</h3>
+    <p class="modal-sub">Sign in to save your preferences and track your adoption journey.</p>
+    <!-- Tab switcher -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-signin" onclick="switchAuthTab('signin')">Sign In</button>
+      <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <!-- Sign In Form -->
+    <form id="signin-form" novalidate>
+      <div class="form-row"><label for="si-email">Email *</label><input type="email" id="si-email" placeholder="your@email.com" required></div>
+      <div class="form-row"><label for="si-password">Password *</label><input type="password" id="si-password" placeholder="Your password" required></div>
+      <button type="submit" class="btn-submit">Sign In →</button>
+      <p id="si-error" style="display:none;color:var(--red);font-size:12px;margin-top:8px;text-align:center;"></p>
+    </form>
+    <!-- Sign Up Form -->
+    <form id="signup-form" style="display:none;" novalidate>
+      <div class="form-row"><label for="su-name">Full Name *</label><input type="text" id="su-name" placeholder="Your Name" required></div>
+      <div class="form-row"><label for="su-email">Email *</label><input type="email" id="su-email" placeholder="your@email.com" required></div>
+      <div class="form-row"><label for="su-password">Password *</label><input type="password" id="su-password" placeholder="Create a password" required></div>
+      <button type="submit" class="btn-submit">Create Account →</button>
+      <p id="su-error" style="display:none;color:var(--red);font-size:12px;margin-top:8px;text-align:center;"></p>
+      <p id="su-success" style="display:none;color:green;font-size:12px;margin-top:8px;text-align:center;"></p>
+    </form>
+  </div>
+</div>
 
 <div class="topbar">
   <span>New Pet Parent?</span>
   <span>&#x2705; Ready Checklist</span>
-  <span class="pill">Sign Up / Sign In</span>
+  <span class="pill" id="auth-pill" style="cursor:pointer;" onclick="openAuthModal()">Sign Up / Sign In</span>
 </div>
 
 <nav>
@@ -270,9 +636,11 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
     <div class="ni na">
       <label>Adopt &#9660;</label>
       <div class="dd">
+        <label for="pg-adopt">&#x1F43E; All Pets — Live Feed</label>
         <label for="pg-dogs">&#x1F436; Adopt a Dog</label>
         <label for="pg-cats">&#x1F431; Adopt a Cat</label>
         <label for="pg-quiz">&#x1F3AF; Find a Match</label>
+        <label for="pg-home" onclick="setTimeout(function(){document.querySelector('.roadmap-section').scrollIntoView({behavior:'smooth'})},100)">&#x1F5FA;&#xFE0F; Adoption Roadmap</label>
       </div>
     </div>
     <div class="ni nab">
@@ -298,32 +666,90 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
 
 <!-- HOME -->
 <div class="page pg-home">
+  <!-- Like Button -->
+  <div class="like-card" id="like-card">
+    <button class="like-btn" id="like-btn" onclick="handleLikeClick()">❤️ I love this website!</button>
+    <span class="like-thanks" id="like-thanks" style="display:none;">Thank you! ❤️</span>
+  </div>
+
   <div class="banner">
     <div class="banner-track">
       <div class="banner-slide">
         <img src="https://cdn.pixabay.com/photo/2016/12/13/05/15/puppy-1903313_640.jpg" alt="Puppy" loading="eager">
-        <div class="bover"><h2>Adopt Today! &#x1F43E;</h2><p>Give a shelter pet the loving home they deserve</p><label for="pg-dogs">Browse Dogs &rarr;</label></div>
+        <div class="bover"><h2>Adopt Today! &#x1F43E;</h2><p>Give a shelter pet the loving home they deserve</p><label for="pg-adopt">Browse Dogs &rarr;</label></div>
       </div>
       <div class="banner-slide">
         <img src="https://cdn.pixabay.com/photo/2017/02/20/18/03/cat-2083492_640.jpg" alt="Cat" loading="lazy">
-        <div class="bover"><h2>Purrfect Companions Await &#x1F431;</h2><p>Cats of all ages looking for their forever family</p><label for="pg-cats">Browse Cats &rarr;</label></div>
+        <div class="bover"><h2>Purrfect Companions Await &#x1F431;</h2><p>Cats of all ages looking for their forever family</p><label for="pg-adopt">Browse Cats &rarr;</label></div>
       </div>
       <div class="banner-slide">
         <img src="https://cdn.pixabay.com/photo/2019/08/19/07/45/dog-4415649_640.jpg" alt="Dog" loading="lazy">
         <div class="bover"><h2>Find Your Perfect Match &#x1F3AF;</h2><p>Take our quiz and discover your ideal companion</p><label for="pg-quiz">Take the Quiz &rarr;</label></div>
       </div>
       <div class="banner-slide">
-        <img src="https://cdn.pixabay.com/photo/2019/11/08/11/36/kitten-4611189_640.jpg" alt="Kitten" loading="lazy">
-        <div class="bover"><h2>Every Pet Deserves Love &#x2764;&#xFE0F;</h2><p>Over 50 pets in Bay Area shelters need you right now</p><label for="pg-dogs">Start Browsing &rarr;</label></div>
+        <img src="https://placedog.net/640/400?random" alt="Happy pets" loading="lazy">
+        <div class="bover"><h2>Every Pet Deserves Love &#x2764;&#xFE0F;</h2><p>Over 500 pets in Bay Area shelters need you right now</p><label for="pg-adopt">Start Browsing &rarr;</label></div>
       </div>
     </div>
   </div>
   <div class="stats-row">
-    <div class="stat-box"><div class="snum">50+</div><div class="stxt">Pets Available</div></div>
-    <div class="stat-box"><div class="snum">3</div><div class="stxt">Partner Shelters</div></div>
-    <div class="stat-box"><div class="snum">200+</div><div class="stxt">Happy Adoptions</div></div>
+    <div class="stat-box"><div class="snum">500+</div><div class="stxt">Pets Available</div></div>
+    <div class="stat-box"><div class="snum">10</div><div class="stxt">Partner Shelters</div></div>
+    <div class="stat-box"><div class="snum">100%</div><div class="stxt">Happy Pet Parents</div></div>
     <div class="stat-box"><div class="snum">96%</div><div class="stxt">Match Accuracy</div></div>
   </div>
+
+  <div class="chatbot-promo-card">
+    <span class="chatbot-promo-icon">🐾💬</span>
+    <div class="chatbot-promo-text">
+      <strong>Got pet care questions?</strong>
+      <p>Ask our AI chatbot about nutrition, training, health, and more!</p>
+    </div>
+    <button class="chatbot-promo-btn" onclick="document.getElementById('chatbot-fab').click();">Chat Now →</button>
+  </div>
+
+  <!-- Adoption Roadmap -->
+  <div class="roadmap-section">
+    <h3 class="roadmap-title">🗺️ Your Adoption Journey</h3>
+    <div class="roadmap-steps">
+      <div class="roadmap-step">
+        <div class="roadmap-icon"><img src="adopt_step1.png" alt="Find a Match"></div>
+        <div class="roadmap-label">Find a Match</div>
+        <div class="roadmap-desc">Take the quiz or browse pets</div>
+      </div>
+      <div class="roadmap-connector"></div>
+      <div class="roadmap-step">
+        <div class="roadmap-icon"><img src="adopt_step2.png" alt="Visit a Shelter"></div>
+        <div class="roadmap-label">Visit a Shelter</div>
+        <div class="roadmap-desc">Meet your potential companion in person</div>
+      </div>
+      <div class="roadmap-connector"></div>
+      <div class="roadmap-step">
+        <div class="roadmap-icon"><img src="adopt_step3.png" alt="Submit Application"></div>
+        <div class="roadmap-label">Submit Application</div>
+        <div class="roadmap-desc">Fill out the shelter's adoption form</div>
+      </div>
+      <div class="roadmap-connector"></div>
+      <div class="roadmap-step">
+        <div class="roadmap-icon"><img src="adopt_step4.png" alt="Get Approved"></div>
+        <div class="roadmap-label">Get Approved</div>
+        <div class="roadmap-desc">Home check and approval process</div>
+      </div>
+      <div class="roadmap-connector"></div>
+      <div class="roadmap-step">
+        <div class="roadmap-icon"><img src="adopt_step5.png" alt="Pet Licensing"></div>
+        <div class="roadmap-label">Pet Licensing</div>
+        <div class="roadmap-desc">Register and license your new pet</div>
+      </div>
+      <div class="roadmap-connector"></div>
+      <div class="roadmap-step">
+        <div class="roadmap-icon"><img src="adopt_step6.png" alt="Welcome Home!"></div>
+        <div class="roadmap-label">Welcome Home!</div>
+        <div class="roadmap-desc">Bring your new family member home</div>
+      </div>
+    </div>
+  </div>
+
   <div class="quiz-sec"><details><summary>&#x1F43E; Pet Match Quiz &mdash; Find Your Perfect Companion</summary><div class="qbody">
     <div class="qq"><span class="ql">Are you a...</span><div class="qopts"><span>First-time owner</span><span>Current owner</span><span>Previous owner</span></div></div>
     <div class="qq"><span class="ql">Would you like to adopt a...</span><div class="qopts"><span>&#x1F436; Dog</span><span>&#x1F431; Cat</span><span>Either!</span></div></div>
@@ -335,6 +761,59 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
   </div></details></div>
 </div>
 
+<!-- ALL PETS — Petfinder Live Widget -->
+<div class="page pg-adopt">
+  <label for="pg-home" class="back-link">&larr; Back to Home</label>
+  <h2 style="font-size:20px;margin-bottom:4px;">&#x1F43E; Pets Available for Adoption</h2>
+  <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">Live listings from 10 Bay Area shelters — updated directly from Petfinder.</p>
+  <button class="qbtn" style="margin-bottom:18px;" onclick="document.getElementById('general-interest-section').scrollIntoView({behavior:'smooth'});">📝 I'm Interested in Adopting — Fill Out Form ↓</button>
+  <div class="pf-widget-wrap">
+    <pet-scroller
+      s3Url="https://dbw3zep4prcju.cloudfront.net/"
+      apiBase="https://psl.petfinder.com/graphql"
+      organization='["CA1707","CA534","CA1669","CA559","CA560","CA280","CA912","CA301","CA683","CA256"]'
+      status="adoptable"
+      petfinderUrl="https://www.petfinder.com/"
+      hideBreed="false"
+      limit="24"
+      petListTitle="Pets for adoption">
+    </pet-scroller>
+  </div>
+
+  <!-- General Interest Form (not tied to a specific pet) -->
+  <div class="general-interest-form" id="general-interest-section">
+    <h3>🐾 Interested in Adopting? Let us know!</h3>
+    <p class="modal-sub" style="margin-bottom:18px;">Fill out this form and we'll help connect you with a shelter and a pet that's right for you.</p>
+    <form id="general-interest-form" novalidate>
+      <div class="form-two-col">
+        <div class="form-row"><label for="gi-firstname">First Name *</label><input type="text" id="gi-firstname" placeholder="First Name" required></div>
+        <div class="form-row"><label for="gi-lastname">Last Name *</label><input type="text" id="gi-lastname" placeholder="Last Name" required></div>
+      </div>
+      <div class="form-row"><label for="gi-email">Email Address *</label><input type="email" id="gi-email" placeholder="EmailID@email.com" required></div>
+      <div class="form-row"><label for="gi-phone">Phone Number</label><input type="tel" id="gi-phone" placeholder="(555) 123-4567"></div>
+      <div class="form-two-col">
+        <div class="form-row"><label for="gi-city">City</label><input type="text" id="gi-city" placeholder="City Name"></div>
+        <div class="form-row">
+          <label for="gi-housing">Housing Type</label>
+          <select id="gi-housing"><option value="">Select...</option><option>House with yard</option><option>Apartment</option><option>House no yard</option><option>Condo/Townhouse</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <label for="gi-experience">Pet Experience</label>
+        <select id="gi-experience"><option value="">Select...</option><option>First-time pet owner</option><option>Previous pet owner</option><option>Current pet owner</option></select>
+      </div>
+      <div class="form-row"><label for="gi-message">Message (optional)</label><textarea id="gi-message" placeholder="Tell us what kind of pet you're looking for, any preferences, questions..."></textarea></div>
+      <button type="submit" class="btn-submit" id="gi-submit-btn">Submit Interest →</button>
+      <p id="gi-error" style="display:none;color:var(--red);font-size:12px;margin-top:8px;text-align:center;"></p>
+    </form>
+    <div class="form-success" id="gi-success" style="display:none;">
+      <div class="fs-icon">🐾</div>
+      <h4>Interest Submitted!</h4>
+      <p>We've received your inquiry. A shelter partner will be in touch with you shortly!</p>
+    </div>
+  </div>
+</div>
+
 <!-- ADOPT A DOG -->
 <div class="page pg-dogs">
   <label for="pg-home" class="back-link">&larr; Back to Home</label>
@@ -342,14 +821,18 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
     <div class="filters">
       <h3>&#x1F3AF; Filters</h3>
       <div class="fg"><span class="fl">Size</span><select id="dog-filter-size"><option value="">All Sizes</option><option value="small">Small (0-25 lbs)</option><option value="medium">Medium (25-50)</option><option value="large">Large (50+)</option></select></div>
-      <div class="fg"><span class="fl">Energy</span><select id="dog-filter-energy"><option value="">Any</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></div>
-      <div class="fg"><span class="fl">Age</span><select id="dog-filter-age"><option value="">Any</option><option value="puppy">Puppy</option><option value="young">Young</option><option value="adult">Adult</option><option value="senior">Senior</option></select></div>
+      <div class="fg"><span class="fl">Age</span><select id="dog-filter-age"><option value="">Any</option><option value="baby">Puppy/Baby</option><option value="young">Young</option><option value="adult">Adult</option><option value="senior">Senior</option></select></div>
       <div class="fg"><span class="fl">Gender</span><select id="dog-filter-gender"><option value="">Any</option><option value="male">Male</option><option value="female">Female</option></select></div>
+      <div class="fg"><span class="fl">City</span><select id="dog-filter-city"><option value="">All Cities</option></select></div>
       <div class="fg"><span class="fl">Shelter</span><select id="dog-filter-shelter"><option value="">All Shelters</option></select></div>
     </div>
     <div class="pet-results">
-      <h2>&#x1F436; Dogs Available &mdash; Best Match First</h2>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
+        <h2 style="margin:0;">&#x1F436; Dogs Available</h2>
+        <input type="text" id="dog-search" placeholder="🔍 Search by name, breed, shelter..." style="padding:8px 14px;border:1.5px solid var(--gray-border);border-radius:20px;font-size:12px;width:220px;font-family:inherit;" oninput="renderGrid('dog')">
+      </div>
       <div id="dogs-updated" style="font-size:11px;color:var(--gray-mid);margin-bottom:8px;"></div>
+      <div id="dogs-api-note"></div>
       <div id="dogs-loading" style="padding:24px;color:var(--gray-mid);font-size:13px;">&#x23F3; Loading pets from database...</div>
       <div class="pgrid" id="dogs-grid"></div>
       <div id="dogs-noresult" style="display:none;padding:24px;color:var(--gray-mid);font-size:13px;">No pets match your filters. Try adjusting the options.</div>
@@ -364,13 +847,18 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
     <div class="filters">
       <h3>&#x1F3AF; Filters</h3>
       <div class="fg"><span class="fl">Size</span><select id="cat-filter-size"><option value="">All Sizes</option><option value="small">Small</option><option value="medium">Medium</option><option value="large">Large</option></select></div>
-      <div class="fg"><span class="fl">Energy</span><select id="cat-filter-energy"><option value="">Any</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></div>
-      <div class="fg"><span class="fl">Age</span><select id="cat-filter-age"><option value="">Any</option><option value="kitten">Kitten</option><option value="young">Young</option><option value="adult">Adult</option><option value="senior">Senior</option></select></div>
+      <div class="fg"><span class="fl">Age</span><select id="cat-filter-age"><option value="">Any</option><option value="baby">Kitten/Baby</option><option value="young">Young</option><option value="adult">Adult</option><option value="senior">Senior</option></select></div>
       <div class="fg"><span class="fl">Gender</span><select id="cat-filter-gender"><option value="">Any</option><option value="male">Male</option><option value="female">Female</option></select></div>
+      <div class="fg"><span class="fl">City</span><select id="cat-filter-city"><option value="">All Cities</option></select></div>
+      <div class="fg"><span class="fl">Shelter</span><select id="cat-filter-shelter"><option value="">All Shelters</option></select></div>
     </div>
     <div class="pet-results">
-      <h2>&#x1F431; Cats Available &mdash; Best Match First</h2>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
+        <h2 style="margin:0;">&#x1F431; Cats Available</h2>
+        <input type="text" id="cat-search" placeholder="🔍 Search by name, breed, shelter..." style="padding:8px 14px;border:1.5px solid var(--gray-border);border-radius:20px;font-size:12px;width:220px;font-family:inherit;" oninput="renderGrid('cat')">
+      </div>
       <div id="cats-updated" style="font-size:11px;color:var(--gray-mid);margin-bottom:8px;"></div>
+      <div id="cats-api-note"></div>
       <div id="cats-loading" style="padding:24px;color:var(--gray-mid);font-size:13px;">&#x23F3; Loading pets from database...</div>
       <div class="pgrid" id="cats-grid"></div>
       <div id="cats-noresult" style="display:none;padding:24px;color:var(--gray-mid);font-size:13px;">No pets match your filters. Try adjusting the options.</div>
@@ -388,8 +876,8 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
     <div class="qq"><span class="ql">Nearby amenities?</span><div class="qopts"><span>Park</span><span>Yard</span><span>None</span></div></div>
     <div class="qq"><span class="ql">Gender preference?</span><div class="qopts"><span>Male</span><span>Female</span><span>No preference</span></div></div>
     <div class="qq"><span class="ql">Open to special needs?</span><div class="qopts"><span>Yes!</span><span>Not right now</span></div></div>
-    <label for="pg-dogs" class="qbtn">See Dog Matches &rarr;</label>
-    <label for="pg-cats" class="qbtn" style="margin-left:6px;background:linear-gradient(135deg,#FD913C,#E72744);">See Cat Matches &rarr;</label>
+    <button class="qbtn" id="quiz-submit-btn" onclick="showQuizResult()">See My Results →</button>
+    <div id="quiz-result" class="quiz-result" style="display:none;"></div>
   </div></details></div>
 </div></div>
 
@@ -418,21 +906,104 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
 
 <!-- PROCESS -->
 <div class="page pg-process"><div class="cp">
-  <h2>&#x1F4CB; The Adoption Process</h2>
-  <h3>Step 1: Browse &amp; Match</h3><p>Use filters or take the quiz. Save favorites to your wishlist.</p>
-  <h3>Step 2: Visit the Shelter</h3><p>Visit during open hours and spend time with the animal.</p>
-  <h3>Step 3: Complete Application</h3><p>Fill out the shelter's adoption application.</p>
-  <h3>Step 4: Home Check</h3><p>Some shelters may require a brief home visit.</p>
-  <h3>Step 5: Pay Fee &amp; Take Home!</h3><p>Fees include spay/neuter, vaccinations, and microchipping.</p>
-  <h3>Step 6: Post-Adoption Support</h3><p>Shelters offer support during the adjustment period.</p>
+  <h2 style="text-align:center;margin-bottom:8px;">Your Adoption Journey</h2>
+  <p style="text-align:center;font-size:13px;color:var(--text-light);margin-bottom:28px;">From first click to forever home — here's what to expect.</p>
+  <div class="process-grid">
+    <div class="process-card">
+      <div class="process-card-img-wrap">
+        <img src="adopt_step1.png" alt="Browse & Match" loading="lazy">
+      </div>
+      <div class="process-card-content">
+        <h4 class="process-card-title">1. Browse & Match</h4>
+        <p class="process-card-desc">Use our filters or take the quiz to find pets that fit your lifestyle. Save favorites to your wishlist to compare later.</p>
+      </div>
+    </div>
+    <div class="process-card">
+      <div class="process-card-img-wrap">
+        <img src="adopt_step2.png" alt="Visit the Shelter" loading="lazy">
+      </div>
+      <div class="process-card-content">
+        <h4 class="process-card-title">2. Visit the Shelter</h4>
+        <p class="process-card-desc">Visit during open hours to meet the animal in person. Spend time getting to know their personality and energy.</p>
+      </div>
+    </div>
+    <div class="process-card">
+      <div class="process-card-img-wrap">
+        <img src="adopt_step3.png" alt="Complete Application" loading="lazy">
+      </div>
+      <div class="process-card-content">
+        <h4 class="process-card-title">3. Complete Application</h4>
+        <p class="process-card-desc">Fill out the shelter's adoption application. Provide references and details about your home environment.</p>
+      </div>
+    </div>
+    <div class="process-card">
+      <div class="process-card-img-wrap">
+        <img src="adopt_step4.png" alt="Home Check & Approval" loading="lazy">
+      </div>
+      <div class="process-card-content">
+        <h4 class="process-card-title">4. Home Check & Approval</h4>
+        <p class="process-card-desc">Some shelters may do a brief home visit to ensure it's safe and suitable. Most approvals happen within a few days.</p>
+      </div>
+    </div>
+    <div class="process-card">
+      <div class="process-card-img-wrap">
+        <img src="adopt_step5.png" alt="Pay Fee & Get Licensed" loading="lazy">
+      </div>
+      <div class="process-card-content">
+        <h4 class="process-card-title">5. Pay Fee & Get Licensed</h4>
+        <p class="process-card-desc">Adoption fees ($75–$350) cover spay/neuter, vaccines, and microchip. Register for your pet license with the city.</p>
+      </div>
+    </div>
+    <div class="process-card">
+      <div class="process-card-img-wrap">
+        <img src="adopt_step6.png" alt="Welcome Home!" loading="lazy">
+      </div>
+      <div class="process-card-content">
+        <h4 class="process-card-title">6. Welcome Home!</h4>
+        <p class="process-card-desc">Bring your new family member home! Remember the 3-3-3 rule: 3 days to decompress, 3 weeks to learn your routine, 3 months to feel truly at home.</p>
+      </div>
+    </div>
+  </div>
 </div></div>
 
 <!-- PARTNERS -->
 <div class="page pg-partners"><div class="cp">
-  <h2>&#x1F3E0; Partner Shelters</h2>
-  <div class="pcard"><h4>Valley Humane Society</h4><p>&#x1F4CD; 3670 Nevada St, Pleasanton, CA &middot; &#x1F550; Tues&ndash;Sat 10am&ndash;4pm &middot; &#x260E;&#xFE0F; (925) 426-8656</p></div>
-  <div class="pcard"><h4>East Bay SPCA</h4><p>&#x1F4CD; Oakland &amp; Dublin &middot; &#x260E;&#xFE0F; (510) 563-9000</p></div>
-  <div class="pcard"><h4>Humane Society Silicon Valley</h4><p>&#x1F4CD; 901 Ames Ave, Milpitas, CA &middot; &#x260E;&#xFE0F; (408) 262-5921</p></div>
+  <h2 style="text-align:center;margin-bottom:8px;">Our Partner Shelters</h2>
+  <p style="text-align:center;font-size:13px;color:var(--text-light);margin-bottom:28px;">We partner with these trusted Bay Area shelters. Contact them directly for adoption inquiries.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;">
+    <div style="background:var(--white);border-radius:14px;padding:20px;border:1px solid var(--gray-border);display:flex;gap:14px;align-items:flex-start;">
+      <div style="width:48px;height:48px;border-radius:12px;background:var(--light-orange);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🏠</div>
+      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">Valley Humane Society</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 3670 Nevada St, Pleasanton, CA<br>📞 (925) 426-8656</p><a href="https://www.valleyhumane.org" target="_blank" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
+    </div>
+    <div style="background:var(--white);border-radius:14px;padding:20px;border:1px solid var(--gray-border);display:flex;gap:14px;align-items:flex-start;">
+      <div style="width:48px;height:48px;border-radius:12px;background:var(--light-pink);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🐕</div>
+      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">East County Animal Shelter</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 4595 Gleason Dr, Dublin, CA<br>📞 (925) 803-7040</p><a href="https://www.alamedasheriff.gov/community/adopt-a-pet" target="_blank" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
+    </div>
+    <div style="background:var(--white);border-radius:14px;padding:20px;border:1px solid var(--gray-border);display:flex;gap:14px;align-items:flex-start;">
+      <div style="width:48px;height:48px;border-radius:12px;background:var(--light-orange);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🐾</div>
+      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">East Bay SPCA — Dublin</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 4651 Gleason Dr, Dublin, CA<br>📞 (510) 563-9000</p><a href="https://www.eastbayspca.org" target="_blank" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
+    </div>
+    <div style="background:var(--white);border-radius:14px;padding:20px;border:1px solid var(--gray-border);display:flex;gap:14px;align-items:flex-start;">
+      <div style="width:48px;height:48px;border-radius:12px;background:var(--light-pink);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🐾</div>
+      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">East Bay SPCA — Oakland</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 8323 Baldwin St, Oakland, CA<br>📞 (510) 563-9000</p><a href="https://www.eastbayspca.org" target="_blank" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
+    </div>
+    <div style="background:var(--white);border-radius:14px;padding:20px;border:1px solid var(--gray-border);display:flex;gap:14px;align-items:flex-start;">
+      <div style="width:48px;height:48px;border-radius:12px;background:var(--light-orange);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🐱</div>
+      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">Berkeley Humane</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 2700 Ninth St, Berkeley, CA<br>📞 (510) 845-7735</p><a href="https://berkeleyhumane.org" target="_blank" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
+    </div>
+    <div style="background:var(--white);border-radius:14px;padding:20px;border:1px solid var(--gray-border);display:flex;gap:14px;align-items:flex-start;">
+      <div style="width:48px;height:48px;border-radius:12px;background:var(--light-pink);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🏠</div>
+      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">Friends of Alameda Animal Shelter</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 1590 Fortmann Way, Alameda, CA<br>📞 (510) 337-8565</p><a href="https://www.alamedaanimalshelter.org" target="_blank" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
+    </div>
+    <div style="background:var(--white);border-radius:14px;padding:20px;border:1px solid var(--gray-border);display:flex;gap:14px;align-items:flex-start;">
+      <div style="width:48px;height:48px;border-radius:12px;background:var(--light-orange);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🐕</div>
+      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">Tri-City Animal Shelter</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 1950 Stevenson Blvd, Fremont, CA<br>📞 (510) 790-6635</p><a href="https://www.fremont.gov/government/departments/animal-services/tri-city/animal-shelter" target="_blank" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
+    </div>
+    <div style="background:var(--white);border-radius:14px;padding:20px;border:1px solid var(--gray-border);display:flex;gap:14px;align-items:flex-start;">
+      <div style="width:48px;height:48px;border-radius:12px;background:var(--light-pink);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🐱</div>
+      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">Humane Society Silicon Valley</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 901 Ames Ave, Milpitas, CA<br>📞 (408) 262-5921</p><a href="https://www.hssv.org" target="_blank" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
+    </div>
+  </div>
 </div></div>
 
 <!-- FAQ -->
@@ -506,6 +1077,7 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
     </div>
     <div class="fcol">
       <h4>Adopt</h4>
+      <label for="pg-adopt">&#x1F43E; All Pets — Live</label>
       <label for="pg-dogs">&#x1F436; Adopt a Dog</label>
       <label for="pg-cats">&#x1F431; Adopt a Cat</label>
       <label for="pg-quiz">&#x1F3AF; Find a Match</label>
@@ -528,21 +1100,956 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
   <div class="fbot">&copy; 2025 The Furever Home &mdash; All rights reserved. Not affiliated with any shelter. All adoption inquiries go directly to partner shelters.</div>
 </footer>
 
+<!-- ── PET CARE FAQ CHATBOT ─────────────────────────────────────────────── -->
+<style>
+/* ── Chatbot FAB ─────────────────────────────────────────────────────────── */
+.chatbot-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink), var(--deep-orange));
+  color: var(--white);
+  border: none;
+  cursor: pointer;
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(241, 58, 177, 0.35);
+  transition: transform 0.2s, box-shadow 0.2s;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+.chatbot-fab:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 24px rgba(241, 58, 177, 0.45);
+}
+.chatbot-fab svg {
+  width: 26px;
+  height: 26px;
+  fill: var(--white);
+}
+
+/* ── Chatbot Panel ───────────────────────────────────────────────────────── */
+.chatbot-panel {
+  position: fixed;
+  bottom: 92px;
+  right: 24px;
+  width: 320px;
+  height: 480px;
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 12px 48px rgba(41, 48, 62, 0.18);
+  z-index: 401;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, sans-serif;
+  border: 1px solid var(--light-pink);
+}
+.chatbot-panel.open {
+  display: flex;
+}
+
+/* ── Chatbot Header ──────────────────────────────────────────────────────── */
+.chatbot-header {
+  background: var(--gunmetal);
+  color: var(--white);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.chatbot-header-title {
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.chatbot-close {
+  background: none;
+  border: none;
+  color: var(--white);
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.chatbot-close:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ── Chatbot Messages Area ───────────────────────────────────────────────── */
+.chatbot-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--cream);
+}
+
+/* ── Chatbot Input Bar ───────────────────────────────────────────────────── */
+.chatbot-input-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid var(--light-pink);
+  background: var(--white);
+  flex-shrink: 0;
+}
+.chatbot-input {
+  flex: 1;
+  resize: none;
+  border: 1.5px solid var(--light-pink);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1.4;
+  max-height: 80px;
+  min-height: 38px;
+  background: var(--cream);
+  color: var(--text);
+  transition: border-color 0.2s;
+}
+.chatbot-input:focus {
+  outline: none;
+  border-color: var(--pink);
+  background: var(--white);
+}
+.chatbot-send {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink), var(--deep-orange));
+  color: var(--white);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: opacity 0.2s;
+}
+.chatbot-send:hover {
+  opacity: 0.85;
+}
+.chatbot-send:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.chatbot-send svg {
+  width: 16px;
+  height: 16px;
+  fill: var(--white);
+}
+.chatbot-disclaimer {
+  font-size: 10px;
+  color: var(--gunmetal);
+  opacity: 0.6;
+  text-align: center;
+  padding: 4px 12px 8px;
+  flex-shrink: 0;
+}
+.chatbot-input-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.chatbot-input-wrap .chatbot-input {
+  width: 100%;
+}
+.chatbot-char-counter {
+  display: none;
+  font-size: 11px;
+  color: var(--gray-mid);
+  text-align: right;
+  padding: 2px 4px 0;
+}
+.chatbot-char-counter.visible {
+  display: block;
+}
+.chatbot-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Chatbot Message Bubbles ──────────────────────────────────────────────── */
+.chatbot-msg-user,
+.chatbot-msg-assistant {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+.chatbot-msg-user {
+  background: var(--light-pink);
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+.chatbot-msg-assistant {
+  background: var(--white);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+  border: 1px solid var(--gray-border);
+}
+
+/* ── Chatbot Typing Indicator ─────────────────────────────────────────────── */
+.chatbot-typing {
+  align-self: flex-start;
+  background: var(--white);
+  border: 1px solid var(--gray-border);
+  border-radius: 12px;
+  border-bottom-left-radius: 4px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.chatbot-typing-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--pink);
+  opacity: 0.4;
+  animation: chatbotTypingBounce 1.4s infinite ease-in-out;
+}
+.chatbot-typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.chatbot-typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+@keyframes chatbotTypingBounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+/* ── Mobile Responsive ───────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .chatbot-panel {
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 70vh;
+    border-radius: 16px 16px 0 0;
+  }
+  .chatbot-fab {
+    bottom: 16px;
+    right: 16px;
+  }
+}
+</style>
+
+<!-- Chatbot FAB (Floating Action Button) -->
+<button class="chatbot-fab" id="chatbot-fab" aria-label="Open pet care chat">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/><path d="M7 9h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/></svg>
+</button>
+
+<!-- Chatbot Panel -->
+<div class="chatbot-panel" id="chatbot-panel" role="region" aria-label="Pet care chatbot">
+  <!-- Header -->
+  <div class="chatbot-header">
+    <span class="chatbot-header-title">&#x1F43E; Pet Care Assistant</span>
+    <button class="chatbot-close" id="chatbot-close" aria-label="Close chat">&#x2715;</button>
+  </div>
+  <!-- Messages -->
+  <div class="chatbot-messages" id="chatbot-messages" aria-live="polite"></div>
+  <!-- Input Bar -->
+  <div class="chatbot-input-bar">
+    <div class="chatbot-input-wrap">
+      <textarea class="chatbot-input" id="chatbot-input" rows="1" maxlength="500" aria-label="Ask a pet care question" placeholder="Ask a pet care question..."></textarea>
+      <span class="chatbot-char-counter" id="chatbot-char-counter" aria-live="polite"></span>
+    </div>
+    <button class="chatbot-send" id="chatbot-send" aria-label="Send question">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
+  </div>
+  <div class="chatbot-disclaimer">⚠️ AI can make mistakes. This is not veterinary advice. Always consult a vet for medical concerns.</div>
+</div>
+
+<script>
+// ── Chatbot Widget — full state management (task 4.2) ──────────────────────
+var ChatbotWidget = {
+  isOpen: false,
+  firstOpened: false,
+  messages: [],
+  isLoading: false,
+  _safetyTimeout: null,
+
+  els: {
+    fab: document.getElementById('chatbot-fab'),
+    panel: document.getElementById('chatbot-panel'),
+    closeBtn: document.getElementById('chatbot-close'),
+    input: document.getElementById('chatbot-input'),
+    messagesContainer: document.getElementById('chatbot-messages'),
+    sendBtn: document.getElementById('chatbot-send'),
+    charCounter: document.getElementById('chatbot-char-counter')
+  },
+
+  init: function() {
+    var self = this;
+    this.els.fab.addEventListener('click', function() { self.open(); });
+    this.els.closeBtn.addEventListener('click', function() { self.close(); });
+
+    // Send button click
+    this.els.sendBtn.addEventListener('click', function() { self.submit(); });
+
+    // Keyboard: Enter submits, Shift+Enter inserts newline
+    this.els.input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        self.submit();
+      }
+    });
+
+    // Input event: update character counter visibility
+    this.els.input.addEventListener('input', function() {
+      self.updateCharCounter();
+    });
+  },
+
+  open: function() {
+    this.isOpen = true;
+    this.els.panel.classList.add('open');
+    this.els.fab.style.display = 'none';
+
+    if (!this.firstOpened) {
+      this.firstOpened = true;
+      this.addMessage({
+        role: 'assistant',
+        text: "Hi! I'm Furever's pet care assistant. Ask me anything about caring for your new pet! \uD83D\uDC3E",
+        timestamp: Date.now()
+      });
+    }
+
+    this.els.input.focus();
+  },
+
+  close: function() {
+    this.isOpen = false;
+    this.els.panel.classList.remove('open');
+    this.els.fab.style.display = 'flex';
+  },
+
+  submit: async function() {
+    var text = this.els.input.value;
+
+    // Reject empty/whitespace-only — silently keep focus
+    if (!text || !text.trim()) {
+      this.els.input.focus();
+      return;
+    }
+
+    var trimmed = text.trim();
+
+    // Add user message to conversation
+    this.addMessage({
+      role: 'user',
+      text: trimmed,
+      timestamp: Date.now()
+    });
+
+    // Clear input and reset counter
+    this.els.input.value = '';
+    this.updateCharCounter();
+
+    // Disable input + send during AI response
+    this.setInputEnabled(false);
+
+    // 30-second overall safety timeout to re-enable controls if flow gets stuck
+    var self = this;
+    this._safetyTimeout = setTimeout(function() {
+      self.hideTyping();
+      self.setInputEnabled(true);
+    }, 30000);
+
+    // Show typing indicator
+    this.showTyping();
+
+    try {
+      // Step 1: Try to retrieve relevant articles from the knowledge base
+      var articles = [];
+      try {
+        articles = await Retriever.search(trimmed);
+      } catch (kbErr) {
+        // KB fetch failed (empty sheet, network issue, etc.) — continue without articles
+        articles = [];
+      }
+
+      // Step 2: Generate AI answer (with or without articles as context)
+      var response = await AIResponder.generateAnswer(trimmed, articles);
+
+      // Step 3: Handle successful AI response
+      this.handleAIResponse(response, articles);
+
+    } catch (err) {
+      // Handle any error from AIResponder (timeout, HTTP error, API failure)
+      console.error('[Chatbot] Submit error:', err);
+      this.handleAIError();
+    }
+  },
+
+  setInputEnabled: function(enabled) {
+    this.els.input.disabled = !enabled;
+    this.els.sendBtn.disabled = !enabled;
+    this.isLoading = !enabled;
+    if (enabled) {
+      this.els.input.focus();
+      if (this._safetyTimeout) {
+        clearTimeout(this._safetyTimeout);
+        this._safetyTimeout = null;
+      }
+    }
+  },
+
+  updateCharCounter: function() {
+    var len = this.els.input.value.length;
+    var remaining = 500 - len;
+    if (len >= 450) {
+      this.els.charCounter.textContent = remaining + ' characters remaining';
+      this.els.charCounter.classList.add('visible');
+    } else {
+      this.els.charCounter.classList.remove('visible');
+    }
+  },
+
+  addMessage: function(msg) {
+    this.messages.push(msg);
+    this.renderMessage(msg);
+    this.scrollToBottom();
+  },
+
+  renderMessage: function(msg) {
+    var el = document.createElement('div');
+    el.className = msg.role === 'user' ? 'chatbot-msg-user' : 'chatbot-msg-assistant';
+    el.textContent = msg.text;
+
+    if (msg.sources && msg.sources.length > 0) {
+      var sourcesDiv = document.createElement('div');
+      sourcesDiv.style.marginTop = '8px';
+      sourcesDiv.style.fontSize = '11px';
+      sourcesDiv.style.color = 'var(--text-light)';
+      sourcesDiv.innerHTML = '<strong>Sources:</strong>';
+      msg.sources.forEach(function(src) {
+        var link = document.createElement('a');
+        link.href = src.url;
+        link.target = '_blank';
+        link.textContent = src.title;
+        link.style.display = 'block';
+        link.style.color = 'var(--pink)';
+        link.style.fontSize = '11px';
+        sourcesDiv.appendChild(link);
+      });
+      el.appendChild(sourcesDiv);
+    }
+
+    this.els.messagesContainer.appendChild(el);
+  },
+
+  /**
+   * Handle the AI response and render appropriate message.
+   * - Normal answer (isRefusal=false) with articles: show answer + Sources section
+   * - Refusal (isRefusal=true): show refusal text only, no Sources
+   * - Error (thrown exception): show user-friendly error message, no Sources
+   * @param {{answer: string, isRefusal: boolean}} response - The AI response object
+   * @param {Object[]} articles - The articles sent as context (for source links)
+   */
+  handleAIResponse: function(response, articles) {
+    this.hideTyping();
+    this.setInputEnabled(true);
+
+    if (response.isRefusal) {
+      // Out-of-domain refusal — display only refusal text, no Sources
+      this.addMessage({
+        role: 'assistant',
+        text: response.answer,
+        timestamp: Date.now()
+      });
+    } else {
+      // Normal answer — display answer + sources from context articles
+      var sources = articles && articles.length > 0
+        ? articles.map(function(a) { return { title: a.title, url: a.url }; })
+        : undefined;
+      var msg = {
+        role: 'assistant',
+        text: response.answer,
+        timestamp: Date.now()
+      };
+      if (sources) {
+        msg.sources = sources;
+      }
+      this.addMessage(msg);
+    }
+  },
+
+  /**
+   * Handle an AI API error — display a user-friendly message.
+   * Never exposes API keys, raw error messages, or internal details.
+   */
+  handleAIError: function() {
+    this.hideTyping();
+    this.setInputEnabled(true);
+    this.addMessage({
+      role: 'assistant',
+      text: "I\u2019m having trouble connecting right now \u2014 please try again shortly.",
+      timestamp: Date.now()
+    });
+  },
+
+  scrollToBottom: function() {
+    var container = this.els.messagesContainer;
+    container.scrollTop = container.scrollHeight;
+  },
+
+  showTyping: function() {
+    this.hideTyping(); // Prevent duplicates
+    var indicator = document.createElement('div');
+    indicator.className = 'chatbot-typing';
+    indicator.setAttribute('aria-label', 'Assistant is typing');
+    indicator.innerHTML = '<span class="chatbot-typing-dot"></span><span class="chatbot-typing-dot"></span><span class="chatbot-typing-dot"></span>';
+    this.els.messagesContainer.appendChild(indicator);
+    this.scrollToBottom();
+  },
+
+  hideTyping: function() {
+    var indicator = this.els.messagesContainer.querySelector('.chatbot-typing');
+    if (indicator) {
+      indicator.remove();
+    }
+  }
+};
+
+ChatbotWidget.init();
+</script>
+
+<script>
+// ── Chatbot Configuration ──────────────────────────────────────────────────
+window.CHATBOT_CONFIG = {
+  apiKey: '',           // Google Gemini API key (primary)
+  openaiApiKey: '',     // OpenAI API key (fallback)
+  sheetId: '1Xg4T3vmhoLxN0C2lEBFaN88Y2LSvoF6DQVoCxL3dt80',
+  kbSheetName: 'pet_care_kb'
+};
+
+// ── Retriever Module — Knowledge Base fetch + session caching ──────────────
+var Retriever = {
+  cache: null,  // Cached KB articles (session lifetime)
+
+  /**
+   * Fetch all rows from pet_care_kb sheet via gviz endpoint.
+   * Returns cached articles if already fetched this session.
+   * Throws on HTTP error (>= 400) or timeout (5 seconds).
+   */
+  fetchKB: async function() {
+    // Return from cache if already populated
+    if (Retriever.cache && Retriever.cache.articles) {
+      return Retriever.cache.articles;
+    }
+
+    var config = window.CHATBOT_CONFIG;
+    var url = 'https://docs.google.com/spreadsheets/d/' + config.sheetId +
+              '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(config.kbSheetName);
+
+    // Set up 5-second timeout via AbortController
+    var controller = new AbortController();
+    var timeoutId = setTimeout(function() {
+      controller.abort();
+    }, 5000);
+
+    var response;
+    try {
+      response = await fetch(url, { signal: controller.signal });
+    } catch (err) {
+      clearTimeout(timeoutId);
+      if (err.name === 'AbortError') {
+        throw new Error('Knowledge base request timed out. Please try again.');
+      }
+      throw new Error('Failed to connect to knowledge base: ' + err.message);
+    }
+
+    clearTimeout(timeoutId);
+
+    // Handle HTTP errors (status >= 400)
+    if (!response.ok) {
+      throw new Error("I'm having trouble loading my knowledge base. Please try again shortly.");
+    }
+
+    // Parse the gviz response
+    var text = await response.text();
+    var start = text.indexOf('{');
+    var end = text.lastIndexOf('}');
+    if (start === -1 || end === -1) {
+      throw new Error('Unexpected response format from knowledge base.');
+    }
+
+    var data = JSON.parse(text.substring(start, end + 1));
+    var table = data.table;
+    if (!table || !table.cols || !table.rows) {
+      // Empty KB — return empty array, still cache it
+      Retriever.cache = { articles: [], fetchedAt: Date.now() };
+      return Retriever.cache.articles;
+    }
+
+    // Extract column headers
+    var headers = table.cols.map(function(c) {
+      return (c.label || c.id || '').trim();
+    });
+
+    // Parse rows into article objects
+    var articles = table.rows
+      .filter(function(r) { return r && r.c; })
+      .map(function(row) {
+        var obj = {};
+        headers.forEach(function(h, i) {
+          var cell = row.c[i];
+          obj[h] = (cell && cell.v !== null && cell.v !== undefined) ? String(cell.v).trim() : '';
+        });
+        // Pre-split keywords from comma-separated string into array
+        var keywordsRaw = obj.keywords || '';
+        obj.keywords = keywordsRaw
+          ? keywordsRaw.split(',').map(function(k) { return k.trim().toLowerCase(); }).filter(Boolean)
+          : [];
+        return {
+          articleId: obj.articleId || '',
+          title: obj.title || '',
+          url: obj.url || '',
+          source: obj.source || '',
+          category: obj.category || '',
+          summary: obj.summary || '',
+          keywords: obj.keywords,
+          fullText: obj.fullText || '',
+          fetchedAt: obj.fetchedAt || ''
+        };
+      });
+
+    // Cache for session duration
+    Retriever.cache = { articles: articles, fetchedAt: Date.now() };
+    return Retriever.cache.articles;
+  },
+
+  // ── Stop words — common English words excluded from query tokenization ──
+  STOP_WORDS: new Set([
+    'the','a','is','are','was','were','be','been','have','has','had','do','does','did',
+    'will','would','could','should','may','might','shall','can','need','i','you','he',
+    'she','we','they','me','him','her','us','them','my','your','his','our','their',
+    'what','which','who','whom','when','where','why','how','all','each','every','both',
+    'few','more','most','other','some','such','no','not','only','own','same','so','than',
+    'too','very','just','about','above','after','again','also','as','if','into','through',
+    'during','before','between','up','down','out','off','over','under','then','once',
+    'here','there','and','or','but','in','on','at','to','for','of','with','by','from',
+    'it','its','this','that','these','those'
+  ]),
+
+  /**
+   * Tokenize text: lowercase, split on non-alpha characters, filter stop words,
+   * filter empty strings, return array of unique tokens.
+   * @param {string} text - Input text to tokenize
+   * @returns {string[]} Array of unique lowercase tokens (stop words removed)
+   */
+  tokenize: function(text) {
+    if (!text || typeof text !== 'string') return [];
+    var words = text.toLowerCase().split(/[^a-z]+/).filter(Boolean);
+    var stopWords = Retriever.STOP_WORDS;
+    var seen = {};
+    var result = [];
+    for (var i = 0; i < words.length; i++) {
+      var w = words[i];
+      if (!stopWords.has(w) && !seen[w]) {
+        seen[w] = true;
+        result.push(w);
+      }
+    }
+    return result;
+  },
+
+  /**
+   * Score a single article against query tokens.
+   * For each unique query token, check if it exists in:
+   *   - article.keywords array (already lowercase)
+   *   - tokenized title
+   *   - tokenized summary
+   * Each field where the token is found counts as 1 point.
+   * Total score = sum across all tokens and all 3 fields.
+   * @param {Object} article - KB article object
+   * @param {string[]} queryTokens - Array of unique query tokens
+   * @returns {number} Score for this article
+   */
+  score: function(article, queryTokens) {
+    if (!queryTokens || queryTokens.length === 0) return 0;
+
+    var titleTokens = Retriever.tokenize(article.title);
+    var summaryTokens = Retriever.tokenize(article.summary);
+    var keywordsSet = {};
+    var titleSet = {};
+    var summarySet = {};
+
+    // Build lookup sets for fast matching
+    for (var i = 0; i < article.keywords.length; i++) {
+      keywordsSet[article.keywords[i]] = true;
+    }
+    for (var i = 0; i < titleTokens.length; i++) {
+      titleSet[titleTokens[i]] = true;
+    }
+    for (var i = 0; i < summaryTokens.length; i++) {
+      summarySet[summaryTokens[i]] = true;
+    }
+
+    var total = 0;
+    for (var i = 0; i < queryTokens.length; i++) {
+      var token = queryTokens[i];
+      if (keywordsSet[token]) total++;
+      if (titleSet[token]) total++;
+      if (summarySet[token]) total++;
+    }
+    return total;
+  },
+
+  /**
+   * Search the knowledge base for articles relevant to the query.
+   * Fetches KB (uses cache), tokenizes query, scores articles,
+   * filters zero-score, sorts descending by score (ties by title ascending),
+   * and returns top 5.
+   * @param {string} query - User's search query
+   * @returns {Object[]} Top 5 matching articles (or fewer), empty array if no matches
+   */
+  search: async function(query) {
+    var articles = await Retriever.fetchKB();
+    var queryTokens = Retriever.tokenize(query);
+
+    // If no meaningful tokens after stop-word removal, return empty
+    if (queryTokens.length === 0) return [];
+
+    // Score every article
+    var scored = [];
+    for (var i = 0; i < articles.length; i++) {
+      var s = Retriever.score(articles[i], queryTokens);
+      if (s > 0) {
+        scored.push({ article: articles[i], score: s });
+      }
+    }
+
+    // Sort descending by score, ties broken alphabetically by title (ascending)
+    scored.sort(function(a, b) {
+      if (b.score !== a.score) return b.score - a.score;
+      return a.article.title.localeCompare(b.article.title);
+    });
+
+    // Return top 5 (or all if fewer)
+    var top = scored.slice(0, 5);
+    var result = [];
+    for (var i = 0; i < top.length; i++) {
+      result.push(top[i].article);
+    }
+    return result;
+  }
+};
+</script>
+
+<script>
+// ── AI Responder Module — API selection and answer generation ───────────────
+var AIResponder = {
+  /**
+   * Determine which AI API to use based on configuration.
+   * Returns 'gemini' if apiKey is a non-empty string,
+   * 'openai' if openaiApiKey is a non-empty string,
+   * 'none' if both keys are missing/empty.
+   * @returns {'gemini'|'openai'|'none'}
+   */
+  getApiType: function() {
+    var config = window.CHATBOT_CONFIG;
+    if (config && config.apiKey && typeof config.apiKey === 'string' && config.apiKey.trim() !== '') {
+      return 'gemini';
+    }
+    if (config && config.openaiApiKey && typeof config.openaiApiKey === 'string' && config.openaiApiKey.trim() !== '') {
+      return 'openai';
+    }
+    return 'none';
+  },
+
+  /**
+   * Generate an answer to the user's question using retrieved articles.
+   * Selects the appropriate AI API based on configuration.
+   * Wraps API calls in try/catch — on failure, throws a generic error
+   * that never exposes API keys or raw error details.
+   * @param {string} question - The user's question
+   * @param {Object[]} articles - Retrieved KB articles (up to 5)
+   * @returns {Promise<{answer: string, isRefusal: boolean}>}
+   */
+  generateAnswer: async function(question, articles) {
+    var apiType = AIResponder.getApiType();
+    if (apiType === 'none') {
+      return { answer: 'Chat is not configured yet. Please check back later.', isRefusal: true };
+    }
+    var prompt = AIResponder.buildPrompt(question, articles);
+    try {
+      if (apiType === 'gemini') {
+        return await AIResponder.callGemini(prompt);
+      } else {
+        return await AIResponder.callOpenAI(prompt);
+      }
+    } catch (e) {
+      // Never expose API keys or raw error details to the user
+      throw new Error('AI_API_UNAVAILABLE');
+    }
+  },
+
+  /**
+   * Build the system prompt and user content for the AI API call.
+   * @param {string} question - The user's question
+   * @param {Object[]} articles - Retrieved KB articles (up to 5)
+   * @returns {{systemPrompt: string, userContent: string}}
+   */
+  buildPrompt: function(question, articles) {
+    var hasArticles = articles && articles.length > 0;
+
+    var systemPrompt;
+    if (hasArticles) {
+      systemPrompt = 'You are a helpful pet care assistant for The Furever Home adoption website.\n' +
+        'Answer ONLY pet care related questions using ONLY the provided context articles.\n' +
+        'Respond in 3 sentences or fewer.\n' +
+        'If the question is not about pet care, respond with: "I can only help with pet care questions. Try asking about nutrition, training, health, or behavior for your pet!"\n' +
+        'Do not make up information not found in the provided articles.';
+    } else {
+      systemPrompt = 'You are a helpful pet care assistant for The Furever Home adoption website.\n' +
+        'Answer pet care related questions helpfully and concisely.\n' +
+        'Respond in 3 sentences or fewer.\n' +
+        'If the question is not about pet care, respond with: "I can only help with pet care questions. Try asking about nutrition, training, health, or behavior for your pet!"\n' +
+        'Be honest and accurate. If unsure, say so.';
+    }
+
+    var userContent = 'Question: ' + question + '\n\n';
+    if (hasArticles) {
+      var articleSlice = articles.slice(0, 5);
+      for (var i = 0; i < articleSlice.length; i++) {
+        var art = articleSlice[i];
+        userContent += 'Article ' + (i + 1) + ': ' + (art.title || '') + '\n';
+        userContent += 'Summary: ' + (art.summary || '') + '\n';
+        userContent += 'Content: ' + (art.fullText || '') + '\n';
+        userContent += '---\n';
+      }
+    }
+
+    return { systemPrompt: systemPrompt, userContent: userContent };
+  },
+
+  /**
+   * Call the Google Gemini API (gemini-1.5-flash model).
+   * @param {{systemPrompt: string, userContent: string}} prompt
+   * @returns {Promise<{answer: string, isRefusal: boolean}>}
+   */
+  callGemini: async function(prompt) {
+    var apiKey = window.CHATBOT_CONFIG.apiKey;
+    var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=' + apiKey;
+    var body = {
+      systemInstruction: {
+        parts: [{ text: prompt.systemPrompt }]
+      },
+      contents: [{
+        role: 'user',
+        parts: [{ text: prompt.userContent }]
+      }]
+    };
+
+    var response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    if (!response.ok) {
+      var errBody = await response.text();
+      console.error('[Chatbot] Gemini API error:', response.status, errBody);
+      throw new Error('Gemini API error: ' + response.status);
+    }
+
+    var data = await response.json();
+    var answer = data.candidates[0].content.parts[0].text;
+    var isRefusal = answer.indexOf('I can only help with pet care questions') !== -1;
+
+    return { answer: answer, isRefusal: isRefusal };
+  },
+
+  /**
+   * Call the OpenAI Chat Completions API (gpt-3.5-turbo model).
+   * @param {{systemPrompt: string, userContent: string}} prompt
+   * @returns {Promise<{answer: string, isRefusal: boolean}>}
+   */
+  callOpenAI: async function(prompt) {
+    var apiKey = window.CHATBOT_CONFIG.openaiApiKey;
+    var url = 'https://api.openai.com/v1/chat/completions';
+    var body = {
+      model: 'gpt-3.5-turbo',
+      messages: [
+        { role: 'system', content: prompt.systemPrompt },
+        { role: 'user', content: prompt.userContent }
+      ],
+      max_tokens: 200
+    };
+
+    var response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + apiKey
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (!response.ok) {
+      var errBody = await response.text();
+      console.error('[Chatbot] OpenAI API error:', response.status, errBody);
+      throw new Error('OpenAI API error: ' + response.status);
+    }
+
+    var data = await response.json();
+    var answer = data.choices[0].message.content;
+    var isRefusal = answer.indexOf('I can only help with pet care questions') !== -1;
+
+    return { answer: answer, isRefusal: isRefusal };
+  }
+};
+</script>
 
 <script>
 // ─────────────────────────────────────────────────────────────────────────────
-// GOOGLE SHEET DATABASE
+// GOOGLE SHEET DATABASE (kept as fallback)
 // Sheet ID extracted from your published URL
-// To update: File > Share > Publish to web > Sheet1 > CSV > copy the URL
 // ─────────────────────────────────────────────────────────────────────────────
 var SHEET_ID  = '1Xg4T3vmhoLxN0C2lEBFaN88Y2LSvoF6DQVoCxL3dt80';
 var SHEET_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&sheet=Sheet1';
 
-// All pets loaded from sheet
+// ── RESCUEGROUPS.ORG API v5 — PRIMARY PET DATA SOURCE ─────────────────────────
+var RG_API_KEY = 'GaOYfCI7';
+var RG_DOGS_URL = 'https://api.rescuegroups.org/v5/public/animals/search/available/dogs/haspic?limit=25&sort=random&include=pictures,colors,locations';
+var RG_CATS_URL = 'https://api.rescuegroups.org/v5/public/animals/search/available/cats/haspic?limit=25&sort=random&include=pictures,colors,locations';
+var RG_LOCATION_FILTER = JSON.stringify({ data: { filterRadius: { postalcode: "94536", miles: 50 } } });
+
+// All pets loaded (from RescueGroups or Google Sheet fallback)
 var ALL_PETS  = [];
 var LOAD_TIME = null;
+var DATA_SOURCE = ''; // 'rescuegroups' or 'sheets'
 
-// ── PARSE gviz JSON ────────────────────────────────────────────────────────────
+// ── PARSE gviz JSON (kept for Google Sheets fallback) ─────────────────────────
 function parseGvizTable(table) {
   if (!table || !table.cols || !table.rows) return [];
   var headers = table.cols.map(function(c) { return (c.label || c.id || '').trim(); });
@@ -556,7 +2063,213 @@ function parseGvizTable(table) {
   });
 }
 
-// ── FETCH FROM GOOGLE SHEET — with localStorage cache ─────────────────────────
+// ── MAP RESCUEGROUPS ANIMAL TO PET OBJECT ─────────────────────────────────────
+function mapRescueGroupsAnimal(animal, species, orgsMap, picturesMap, locationsMap, colorsMap) {
+  var attrs = animal.attributes || {};
+  // Build image URL — use pictureThumbnailUrl but request larger size
+  var img = attrs.pictureThumbnailUrl || '';
+  if (img) {
+    // Replace width=100 with width=400 for better card images
+    img = img.replace('width=100', 'width=400');
+  }
+
+  // Build pictures array from relationships
+  var pictures = [];
+  if (animal.relationships && animal.relationships.pictures && animal.relationships.pictures.data) {
+    animal.relationships.pictures.data.forEach(function(picRef) {
+      var pic = picturesMap && picturesMap[picRef.id];
+      if (pic && pic.large) {
+        pictures.push({ small: pic.small, large: pic.large });
+      }
+    });
+  }
+  // Ensure main image is first in the array
+  if (pictures.length === 0 && img) {
+    pictures.push({ small: img, large: img.replace('width=400', 'width=800') });
+  }
+
+  // Get org info from included data
+  var orgId = '';
+  if (animal.relationships && animal.relationships.orgs && animal.relationships.orgs.data && animal.relationships.orgs.data.length > 0) {
+    orgId = animal.relationships.orgs.data[0].id || '';
+  }
+  var org = (orgsMap && orgId && orgsMap[orgId]) ? orgsMap[orgId] : {};
+  var orgName = org.name || '';
+  var orgPhone = org.phone || '';
+  var orgUrl = org.url || '';
+  var orgCity = org.city || '';
+  var orgState = org.state || '';
+
+  // Get location from locationsMap
+  var locId = '';
+  if (animal.relationships && animal.relationships.locations && animal.relationships.locations.data && animal.relationships.locations.data.length > 0) {
+    locId = animal.relationships.locations.data[0].id || '';
+  }
+  var locData = (locationsMap && locId && locationsMap[locId]) ? locationsMap[locId] : {};
+  var locCitystate = locData.citystate || '';
+
+  var location = attrs.locationCitystate || locCitystate || (orgCity && orgState ? orgCity + ', ' + orgState : '');
+
+  // Get color from colorsMap
+  var color = '';
+  if (animal.relationships && animal.relationships.colors && animal.relationships.colors.data && animal.relationships.colors.data.length > 0) {
+    var colorNames = [];
+    animal.relationships.colors.data.forEach(function(colorRef) {
+      var c = colorsMap && colorsMap[colorRef.id];
+      if (c) colorNames.push(c);
+    });
+    color = colorNames.join(', ');
+  }
+
+  if (!img && animal.relationships && animal.relationships.pictures
+      && animal.relationships.pictures.data && animal.relationships.pictures.data.length > 0) {
+    img = animal.relationships.pictures.data[0].attributes
+      ? animal.relationships.pictures.data[0].attributes.small || ''
+      : '';
+  }
+  // Build tags from notable attributes
+  var tagParts = [];
+  if (attrs.isSpecialNeeds) tagParts.push('Special Needs');
+  if (attrs.isHousetrained) tagParts.push('Housetrained');
+  if (attrs.isCurrentVaccinations) tagParts.push('Vaccinated');
+  if (attrs.isDeclawed) tagParts.push('Declawed');
+  if (attrs.isMicrochipped) tagParts.push('Microchipped');
+  if (attrs.isNeedingFoster) tagParts.push('Needs Foster');
+  if (attrs.breedPrimary) tagParts.push(attrs.breedPrimary);
+
+  return {
+    petId:        animal.id || ('rg-' + Math.random().toString(36).substr(2, 9)),
+    petName:      attrs.name || 'Unknown',
+    species:      species || attrs.species || 'Dog',
+    breed:        attrs.breedPrimary || (attrs.breedSecondary ? attrs.breedSecondary : 'Mixed'),
+    age:          attrs.ageGroup || attrs.ageString || '',
+    weight:       attrs.sizeGroup || '',
+    size:         attrs.sizeGroup || '',
+    location:     location || attrs.locationPostalcode || '',
+    price:        attrs.adoptionFeeString || '',
+    match:        '',
+    tags:         tagParts.slice(0, 4).join(','),
+    imageUrl:     img,
+    energy:       attrs.activityLevel || attrs.energyLevel || '',
+    gender:       attrs.sex || '',
+    story:        attrs.descriptionText || attrs.description || '',
+    shelterName:  orgName,
+    shelterPhone: orgPhone,
+    shelterUrl:   orgUrl,
+    pictures:     pictures,
+    available:    'yes',
+    source:       'rescuegroups',
+    coat:         attrs.coatLength || '',
+    color:        color,
+    qualities:    attrs.qualities || '',
+    isDogsOk:     attrs.isDogsOk,
+    isCatsOk:     attrs.isCatsOk,
+    isKidsOk:     attrs.isKidsOk,
+    isHousetrained:        attrs.isHousetrained,
+    isCurrentVaccinations: attrs.isCurrentVaccinations,
+    vocalLevel:            attrs.vocalLevel || '',
+    newPeopleReaction:     attrs.newPeopleReaction || ''
+  };
+}
+
+// ── FETCH FROM RESCUEGROUPS API ───────────────────────────────────────────────
+function loadPetsFromRescueGroups() {
+  var headers = {
+    'Authorization': RG_API_KEY,
+    'Content-Type': 'application/vnd.api+json'
+  };
+  var fetchOpts = {
+    method: 'POST',
+    headers: headers,
+    body: RG_LOCATION_FILTER
+  };
+
+  // Fetch dogs and cats in parallel
+  Promise.all([
+    fetch(RG_DOGS_URL, fetchOpts).then(function(r) {
+      if (!r.ok) throw new Error('Dogs API HTTP ' + r.status);
+      return r.json();
+    }),
+    fetch(RG_CATS_URL, fetchOpts).then(function(r) {
+      if (!r.ok) throw new Error('Cats API HTTP ' + r.status);
+      return r.json();
+    })
+  ])
+  .then(function(results) {
+    var dogsData = results[0];
+    var catsData = results[1];
+
+    // Build org lookup and pictures lookup from included arrays
+    var orgsMap = {};
+    var picturesMap = {}; // pictureId → {small, large}
+    var locationsMap = {};
+    var colorsMap = {};
+    [dogsData, catsData].forEach(function(d) {
+      (d.included || []).forEach(function(inc) {
+        if (inc.type === 'orgs') {
+          orgsMap[inc.id] = inc.attributes || {};
+        } else if (inc.type === 'pictures' && inc.attributes) {
+          var attrs = inc.attributes;
+          picturesMap[inc.id] = {
+            small: (attrs.small && attrs.small.url) ? attrs.small.url : '',
+            large: (attrs.large && attrs.large.url) ? attrs.large.url : ''
+          };
+        } else if (inc.type === 'locations' && inc.attributes) {
+          var locAttrs = inc.attributes;
+          locationsMap[inc.id] = {
+            citystate: locAttrs.citystate || '',
+            city: locAttrs.city || '',
+            state: locAttrs.state || '',
+            phone: locAttrs.phone || ''
+          };
+        } else if (inc.type === 'colors' && inc.attributes) {
+          colorsMap[inc.id] = inc.attributes.name || '';
+        }
+      });
+    });
+
+    var dogs = (dogsData.data || []).map(function(a) { return mapRescueGroupsAnimal(a, 'Dog', orgsMap, picturesMap, locationsMap, colorsMap); });
+    var cats = (catsData.data || []).map(function(a) { return mapRescueGroupsAnimal(a, 'Cat', orgsMap, picturesMap, locationsMap, colorsMap); });
+
+    ALL_PETS = dogs.concat(cats);
+    LOAD_TIME = new Date();
+    DATA_SOURCE = 'rescuegroups';
+
+    // Cache the RescueGroups results
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({
+        pets: ALL_PETS, timestamp: LOAD_TIME.getTime(), source: 'rescuegroups'
+      }));
+    } catch(e) { /* ignore quota errors */ }
+
+    renderListings();
+    populateShelterDropdown();
+    bindFilterEvents();
+    refreshWishlistUI();
+    showLastUpdated(false);
+  })
+  .catch(function(err) {
+    console.warn('RescueGroups API failed, falling back to Google Sheets:', err.message);
+    // Show a brief note about the fallback
+    showApiNote(err.message);
+    // Fall back to Google Sheets
+    fetchSheet(false);
+  });
+}
+
+// ── SHOW API NOTE (when RescueGroups fails / CORS) ────────────────────────────
+function showApiNote(errMsg) {
+  var noteHtml = '<p style="background:var(--light-orange);border:1px solid var(--orange);'
+    + 'border-radius:8px;padding:10px 14px;font-size:11px;color:var(--text);margin-bottom:12px;">'
+    + '&#x1F4E1; <strong>Note:</strong> Live RescueGroups.org API data requires a backend proxy due to CORS restrictions. '
+    + 'Showing cached shelter data instead. <small style="color:var(--gray-mid);">(' + errMsg + ')</small></p>';
+  ['dogs-api-note','cats-api-note'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.innerHTML = noteHtml;
+  });
+}
+
+// ── FETCH FROM GOOGLE SHEET — FALLBACK ────────────────────────────────────────
 var CACHE_KEY = 'furever_pets_cache';
 var CACHE_TTL = 30 * 60 * 1000; // 30 minutes in milliseconds
 
@@ -570,20 +2283,79 @@ function loadPets() {
       if (Date.now() - cached.timestamp < CACHE_TTL) {
         ALL_PETS  = cached.pets;
         LOAD_TIME = new Date(cached.timestamp);
+        DATA_SOURCE = cached.source || 'sheets';
         renderListings();
         populateShelterDropdown();
         bindFilterEvents();
         refreshWishlistUI();
         showLastUpdated(true); // true = from cache
-        // Refresh in background silently so next load gets fresh data
-        fetchSheet(true);
+        // Refresh in background: try RescueGroups first, then sheets
+        loadPetsFromRescueGroupsSilent();
         return;
       }
     }
   } catch(e) { /* ignore bad cache */ }
 
-  // No valid cache — fetch fresh
-  fetchSheet(false);
+  // No valid cache — try RescueGroups as primary source
+  loadPetsFromRescueGroups();
+}
+
+// ── SILENT BACKGROUND REFRESH VIA RESCUEGROUPS ────────────────────────────────
+function loadPetsFromRescueGroupsSilent() {
+  var headers = {
+    'Authorization': RG_API_KEY,
+    'Content-Type': 'application/vnd.api+json'
+  };
+  var fetchOpts = { method: 'POST', headers: headers, body: RG_LOCATION_FILTER };
+
+  Promise.all([
+    fetch(RG_DOGS_URL, fetchOpts).then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status); return r.json();
+    }),
+    fetch(RG_CATS_URL, fetchOpts).then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status); return r.json();
+    })
+  ])
+  .then(function(results) {
+    var orgsMap = {};
+    var picturesMap = {};
+    var locationsMap = {};
+    var colorsMap = {};
+    [results[0], results[1]].forEach(function(d) {
+      (d.included || []).forEach(function(inc) {
+        if (inc.type === 'orgs') orgsMap[inc.id] = inc.attributes || {};
+        else if (inc.type === 'pictures' && inc.attributes) {
+          picturesMap[inc.id] = {
+            small: (inc.attributes.small && inc.attributes.small.url) ? inc.attributes.small.url : '',
+            large: (inc.attributes.large && inc.attributes.large.url) ? inc.attributes.large.url : ''
+          };
+        } else if (inc.type === 'locations' && inc.attributes) {
+          locationsMap[inc.id] = {
+            citystate: inc.attributes.citystate || '',
+            city: inc.attributes.city || '',
+            state: inc.attributes.state || '',
+            phone: inc.attributes.phone || ''
+          };
+        } else if (inc.type === 'colors' && inc.attributes) {
+          colorsMap[inc.id] = inc.attributes.name || '';
+        }
+      });
+    });
+    var dogs = (results[0].data || []).map(function(a) { return mapRescueGroupsAnimal(a, 'Dog', orgsMap, picturesMap, locationsMap, colorsMap); });
+    var cats = (results[1].data || []).map(function(a) { return mapRescueGroupsAnimal(a, 'Cat', orgsMap, picturesMap, locationsMap, colorsMap); });
+    ALL_PETS = dogs.concat(cats);
+    LOAD_TIME = new Date();
+    DATA_SOURCE = 'rescuegroups';
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({
+        pets: ALL_PETS, timestamp: LOAD_TIME.getTime(), source: 'rescuegroups'
+      }));
+    } catch(e) {}
+  })
+  .catch(function() {
+    // Silent fail — keep using cached data; try sheets in background
+    fetchSheet(true);
+  });
 }
 
 function fetchSheet(silent) {
@@ -597,10 +2369,11 @@ function fetchSheet(silent) {
         return (p.available || '').toLowerCase() !== 'no';
       });
       LOAD_TIME = new Date();
+      DATA_SOURCE = 'sheets';
       // Save to cache
       try {
         localStorage.setItem(CACHE_KEY, JSON.stringify({
-          pets: ALL_PETS, timestamp: LOAD_TIME.getTime()
+          pets: ALL_PETS, timestamp: LOAD_TIME.getTime(), source: 'sheets'
         }));
       } catch(e) { /* ignore quota errors */ }
 
@@ -614,7 +2387,7 @@ function fetchSheet(silent) {
     })
     .catch(function(err) {
       if (!silent) {
-        var msg = '<p style="color:var(--red);padding:16px;font-size:13px;">&#x26A0;&#xFE0F; Could not load pets from Google Sheet.<br><small>' + err.message + '</small></p>';
+        var msg = '<p style="color:var(--red);padding:16px;font-size:13px;">&#x26A0;&#xFE0F; Could not load pets.<br><small>' + err.message + '</small></p>';
         ['dogs-loading','cats-loading'].forEach(function(id) {
           var el = document.getElementById(id); if (el) el.innerHTML = msg;
         });
@@ -625,61 +2398,129 @@ function fetchSheet(silent) {
 // ── LAST UPDATED TIMESTAMP ─────────────────────────────────────────────────────
 function showLastUpdated(fromCache) {
   if (!LOAD_TIME) return;
-  var str = (fromCache ? '⚡ Loaded from cache · ' : '🔄 Live from database · ')
+  var sourceLabel = DATA_SOURCE === 'rescuegroups' ? 'RescueGroups.org' : 'Google Sheets';
+  var str = (fromCache ? '⚡ Cached · ' : '🔄 Live from ' + sourceLabel + ' · ')
     + LOAD_TIME.toLocaleString();
   ['dogs-updated','cats-updated'].forEach(function(id) {
     var el = document.getElementById(id); if (el) el.textContent = str;
   });
 }
 
-// ── POPULATE SHELTER FILTER FROM LIVE DATA ─────────────────────────────────────
+// ── POPULATE SHELTER & CITY FILTER FROM LIVE DATA ──────────────────────────────
 function populateShelterDropdown() {
-  var sel = document.getElementById('dog-filter-shelter');
-  if (!sel) return;
-  var shelters = [];
-  ALL_PETS.filter(function(p) { return p.species.toLowerCase() === 'dog'; })
-    .forEach(function(p) {
-      var s = (p.shelterName || '').trim();
-      if (s && shelters.indexOf(s) === -1) shelters.push(s);
-    });
-  shelters.forEach(function(s) {
-    var opt = document.createElement('option');
-    opt.value = s; opt.textContent = s;
-    sel.appendChild(opt);
+  // Populate dog shelter dropdown
+  var dogSel = document.getElementById('dog-filter-shelter');
+  var catSel = document.getElementById('cat-filter-shelter');
+  var dogCitySel = document.getElementById('dog-filter-city');
+  var catCitySel = document.getElementById('cat-filter-city');
+
+  var dogShelters = [];
+  var catShelters = [];
+  var dogCities = [];
+  var catCities = [];
+
+  ALL_PETS.forEach(function(p) {
+    var s = (p.shelterName || '').trim();
+    var loc = (p.location || '').trim();
+    // Extract city from location (format: "City, ST")
+    var city = loc.split(',')[0].trim();
+    var species = (p.species || '').toLowerCase();
+
+    if (species === 'dog') {
+      if (s && dogShelters.indexOf(s) === -1) dogShelters.push(s);
+      if (city && dogCities.indexOf(city) === -1) dogCities.push(city);
+    } else if (species === 'cat') {
+      if (s && catShelters.indexOf(s) === -1) catShelters.push(s);
+      if (city && catCities.indexOf(city) === -1) catCities.push(city);
+    }
   });
+
+  dogShelters.sort();
+  catShelters.sort();
+  dogCities.sort();
+  catCities.sort();
+
+  if (dogSel) {
+    dogShelters.forEach(function(s) {
+      var opt = document.createElement('option');
+      opt.value = s; opt.textContent = s;
+      dogSel.appendChild(opt);
+    });
+  }
+  if (catSel) {
+    catShelters.forEach(function(s) {
+      var opt = document.createElement('option');
+      opt.value = s; opt.textContent = s;
+      catSel.appendChild(opt);
+    });
+  }
+  if (dogCitySel) {
+    dogCities.forEach(function(c) {
+      var opt = document.createElement('option');
+      opt.value = c; opt.textContent = c;
+      dogCitySel.appendChild(opt);
+    });
+  }
+  if (catCitySel) {
+    catCities.forEach(function(c) {
+      var opt = document.createElement('option');
+      opt.value = c; opt.textContent = c;
+      catCitySel.appendChild(opt);
+    });
+  }
 }
 
 // ── GET CURRENT FILTER VALUES ──────────────────────────────────────────────────
 function getFilters(prefix) {
   function val(id) { var el = document.getElementById(id); return el ? el.value.toLowerCase() : ''; }
+  var searchEl = document.getElementById(prefix + '-search');
   return {
     size:    val(prefix + '-filter-size'),
-    energy:  val(prefix + '-filter-energy'),
     age:     val(prefix + '-filter-age'),
     gender:  val(prefix + '-filter-gender'),
-    shelter: val(prefix + '-filter-shelter')
+    shelter: val(prefix + '-filter-shelter'),
+    city:    val(prefix + '-filter-city'),
+    search:  searchEl ? searchEl.value.toLowerCase().trim() : ''
   };
 }
 
 // ── FILTER PETS AGAINST CURRENT SELECTS ───────────────────────────────────────
 function applyFilters(pets, f) {
   return pets.filter(function(p) {
-    if (f.size && !(p.size    || '').toLowerCase().includes(f.size))    return false;
-    if (f.energy && !(p.energy || '').toLowerCase().includes(f.energy)) return false;
-    if (f.age  && !(p.age    || '').toLowerCase().includes(f.age))      return false;
+    if (f.size && !(p.size || p.weight || '').toLowerCase().includes(f.size)) return false;
+    if (f.age) {
+      var petAge = (p.age || '').toLowerCase();
+      if (f.age === 'baby') {
+        if (petAge.indexOf('baby') === -1 && petAge.indexOf('puppy') === -1 && petAge.indexOf('kitten') === -1) return false;
+      } else if (!petAge.includes(f.age)) {
+        return false;
+      }
+    }
     if (f.gender && !(p.gender || '').toLowerCase().includes(f.gender)) return false;
     if (f.shelter && !(p.shelterName || '').toLowerCase().includes(f.shelter)) return false;
+    if (f.city) {
+      var petCity = (p.location || '').toLowerCase().split(',')[0].trim();
+      if (!petCity.includes(f.city)) return false;
+    }
+    // Text search filter
+    if (f.search) {
+      var searchStr = (p.petName || '').toLowerCase() + ' ' + (p.breed || '').toLowerCase() + ' '
+        + (p.shelterName || '').toLowerCase() + ' ' + (p.location || '').toLowerCase()
+        + ' ' + (p.size || '').toLowerCase() + ' ' + (p.gender || '').toLowerCase()
+        + ' ' + (p.age || '').toLowerCase();
+      if (searchStr.indexOf(f.search) === -1) return false;
+    }
     return true;
   });
 }
 
 // ── BIND FILTER CHANGE EVENTS ──────────────────────────────────────────────────
 function bindFilterEvents() {
-  ['dog-filter-size','dog-filter-energy','dog-filter-age','dog-filter-gender','dog-filter-shelter'].forEach(function(id) {
+  ['dog-filter-size','dog-filter-age','dog-filter-gender','dog-filter-shelter','dog-filter-city'].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.addEventListener('change', function() { renderGrid('dog'); });
   });
-  ['cat-filter-size','cat-filter-energy','cat-filter-age','cat-filter-gender'].forEach(function(id) {
+  ['cat-filter-size','cat-filter-age','cat-filter-gender','cat-filter-shelter','cat-filter-city'].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) el.addEventListener('change', function() { renderGrid('cat'); });
   });
@@ -691,33 +2532,24 @@ function buildCard(pet) {
   var name   = pet.petName  || pet.name  || '';
   var species= (pet.species || '').toLowerCase();
   var breed  = pet.breed    || '';
-  var age    = pet.age      || '';
-  var weight = pet.weight   || '';
+  var size   = pet.size     || pet.weight || '';
   var loc    = pet.location || '';
-  var price  = pet.price    ? '$' + pet.price : '';
-  var match  = pet.match    ? pet.match + '%' : '';
-  var tags   = pet.tags     || '';
+  var city   = loc.split(',')[0].trim();
   var img    = pet.imageUrl || pet.image || '';
+  var shelter= pet.shelterName || '';
   var saved  = isWishlisted(pid);
-  var breedLine = [breed, age, weight].filter(Boolean).join(' · ');
-  var tagsHtml  = tags.split(',').filter(Boolean).map(function(t) {
-    return '<span>' + t.trim() + '</span>';
-  }).join('');
+  var breedSize = [breed, size].filter(Boolean).join(' · ');
   var emoji = species === 'cat' ? '🐱' : '🐶';
   return '<div class="pc"'
     + ' data-pid="'    + pid    + '" data-name="'  + name
-    + '" data-breed="' + breedLine + '" data-loc="'+ loc
-    + '" data-price="' + price  + '" data-img="'  + img
-    + '" data-tags="'  + tags   + '" data-match="' + match + '">'
+    + '" data-breed="' + breed + '" data-loc="'+ loc
+    + '" data-img="'  + img + '">'
     + '<div class="pc-click" data-pid="' + pid + '" style="cursor:pointer;">'
       + '<img src="' + img + '" alt="' + name + '" loading="lazy" onerror="this.src=\'https://placehold.co/300x155?text=No+Photo\'">'
-      + (match ? '<span class="mbadge">' + match + '</span>' : '')
-      + '<span class="hbadge wl-heart' + (saved?' wishlisted':'') + '" data-pid="' + pid + '">' + (saved?'♥':'♡') + '</span>'
       + '<div class="pci"><h4>' + name + ' ' + emoji + '</h4>'
-        + '<p class="pm">' + breedLine + '</p>'
-        + '<p class="pl">📍 ' + loc + '</p>'
-        + '<p class="pf">' + price + '</p>'
-        + (tagsHtml ? '<div class="ptags">' + tagsHtml + '</div>' : '')
+        + (city ? '<p class="pl">📍 ' + city + '</p>' : '')
+        + (shelter ? '<p class="pm">🏠 ' + shelter + '</p>' : '')
+        + (breedSize ? '<p class="pm">' + breedSize + '</p>' : '')
       + '</div>'
     + '</div>'
     + '<div class="wls wl-btn' + (saved?' wishlisted':'') + '" data-pid="' + pid + '">'
@@ -743,7 +2575,14 @@ function renderGrid(type) {
 
   grid.innerHTML = filtered.map(buildCard).join('');
   if (noRes) noRes.style.display = filtered.length === 0 ? '' : 'none';
-  bindCardEvents();
+
+  // Bind click events only within this grid to avoid double-binding
+  grid.querySelectorAll('.pc-click[data-pid]').forEach(function(el) {
+    el.addEventListener('click', function() { openDetail(el.dataset.pid); });
+  });
+  grid.querySelectorAll('.wl-btn[data-pid]').forEach(function(btn) {
+    btn.addEventListener('click', function(e) { e.stopPropagation(); toggleWishlist(btn.dataset.pid); });
+  });
 }
 
 // ── RENDER BOTH GRIDS ──────────────────────────────────────────────────────────
@@ -752,7 +2591,7 @@ function renderListings() {
   renderGrid('cat');
 }
 
-// ── BIND CLICK EVENTS ON CARDS ─────────────────────────────────────────────────
+// ── BIND CLICK EVENTS ON CARDS (called from initial load; scoped binding now in renderGrid) ──
 function bindCardEvents() {
   document.querySelectorAll('.pc-click[data-pid]').forEach(function(el) {
     el.addEventListener('click', function() { openDetail(el.dataset.pid); });
@@ -760,22 +2599,209 @@ function bindCardEvents() {
   document.querySelectorAll('.wl-btn[data-pid]').forEach(function(btn) {
     btn.addEventListener('click', function(e) { e.stopPropagation(); toggleWishlist(btn.dataset.pid); });
   });
-  document.querySelectorAll('.hbadge.wl-heart[data-pid]').forEach(function(h) {
-    h.addEventListener('click', function(e) { e.stopPropagation(); toggleWishlist(h.dataset.pid); });
-  });
 }
 
-// ── PET DETAIL PAGE ────────────────────────────────────────────────────────────
+// ── INTEREST FORM MODAL ────────────────────────────────────────────────────────
+// Google Apps Script Web App URL — paste yours here after setup (see below)
+// SETUP INSTRUCTIONS:
+//   1. Open your Google Sheet
+//   2. Extensions → Apps Script → paste the code from the comment block below
+//   3. Deploy → New deployment → Web app → Anyone can access → Deploy
+//   4. Copy the Web App URL and paste it as APPS_SCRIPT_URL below
+//
+// ---- PASTE INTO APPS SCRIPT EDITOR: ----------------------------------------
+// function doPost(e) {
+//   var ss = SpreadsheetApp.openById('1Xg4T3vmhoLxN0C2lEBFaN88Y2LSvoF6DQVoCxL3dt80');
+//   var sheet = ss.getSheetByName('Inquiries');
+//   if (!sheet) {
+//     sheet = ss.insertSheet('Inquiries');
+//     sheet.appendRow(['Timestamp','Pet ID','Pet Name','Breed','Shelter',
+//                      'First Name','Last Name','Email','Phone','City',
+//                      'Housing Type','Pet Experience','Message']);
+//     sheet.setFrozenRows(1);
+//   }
+//   // Works with both application/json and text/plain (no-cors sends text/plain)
+//   var raw = (e.postData && e.postData.contents) ? e.postData.contents : '{}';
+//   var d = JSON.parse(raw);
+//   sheet.appendRow([new Date(),
+//     d.petId||'', d.petName||'', d.breed||'', d.shelter||'',
+//     d.firstName||'', d.lastName||'', d.email||'', d.phone||'', d.city||'',
+//     d.housing||'', d.experience||'', d.message||'']);
+//   return ContentService.createTextOutput(JSON.stringify({status:'ok'}))
+//                        .setMimeType(ContentService.MimeType.JSON);
+// }
+// -----------------------------------------------------------------------------
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwmtLgxXy3hhXM3XVULRLSgNrm8lcjtD7wlLpg3bB691tQhXl5hnqqCdi_MdKzKzu5a/exec';
+
+// Known shelter emails map
+var SHELTER_EMAILS = {
+  'valley humane':                 'info@valleyhumane.org',
+  'east bay spca':                 'info@eastbayspca.org',
+  'humane society silicon valley': 'adoption@hssv.org',
+  'hssv':                          'adoption@hssv.org',
+  'milo foundation':               'info@milofoundation.org'
+};
+
+function getShelterEmail(shelterName) {
+  if (!shelterName) return '';
+  var key = shelterName.toLowerCase().trim();
+  for (var k in SHELTER_EMAILS) {
+    if (key.includes(k)) return SHELTER_EMAILS[k];
+  }
+  return '';
+}
+
+function buildInterestButton(name, breed, age, shelter, loc, phone) {
+  // Always show the form button — it's better than mailto
+  return '<button class="btn-interest" onclick="openInterestForm()" type="button">&#x2709;&#xFE0F; I\'m Interested</button>';
+}
+
+// Open modal and populate with current pet's data
+function openInterestForm() {
+  var container = document.getElementById('pet-detail-container');
+  if (!container) return;
+
+  // Read data attributes from the detail container (set by openDetail)
+  var pid     = container.dataset.currentPid    || '';
+  var name    = container.dataset.currentName   || '';
+  var breed   = container.dataset.currentBreed  || '';
+  var img     = container.dataset.currentImg    || '';
+  var shelter = container.dataset.currentShelter|| '';
+  var phone   = container.dataset.currentPhone  || '';
+
+  // Populate modal pet strip
+  document.getElementById('form-pet-img').src       = img;
+  document.getElementById('form-pet-img').alt       = name;
+  document.getElementById('form-pet-name').textContent  = name;
+  document.getElementById('form-pet-breed').textContent = breed;
+  document.getElementById('form-pet-id').value      = pid;
+  document.getElementById('form-shelter-name').value= shelter;
+  document.getElementById('form-shelter-phone').value= phone;
+
+  // Reset form state
+  document.getElementById('interest-form').reset();
+  document.getElementById('form-error').style.display  = 'none';
+  document.getElementById('form-view').style.display   = '';
+  document.getElementById('success-view').style.display= 'none';
+  document.getElementById('form-submit-btn').disabled  = false;
+  document.getElementById('form-submit-btn').textContent = 'Send Adoption Inquiry →';
+
+  // Open modal
+  document.getElementById('interest-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeInterestModal() {
+  document.getElementById('interest-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Close on overlay click or X button
+document.getElementById('interest-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeInterestModal();
+});
+document.getElementById('modal-close-btn').addEventListener('click', closeInterestModal);
+document.getElementById('success-close-btn').addEventListener('click', closeInterestModal);
+
+// Form submit handler
+document.getElementById('interest-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  var firstName = document.getElementById('f-firstname').value.trim();
+  var lastName  = document.getElementById('f-lastname').value.trim();
+  var email     = document.getElementById('f-email').value.trim();
+  var errEl     = document.getElementById('form-error');
+
+  // Basic validation
+  if (!firstName || !lastName || !email) {
+    errEl.textContent = 'Please fill in First Name, Last Name, and Email.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errEl.textContent = 'Please enter a valid email address.';
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+
+  var btn = document.getElementById('form-submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  var payload = {
+    petId:      document.getElementById('form-pet-id').value,
+    petName:    document.getElementById('form-pet-name').textContent,
+    breed:      document.getElementById('form-pet-breed').textContent,
+    shelter:    document.getElementById('form-shelter-name').value,
+    phone:      document.getElementById('form-shelter-phone').value,
+    firstName:  firstName,
+    lastName:   lastName,
+    email:      email,
+    phone:      document.getElementById('f-phone').value.trim(),
+    city:       document.getElementById('f-city').value.trim(),
+    housing:    document.getElementById('f-housing').value,
+    experience: document.getElementById('f-experience').value,
+    message:    document.getElementById('f-message').value.trim()
+  };
+
+  if (APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbz1fTqyyUZjzSu9mf46NbD2dPsrd5Nfa28ouHlQMM17FUKy8eL6Z-HPQjZ9VVVRyUg/exec') {
+    // No Apps Script URL yet — save locally and show success anyway
+    // (data is stored in localStorage until URL is configured)
+    var pending = JSON.parse(localStorage.getItem('furever_pending_inquiries') || '[]');
+    payload.timestamp = new Date().toISOString();
+    pending.push(payload);
+    localStorage.setItem('furever_pending_inquiries', JSON.stringify(pending));
+    showFormSuccess(payload.petName);
+    return;
+  }
+
+  // POST to Google Apps Script
+  // no-cors is required — the script still runs server-side, we just can't read the response
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(payload)
+  })
+  .then(function() {
+    // no-cors returns an opaque response — assume success if no network error
+    showFormSuccess(payload.petName);
+  })
+  .catch(function(err) {
+    // Network error — save locally as fallback
+    var pending = JSON.parse(localStorage.getItem('furever_pending_inquiries') || '[]');
+    payload.timestamp = new Date().toISOString();
+    pending.push(payload);
+    localStorage.setItem('furever_pending_inquiries', JSON.stringify(pending));
+    showFormSuccess(payload.petName);
+  });
+});
+
+function showFormSuccess(petName) {
+  document.getElementById('form-view').style.display    = 'none';
+  document.getElementById('success-view').style.display = 'block';
+  document.getElementById('success-pet-name').textContent = petName;
+}
+
 function openDetail(pid) {
   var pet = ALL_PETS.find(function(p) { return String(p.petId) === String(pid); });
-  if (!pet) return;
+  if (!pet) { console.error('[Detail] Pet not found for pid:', pid); return; }
+
+  // Helper to escape HTML special chars in text content
+  function esc(str) {
+    if (!str) return '';
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
   var species  = (pet.species || '').toLowerCase();
   var name     = pet.petName  || pet.name || '';
   var breed    = pet.breed    || '';
   var age      = pet.age      || '';
   var weight   = pet.weight   || '';
   var loc      = pet.location || '';
-  var price    = pet.price    ? '$' + pet.price : '';
+  var price    = pet.price    ? (pet.price.toString().charAt(0) === '$' || pet.price.toLowerCase().indexOf('contact') !== -1 ? pet.price : '$' + pet.price) : '';
   var match    = pet.match    ? pet.match + '%' : '';
   var img      = pet.imageUrl || pet.image || '';
   var story    = pet.story    || '';
@@ -785,43 +2811,106 @@ function openDetail(pid) {
   var tags     = pet.tags         || '';
   var gender   = pet.gender       || '';
   var energy   = pet.energy       || '';
+  var coat     = pet.coat         || '';
+  var color    = pet.color        || '';
+  var qualities = pet.qualities   || '';
+  var vocalLevel = pet.vocalLevel || '';
+  var newPeopleReaction = pet.newPeopleReaction || '';
   var emoji    = species === 'cat' ? '🐱' : '🐶';
   var backPage = species === 'cat' ? 'pg-cats' : 'pg-dogs';
   var backText = species === 'cat' ? 'Back to Cats' : 'Back to Dogs';
   var saved    = isWishlisted(pid);
 
+  // Format qualities: space-separated traits → comma-separated, capitalize first letter
+  var qualitiesDisplay = '';
+  if (qualities) {
+    qualitiesDisplay = qualities.split(/[\s,]+/).filter(function(q) { return q; }).map(function(q) {
+      return q.charAt(0).toUpperCase() + q.slice(1).toLowerCase();
+    }).join(', ');
+  }
+
+  var pictures = pet.pictures || [];
+  var mainImg = (pictures.length > 0) ? pictures[0].large : img;
+
+  // Build thumbnail strip HTML
+  var thumbsHtml = '';
+  if (pictures.length > 1) {
+    thumbsHtml = '<div class="detail-thumbs">';
+    for (var ti = 0; ti < Math.min(pictures.length, 10); ti++) {
+      thumbsHtml += '<img src="' + pictures[ti].small + '" alt="Photo ' + (ti+1) + '" class="detail-thumb' + (ti === 0 ? ' active' : '') + '" data-idx="' + ti + '" data-large="' + pictures[ti].large + '" onclick="switchDetailPhoto(this)">';
+    }
+    thumbsHtml += '</div>';
+  }
+
+  // Build the detail view using DOM to avoid innerHTML escaping issues
   var container = document.getElementById('pet-detail-container');
-  container.innerHTML =
-    '<button class="back-link" id="detail-back">← ' + backText + '</button>'
+  
+  // Build HTML without story first (story added via textContent later)
+  var safeUrl = url.replace(/'/g, '%27');
+  var html = '<button class="back-link" id="detail-back">\u2190 ' + esc(backText) + '</button>'
     + '<div class="dlayout">'
-      + '<div class="dphoto"><img src="' + img + '" alt="' + name
-        + '" loading="eager" onerror="this.src=\'https://placehold.co/460x320?text=No+Photo\'"></div>'
+      + '<div class="dphoto"><img id="detail-main-photo" src="' + mainImg + '" alt="' + esc(name)
+        + '" loading="eager" style="object-fit:contain;background:var(--cream);" onerror="this.src=\'https://placehold.co/460x320?text=No+Photo\'">'
+        + thumbsHtml
+        + (pictures.length > 1 ? '<p style="font-size:10px;color:var(--gray-mid);text-align:center;margin-top:4px;">' + pictures.length + ' photos</p>' : '')
+        + '</div>'
       + '<div class="dinfo">'
-        + '<h1>' + name + ' ' + emoji + '</h1>'
-        + '<p class="dbr">' + breed + (loc ? ' · ' + loc : '') + '</p>'
-        + (match ? '<div class="cbox"><div class="ccirc">' + match + '</div><div class="ctxt"><strong>Compatibility Match!</strong> Based on your quiz answers</div></div>' : '')
+        + '<h1>' + esc(name) + ' ' + emoji + '</h1>'
+        + '<p class="dbr">' + esc(breed) + (loc ? ' \u00B7 ' + esc(loc) : '') + '</p>'
         + '<div class="sgrid">'
-          + (weight ? '<div class="si"><div class="sl">Weight</div><div class="sv">' + weight + '</div></div>' : '')
-          + (age    ? '<div class="si"><div class="sl">Age</div><div class="sv">' + age + '</div></div>' : '')
-          + (gender ? '<div class="si"><div class="sl">Gender</div><div class="sv">' + gender + '</div></div>' : '')
-          + (energy ? '<div class="si"><div class="sl">Energy</div><div class="sv">' + energy + '</div></div>' : '')
-          + (price  ? '<div class="si"><div class="sl">Fee</div><div class="sv">' + price + '</div></div>' : '')
-          + '<div class="si"><div class="sl">Includes</div><div class="sv">Spay/Neuter, Vaccines, Chip</div></div>'
+          + (weight ? '<div class="si"><div class="sl">Size</div><div class="sv">' + esc(weight) + '</div></div>' : '')
+          + (age    ? '<div class="si"><div class="sl">Age</div><div class="sv">' + esc(age) + '</div></div>' : '')
+          + (gender ? '<div class="si"><div class="sl">Gender</div><div class="sv">' + esc(gender) + '</div></div>' : '')
+          + (energy ? '<div class="si"><div class="sl">Energy</div><div class="sv">' + esc(energy) + '</div></div>' : '')
+          + (price  ? '<div class="si"><div class="sl">Fee</div><div class="sv">' + esc(price) + '</div></div>' : '')
+          + (coat   ? '<div class="si"><div class="sl">Coat</div><div class="sv">' + esc(coat) + '</div></div>' : '')
+          + (qualitiesDisplay ? '<div class="si"><div class="sl">Qualities</div><div class="sv">' + esc(qualitiesDisplay) + '</div></div>' : '')
+          + (vocalLevel ? '<div class="si"><div class="sl">Vocal Level</div><div class="sv">' + esc(vocalLevel) + '</div></div>' : '')
+          + (newPeopleReaction ? '<div class="si"><div class="sl">New People</div><div class="sv">' + esc(newPeopleReaction) + '</div></div>' : '')
         + '</div>'
         + '<div class="dacts">'
-          + (url !== '#' ? '<a href="' + url + '" target="_blank" class="btn-main">Visit ' + shelter + ' →</a>' : '')
+          + (safeUrl !== '#' ? '<a href="' + safeUrl + '" target="_blank" class="btn-main">Visit Shelter \u2192</a>' : '')
           + '<span class="wl-btn' + (saved?' wishlisted':'') + '" data-pid="' + pid + '" style="cursor:pointer;border-radius:20px;padding:10px 20px;">'
-            + (saved ? '♥ Wishlisted!' : '♡ Add to Wishlist')
+            + (saved ? '\u2665 Wishlisted!' : '\u2661 Add to Wishlist')
           + '</span>'
+          + buildInterestButton(name, breed, age, shelter, loc, phone)
         + '</div>'
       + '</div>'
     + '</div>'
-    + (story ? '<div class="dstory"><h3>📖 ' + name + '\'s Story</h3><p>' + story + '</p></div>' : '')
-    + (shelter ? '<div class="shcard"><h4>🏠 ' + shelter + '</h4>'
-        + '<p>📍 ' + loc + (phone ? ' · ☎️ ' + phone : '') + '</p></div>' : '');
+    + '<div id="detail-story-area"></div>'
+    + '<div id="detail-compat-area"></div>'
+    + (shelter ? '<div class="shcard"><h4>\uD83C\uDFE0 ' + esc(shelter) + '</h4><p>\uD83D\uDCCD ' + esc(loc) + (phone ? ' \u00B7 \u260E\uFE0F ' + esc(phone) : '') + '</p></div>' : '');
+
+  container.innerHTML = html;
+
+  // Add story safely via textContent (avoids XSS and broken HTML from API descriptions)
+  if (story) {
+    var storyDiv = document.getElementById('detail-story-area');
+    storyDiv.innerHTML = '<div class="dstory"><h3></h3><p></p></div>';
+    storyDiv.querySelector('h3').textContent = '\uD83D\uDCD6 ' + name + "'s Story";
+    storyDiv.querySelector('p').textContent = story;
+  }
+
+  // Add compatibility section
+  var compat = [];
+  if (pet.isDogsOk !== undefined && pet.isDogsOk !== null) compat.push('Good with dogs: ' + (pet.isDogsOk ? '\u2705' : '\u274C'));
+  if (pet.isCatsOk !== undefined && pet.isCatsOk !== null) compat.push('Good with cats: ' + (pet.isCatsOk ? '\u2705' : '\u274C'));
+  if (pet.isKidsOk !== undefined && pet.isKidsOk !== null) compat.push('Good with kids: ' + (pet.isKidsOk ? '\u2705' : '\u274C'));
+  if (pet.isHousetrained !== undefined && pet.isHousetrained !== null) compat.push('Housetrained: ' + (pet.isHousetrained ? '\u2705' : '\u274C'));
+  if (pet.isCurrentVaccinations !== undefined && pet.isCurrentVaccinations !== null) compat.push('Vaccinated: ' + (pet.isCurrentVaccinations ? '\u2705' : '\u274C'));
+  if (compat.length > 0) {
+    document.getElementById('detail-compat-area').innerHTML = '<div class="dstory" style="margin-top:14px;"><h3>\uD83D\uDC3E Compatibility</h3><p>' + compat.join(' \u00B7 ') + '</p></div>';
+  }
 
   container.classList.add('active');
   document.body.classList.add('detail-open');
+  // Store current pet data for the interest form modal to read
+  container.dataset.currentPid     = pid;
+  container.dataset.currentName    = name;
+  container.dataset.currentBreed   = breed + (age ? ', ' + age : '');
+  container.dataset.currentImg     = img;
+  container.dataset.currentShelter = shelter;
+  container.dataset.currentPhone   = phone;
   window.scrollTo(0, 0);
 
   document.getElementById('detail-back').addEventListener('click', function() {
@@ -830,6 +2919,17 @@ function openDetail(pid) {
   container.querySelectorAll('.wl-btn[data-pid]').forEach(function(btn) {
     btn.addEventListener('click', function(e) { e.stopPropagation(); toggleWishlist(btn.dataset.pid); });
   });
+}
+
+function switchDetailPhoto(thumbEl) {
+  var largeUrl = thumbEl.dataset.large;
+  var mainPhoto = document.getElementById('detail-main-photo');
+  if (mainPhoto && largeUrl) {
+    mainPhoto.src = largeUrl;
+  }
+  // Update active state
+  document.querySelectorAll('.detail-thumb').forEach(function(t) { t.classList.remove('active'); });
+  thumbEl.classList.add('active');
 }
 
 function closeDetail(backPageId) {
@@ -869,7 +2969,7 @@ function toggleWishlist(pid) {
       name:  pet.petName  || pet.name || '',
       breed: pet.breed    || '',
       loc:   pet.location || '',
-      price: pet.price    ? '$' + pet.price : '',
+      price: pet.price    ? (pet.price.toString().charAt(0) === '$' || pet.price.toLowerCase().indexOf('contact') !== -1 ? pet.price : '$' + pet.price) : '',
       img:   pet.imageUrl || pet.image || '',
       tags:  pet.tags     || '',
       match: pet.match    ? pet.match + '%' : ''
@@ -929,6 +3029,387 @@ document.querySelectorAll('input[name="pg"]').forEach(function(r) {
 // ── INIT ───────────────────────────────────────────────────────────────────────
 loadPets();
 if (document.getElementById('pg-wishlist').checked) renderWishlistPage();
+</script>
+
+<script>
+// ── Quiz Result Summary ────────────────────────────────────────────────────
+function showQuizResult() {
+  var quizPage = document.querySelector('.pg-quiz .qbody');
+  var questions = quizPage.querySelectorAll('.qq');
+  var answers = {};
+
+  questions.forEach(function(q) {
+    var label = q.querySelector('.ql').textContent.trim();
+    var selected = q.querySelector('.qopts .selected');
+    answers[label] = selected ? selected.textContent.trim() : '';
+  });
+
+  var petType = answers['Would you like to adopt a...'] || 'a pet';
+  var amenities = answers['Nearby amenities?'] || '';
+  var experience = answers['Are you a...'] || '';
+  var existingPets = answers['Do you currently have pets?'] || '';
+  var specialNeeds = answers['Open to special needs?'] || '';
+
+  // Build personalized recommendation
+  var rec = '';
+  var emoji = '🐾';
+
+  if (petType.indexOf('Dog') !== -1) {
+    emoji = '🐶';
+    if (amenities === 'Park') {
+      rec = 'Look for an active, energetic dog who loves outdoor adventures! A medium-to-large breed that enjoys walks and fetch would be perfect for you.';
+    } else if (amenities === 'Yard') {
+      rec = 'A calm, low-energy dog companion would be ideal for your yard space. Consider a relaxed breed that enjoys lounging and short play sessions.';
+    } else {
+      rec = 'Consider a smaller, apartment-friendly dog with moderate energy. Breeds that adapt well to indoor living would suit your lifestyle.';
+    }
+  } else if (petType.indexOf('Cat') !== -1) {
+    emoji = '🐱';
+    if (existingPets === 'Dog(s)') {
+      rec = 'Look for a confident, dog-friendly cat. Many adult cats adapt well to homes with dogs — shelters can help identify good matches.';
+    } else if (existingPets === 'Cat(s)') {
+      rec = 'Consider a social cat who enjoys feline company. A younger cat often adapts more easily to multi-cat households.';
+    } else {
+      rec = 'A sweet, affectionate cat would make a wonderful first companion. Consider their energy level — playful kittens or calm adults.';
+    }
+  } else {
+    emoji = '🐾';
+    rec = 'You\'re open to both — great! Browse our live feed to discover dogs and cats of all personalities. Your perfect match could be either!';
+  }
+
+  if (experience === 'First-time owner') {
+    rec += ' As a first-time owner, look for pets described as "easy-going" or "good for beginners."';
+  }
+  if (specialNeeds.indexOf('Yes') !== -1) {
+    rec += ' Your openness to special needs pets is wonderful — they often make the most grateful companions! ❤️';
+  }
+
+  var resultDiv = document.getElementById('quiz-result');
+  resultDiv.style.display = 'block';
+  resultDiv.innerHTML = '<h4>' + emoji + ' Your Personalized Recommendation</h4>' +
+    '<p>' + rec + '</p>' +
+    '<label for="pg-adopt" class="qbtn">Browse Pets →</label>';
+
+  resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+</script>
+
+<script>
+// ── LIKE BUTTON — "I love this website!" ───────────────────────────────────────
+// Sends {action:'like', timestamp} to APPS_SCRIPT_URL
+// Apps Script Instructions for "Likes" sheet:
+// ---- PASTE INTO APPS SCRIPT EDITOR (add to existing doPost): ----------------
+// // Handle "like" action
+// if (d.action === 'like') {
+//   var likesSheet = ss.getSheetByName('Likes');
+//   if (!likesSheet) {
+//     likesSheet = ss.insertSheet('Likes');
+//     likesSheet.appendRow(['Timestamp']);
+//     likesSheet.setFrozenRows(1);
+//   }
+//   likesSheet.appendRow([d.timestamp || new Date()]);
+//   return ContentService.createTextOutput(JSON.stringify({status:'ok'}))
+//                        .setMimeType(ContentService.MimeType.JSON);
+// }
+// -----------------------------------------------------------------------------
+var _likeClicked = false;
+function handleLikeClick() {
+  if (_likeClicked) return;
+  _likeClicked = true;
+  var btn = document.getElementById('like-btn');
+  var thanks = document.getElementById('like-thanks');
+  btn.disabled = true;
+  btn.style.display = 'none';
+  thanks.style.display = 'inline-block';
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ action: 'like', timestamp: new Date().toISOString() })
+  }).catch(function() { /* no-cors, ignore */ });
+}
+</script>
+
+<script>
+// ── GENERAL INTEREST FORM (Petfinder page) ─────────────────────────────────────
+document.getElementById('general-interest-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var firstName = document.getElementById('gi-firstname').value.trim();
+  var lastName  = document.getElementById('gi-lastname').value.trim();
+  var email     = document.getElementById('gi-email').value.trim();
+  var errEl     = document.getElementById('gi-error');
+
+  if (!firstName || !lastName || !email) {
+    errEl.textContent = 'Please fill in First Name, Last Name, and Email.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errEl.textContent = 'Please enter a valid email address.';
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+
+  var btn = document.getElementById('gi-submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  var payload = {
+    petId:      'general-inquiry',
+    petName:    'General Inquiry (Petfinder)',
+    breed:      '',
+    shelter:    '',
+    firstName:  firstName,
+    lastName:   lastName,
+    email:      email,
+    phone:      document.getElementById('gi-phone').value.trim(),
+    city:       document.getElementById('gi-city').value.trim(),
+    housing:    document.getElementById('gi-housing').value,
+    experience: document.getElementById('gi-experience').value,
+    message:    document.getElementById('gi-message').value.trim()
+  };
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(payload)
+  })
+  .then(function() {
+    document.getElementById('general-interest-form').style.display = 'none';
+    document.getElementById('gi-success').style.display = 'block';
+  })
+  .catch(function() {
+    document.getElementById('general-interest-form').style.display = 'none';
+    document.getElementById('gi-success').style.display = 'block';
+  });
+});
+</script>
+
+<script>
+// ── AUTH SYSTEM (Sign Up / Sign In) ────────────────────────────────────────────
+// Uses localStorage for session state. Posts signup data to Google Sheets.
+// Apps Script Instructions for "Users" sheet:
+// ---- PASTE INTO APPS SCRIPT EDITOR (add to existing doPost): ----------------
+// // Handle "signup" action
+// if (d.action === 'signup') {
+//   var usersSheet = ss.getSheetByName('Users');
+//   if (!usersSheet) {
+//     usersSheet = ss.insertSheet('Users');
+//     usersSheet.appendRow(['Timestamp','Name','Email','Password']);
+//     usersSheet.setFrozenRows(1);
+//   }
+//   usersSheet.appendRow([new Date(), d.name||'', d.email||'', d.password||'']);
+//   return ContentService.createTextOutput(JSON.stringify({status:'ok'}))
+//                        .setMimeType(ContentService.MimeType.JSON);
+// }
+// -----------------------------------------------------------------------------
+
+var AUTH_STORAGE_KEY = 'furever_user';
+
+function getStoredUser() {
+  try { return JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY)); } catch(e) { return null; }
+}
+
+function setStoredUser(user) {
+  localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
+}
+
+function clearStoredUser() {
+  localStorage.removeItem(AUTH_STORAGE_KEY);
+}
+
+function updateAuthPill() {
+  var pill = document.getElementById('auth-pill');
+  if (!pill) return;
+  var user = getStoredUser();
+  if (user && user.name) {
+    pill.textContent = '👤 ' + user.name;
+    pill.onclick = function() { showSignOutConfirm(); };
+  } else {
+    pill.textContent = 'Sign Up / Sign In';
+    pill.onclick = function() { openAuthModal(); };
+  }
+}
+
+function openAuthModal() {
+  var user = getStoredUser();
+  if (user && user.name) {
+    showSignOutConfirm();
+    return;
+  }
+  document.getElementById('auth-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  switchAuthTab('signin');
+}
+
+function closeAuthModal() {
+  document.getElementById('auth-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function showSignOutConfirm() {
+  if (confirm('Sign out of your account?')) {
+    clearStoredUser();
+    updateAuthPill();
+  }
+}
+
+// Auth modal overlay click to close
+document.getElementById('auth-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeAuthModal();
+});
+
+function switchAuthTab(tab) {
+  var signinForm = document.getElementById('signin-form');
+  var signupForm = document.getElementById('signup-form');
+  var tabSI = document.getElementById('tab-signin');
+  var tabSU = document.getElementById('tab-signup');
+
+  if (tab === 'signin') {
+    signinForm.style.display = '';
+    signupForm.style.display = 'none';
+    tabSI.classList.add('active');
+    tabSU.classList.remove('active');
+  } else {
+    signinForm.style.display = 'none';
+    signupForm.style.display = '';
+    tabSI.classList.remove('active');
+    tabSU.classList.add('active');
+  }
+  // Clear errors
+  document.getElementById('si-error').style.display = 'none';
+  document.getElementById('su-error').style.display = 'none';
+  document.getElementById('su-success').style.display = 'none';
+}
+
+// Sign Up form submit
+document.getElementById('signup-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var name     = document.getElementById('su-name').value.trim();
+  var email    = document.getElementById('su-email').value.trim();
+  var password = document.getElementById('su-password').value;
+  var errEl    = document.getElementById('su-error');
+  var sucEl    = document.getElementById('su-success');
+
+  errEl.style.display = 'none';
+  sucEl.style.display = 'none';
+
+  if (!name || !email || !password) {
+    errEl.textContent = 'All fields are required.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errEl.textContent = 'Please enter a valid email.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (password.length < 4) {
+    errEl.textContent = 'Password must be at least 4 characters.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  // Encode password (base64 for demo — NOT production-safe)
+  var encoded = btoa(password);
+
+  // Save to localStorage for later sign-in verification
+  var accounts = JSON.parse(localStorage.getItem('furever_accounts') || '[]');
+  // Check if email already exists
+  var existing = accounts.find(function(a) { return a.email === email; });
+  if (existing) {
+    errEl.textContent = 'An account with this email already exists. Please sign in.';
+    errEl.style.display = 'block';
+    return;
+  }
+  accounts.push({ name: name, email: email, password: encoded });
+  localStorage.setItem('furever_accounts', JSON.stringify(accounts));
+
+  // POST to Apps Script
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ action: 'signup', name: name, email: email, password: encoded })
+  }).catch(function() { /* ignore */ });
+
+  // Auto sign in
+  setStoredUser({ name: name, email: email });
+  updateAuthPill();
+
+  sucEl.textContent = 'Account created! You are now signed in.';
+  sucEl.style.display = 'block';
+  setTimeout(function() { closeAuthModal(); }, 1500);
+});
+
+// Sign In form submit
+document.getElementById('signin-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var email    = document.getElementById('si-email').value.trim();
+  var password = document.getElementById('si-password').value;
+  var errEl    = document.getElementById('si-error');
+
+  errEl.style.display = 'none';
+
+  if (!email || !password) {
+    errEl.textContent = 'Please enter email and password.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  var encoded = btoa(password);
+  var accounts = JSON.parse(localStorage.getItem('furever_accounts') || '[]');
+  var match = accounts.find(function(a) { return a.email === email && a.password === encoded; });
+
+  if (!match) {
+    errEl.textContent = 'Invalid email or password. Please try again or sign up.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  setStoredUser({ name: match.name, email: match.email });
+  updateAuthPill();
+  closeAuthModal();
+});
+
+// On page load, check if user is already signed in
+updateAuthPill();
+
+// ── MOBILE DROPDOWN TOGGLE (tap to open on touch devices) ──────────────────
+(function() {
+  var navItems = document.querySelectorAll('.ni');
+  navItems.forEach(function(ni) {
+    var label = ni.querySelector(':scope > label');
+    var dd = ni.querySelector('.dd');
+    if (!label || !dd) return;
+    label.addEventListener('click', function(e) {
+      // Close all other dropdowns first
+      document.querySelectorAll('.dd.dd-open').forEach(function(d) {
+        if (d !== dd) d.classList.remove('dd-open');
+      });
+      dd.classList.toggle('dd-open');
+    });
+  });
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.ni')) {
+      document.querySelectorAll('.dd.dd-open').forEach(function(d) {
+        d.classList.remove('dd-open');
+      });
+    }
+  });
+  // Close dropdown when a menu item is clicked
+  document.querySelectorAll('.dd label').forEach(function(lbl) {
+    lbl.addEventListener('click', function() {
+      document.querySelectorAll('.dd.dd-open').forEach(function(d) {
+        d.classList.remove('dd-open');
+      });
+    });
+  });
+})();
 </script>
 
 </body>

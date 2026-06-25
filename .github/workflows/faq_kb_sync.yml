@@ -1,0 +1,31 @@
+name: FAQ KB Sync (Weekly)
+
+on:
+  schedule:
+    - cron: "0 2 * * 0"
+
+  workflow_dispatch:
+
+jobs:
+  sync-kb:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r cron/requirements.txt
+
+      - name: Run FAQ KB sync
+        env:
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+          SHEET_ID: ${{ secrets.SHEET_ID }}
+        run: python cron/faq_kb_sync.py

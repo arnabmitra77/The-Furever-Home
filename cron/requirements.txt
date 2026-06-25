@@ -1,0 +1,18 @@
+# Python dependencies for cron/faq_kb_sync.py
+# Pin versions for reproducibility (GitHub Actions installs from this file)
+
+# Google Sheets API client
+gspread==6.4.0
+
+# Google authentication (service account credentials)
+google-auth==2.38.0
+
+# HTTP requests for fetching RSS feeds and article content
+requests==2.32.3
+
+# RSS/Atom feed parser
+feedparser==6.0.11
+
+# HTML parsing and tag stripping from article content
+beautifulsoup4==4.12.3
+lxml==5.3.0

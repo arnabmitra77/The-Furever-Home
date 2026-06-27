@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adopt a Pet — Landing Concept</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #FF6B35;
+  --primary-light: #FFF3ED;
+  --secondary: #2D2D2D;
+  --accent-yellow: #FFD93D;
+  --accent-green: #6BCB77;
+  --accent-blue: #4D96FF;
+  --bg: #FAFAF8;
+  --white: #FFFFFF;
+  --text: #2D2D2D;
+  --text-light: #6B6B6B;
+  --text-muted: #9E9E9E;
+  --radius: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 100px;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-md: 0 8px 32px rgba(0,0,0,0.08);
+  --shadow-lg: 0 16px 48px rgba(0,0,0,0.1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Nunito', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+a { text-decoration: none; color: inherit; }
+img { display: block; max-width: 100%; }
+
+/* ── Navbar ───────────────────────────────────────────────────────────────── */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 48px;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+.nav-logo {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.nav-logo span { font-size: 26px; }
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+.nav-links a {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-light);
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--primary); }
+.nav-cta {
+  background: var(--primary);
+  color: var(--white) !important;
+  padding: 10px 24px;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 13px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.nav-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255,107,53,0.3);
+  color: var(--white) !important;
+}
+
+/* ── Hero Section ─────────────────────────────────────────────────────────── */
+.hero {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 40px 48px 60px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 40px;
+  min-height: calc(100vh - 100px);
+}
+.hero-content { max-width: 540px; }
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--primary-light);
+  color: var(--primary);
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+.hero-badge span { font-size: 14px; }
+.hero-title {
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 16px;
+  color: var(--secondary);
+}
+.hero-title .highlight {
+  color: var(--primary);
+  position: relative;
+}
+.hero-title .highlight::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background: rgba(255,107,53,0.15);
+  border-radius: 4px;
+  z-index: -1;
+}
+.hero-subtitle {
+  font-size: 16px;
+  color: var(--text-light);
+  line-height: 1.7;
+  margin-bottom: 32px;
+  max-width: 440px;
+}
+.hero-actions { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.btn-primary {
+  background: var(--primary);
+  color: var(--white);
+  padding: 14px 32px;
+  border-radius: var(--radius-pill);
+  font-weight: 800;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255,107,53,0.35);
+}
+.btn-secondary {
+  background: var(--white);
+  color: var(--text);
+  padding: 14px 28px;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 14px;
+  border: 2px solid #E8E8E8;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-secondary:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.hero-stats {
+  display: flex;
+  gap: 32px;
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid #EBEBEB;
+}
+.stat { text-align: left; }
+.stat-num {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--secondary);
+}
+.stat-num span { color: var(--primary); }
+.stat-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* ── Hero Image Area ──────────────────────────────────────────────────────── */
+.hero-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hero-blob {
+  position: absolute;
+  width: 480px;
+  height: 480px;
+  background: linear-gradient(135deg, #FFF3ED 0%, #FFE8D6 100%);
+  border-radius: 60% 40% 50% 50% / 50% 60% 40% 50%;
+  animation: blobFloat 8s ease-in-out infinite;
+}
+@keyframes blobFloat {
+  0%, 100% { border-radius: 60% 40% 50% 50% / 50% 60% 40% 50%; }
+  50% { border-radius: 40% 60% 50% 50% / 60% 40% 50% 50%; transform: scale(1.02); }
+}
+.hero-img {
+  position: relative;
+  z-index: 2;
+  width: 420px;
+  height: 480px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+.hero-float-card {
+  position: absolute;
+  z-index: 3;
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  box-shadow: var(--shadow-md);
+  animation: float 4s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.float-top-right {
+  top: 20px;
+  right: -20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.float-top-right .fticon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #E8F8EB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+.float-top-right .fttext { font-size: 12px; font-weight: 700; }
+.float-top-right .fttext small { display: block; font-weight: 500; color: var(--text-muted); font-size: 10px; }
+.float-bottom-left {
+  bottom: 40px;
+  left: -30px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation-delay: 1.5s;
+}
+.float-bottom-left .avatars {
+  display: flex;
+}
+.float-bottom-left .avatars img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--white);
+  margin-left: -8px;
+  object-fit: cover;
+}
+.float-bottom-left .avatars img:first-child { margin-left: 0; }
+.float-bottom-left .fttext { font-size: 11px; font-weight: 700; }
+.float-bottom-left .fttext small { display: block; font-weight: 500; color: var(--text-muted); font-size: 10px; }
+
+/* ── Categories Section ───────────────────────────────────────────────────── */
+.categories {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 48px 80px;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+.section-header h2 {
+  font-size: 24px;
+  font-weight: 800;
+}
+.section-header a {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary);
+}
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+.cat-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  text-align: center;
+  border: 2px solid transparent;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+.cat-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+.cat-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+}
+.cat-icon.dogs { background: #FFF3ED; }
+.cat-icon.cats { background: #E8F8EB; }
+.cat-icon.birds { background: #EDF4FF; }
+.cat-icon.rabbits { background: #FFF8E1; }
+.cat-icon.fish { background: #E8F4FF; }
+.cat-icon.others { background: #F3E8FF; }
+.cat-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.cat-card p { font-size: 11px; color: var(--text-muted); }
+
+/* ── Featured Pets ────────────────────────────────────────────────────────── */
+.featured {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 48px 80px;
+}
+.pet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+.pet-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all 0.3s;
+  cursor: pointer;
+  border: 1px solid #F0F0F0;
+}
+.pet-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+}
+.pet-card-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  background: #F5F5F5;
+}
+.pet-card-body { padding: 18px 20px; }
+.pet-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.pet-card-top h3 { font-size: 17px; font-weight: 800; }
+.pet-card-top .gender {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+.gender-f { background: #FFE8F0; color: #E91E63; }
+.gender-m { background: #E3F2FD; color: #1976D2; }
+.pet-card-breed { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+.pet-card-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.pet-card-meta span {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text-light);
+}
+.pet-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-top: 1px solid #F5F5F5;
+}
+.pet-card-footer .location {
+  font-size: 11px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.pet-card-footer .heart-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid #E8E8E8;
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.pet-card-footer .heart-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; padding: 32px 24px; min-height: auto; }
+  .hero-visual { margin-top: 32px; }
+  .hero-blob { width: 320px; height: 320px; }
+  .hero-img { width: 300px; height: 360px; }
+  .float-top-right { right: 10px; }
+  .float-bottom-left { left: 0; }
+  .navbar { padding: 16px 24px; }
+  .nav-links { gap: 16px; }
+  .categories, .featured { padding: 0 24px 48px; }
+}
+@media (max-width: 600px) {
+  .nav-links a:not(.nav-cta) { display: none; }
+  .hero-stats { gap: 20px; }
+  .stat-num { font-size: 22px; }
+  .hero-blob { width: 260px; height: 260px; }
+  .hero-img { width: 240px; height: 300px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar">
+  <div class="nav-logo"><span>🐾</span> Petopia</div>
+  <div class="nav-links">
+    <a href="#">Home</a>
+    <a href="#">Adopt</a>
+    <a href="#">About</a>
+    <a href="#">Community</a>
+    <a href="#">Contact</a>
+    <a href="#" class="nav-cta">Get Started</a>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge"><span>🏠</span> #AdoptDontShop</div>
+    <h1 class="hero-title">
+      Find Your New<br>
+      <span class="highlight">Best Friend</span> Today
+    </h1>
+    <p class="hero-subtitle">
+      Every pet deserves a loving home. Browse thousands of adorable pets ready
+      for adoption and give them the forever family they've been waiting for.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-primary">🐶 Browse Pets</button>
+      <button class="btn-secondary">▶ How It Works</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">12<span>K+</span></div>
+        <div class="stat-label">Pets Adopted</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">3.2<span>K+</span></div>
+        <div class="stat-label">Happy Families</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">150<span>+</span></div>
+        <div class="stat-label">Partner Shelters</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="hero-blob"></div>
+    <img class="hero-img"
+         src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&h=700&fit=crop"
+         alt="Happy golden retriever">
+
+    <!-- Floating cards -->
+    <div class="hero-float-card float-top-right">
+      <div class="fticon">✓</div>
+      <div class="fttext">Vaccinated<small>Health verified</small></div>
+    </div>
+    <div class="hero-float-card float-bottom-left">
+      <div class="avatars">
+        <img src="https://i.pravatar.cc/56?img=1" alt="adopter">
+        <img src="https://i.pravatar.cc/56?img=2" alt="adopter">
+        <img src="https://i.pravatar.cc/56?img=3" alt="adopter">
+      </div>
+      <div class="fttext">200+ adopted<small>this month</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- Categories -->
+<section class="categories">
+  <div class="section-header">
+    <h2>Browse by Category</h2>
+    <a href="#">View all →</a>
+  </div>
+  <div class="cat-grid">
+    <div class="cat-card">
+      <div class="cat-icon dogs">🐕</div>
+      <h4>Dogs</h4>
+      <p>320 available</p>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon cats">🐈</div>
+      <h4>Cats</h4>
+      <p>248 available</p>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon birds">🐦</div>
+      <h4>Birds</h4>
+      <p>86 available</p>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon rabbits">🐰</div>
+      <h4>Rabbits</h4>
+      <p>54 available</p>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon fish">🐠</div>
+      <h4>Fish</h4>
+      <p>112 available</p>
+    </div>
+    <div class="cat-card">
+      <div class="cat-icon others">🦎</div>
+      <h4>Others</h4>
+      <p>67 available</p>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Pets -->
+<section class="featured">
+  <div class="section-header">
+    <h2>Featured Pets</h2>
+    <a href="#">See all →</a>
+  </div>
+  <div class="pet-grid">
+    <div class="pet-card">
+      <img class="pet-card-img" src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=500&h=400&fit=crop" alt="Luna">
+      <div class="pet-card-body">
+        <div class="pet-card-top">
+          <h3>Luna</h3>
+          <div class="gender gender-f">♀</div>
+        </div>
+        <div class="pet-card-breed">Golden Retriever · 2 years</div>
+        <div class="pet-card-meta">
+          <span>Friendly</span>
+          <span>Trained</span>
+          <span>Vaccinated</span>
+        </div>
+      </div>
+      <div class="pet-card-footer">
+        <div class="location">📍 Austin, TX</div>
+        <button class="heart-btn">♡</button>
+      </div>
+    </div>
+
+    <div class="pet-card">
+      <img class="pet-card-img" src="https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=500&h=400&fit=crop" alt="Oliver">
+      <div class="pet-card-body">
+        <div class="pet-card-top">
+          <h3>Oliver</h3>
+          <div class="gender gender-m">♂</div>
+        </div>
+        <div class="pet-card-breed">Tabby Cat · 6 months</div>
+        <div class="pet-card-meta">
+          <span>Playful</span>
+          <span>Kitten</span>
+          <span>Indoor</span>
+        </div>
+      </div>
+      <div class="pet-card-footer">
+        <div class="location">📍 San Francisco, CA</div>
+        <button class="heart-btn">♡</button>
+      </div>
+    </div>
+
+    <div class="pet-card">
+      <img class="pet-card-img" src="https://images.unsplash.com/photo-1612536057832-2ff7ead58194?w=500&h=400&fit=crop" alt="Daisy">
+      <div class="pet-card-body">
+        <div class="pet-card-top">
+          <h3>Daisy</h3>
+          <div class="gender gender-f">♀</div>
+        </div>
+        <div class="pet-card-breed">Corgi · 1 year</div>
+        <div class="pet-card-meta">
+          <span>Energetic</span>
+          <span>Social</span>
+          <span>Small</span>
+        </div>
+      </div>
+      <div class="pet-card-footer">
+        <div class="location">📍 Nashville, TN</div>
+        <button class="heart-btn">♡</button>
+      </div>
+    </div>
+
+    <div class="pet-card">
+      <img class="pet-card-img" src="https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?w=500&h=400&fit=crop" alt="Duke">
+      <div class="pet-card-body">
+        <div class="pet-card-top">
+          <h3>Duke</h3>
+          <div class="gender gender-m">♂</div>
+        </div>
+        <div class="pet-card-breed">German Shepherd · 5 years</div>
+        <div class="pet-card-meta">
+          <span>Protective</span>
+          <span>Smart</span>
+          <span>Trained</span>
+        </div>
+      </div>
+      <div class="pet-card-footer">
+        <div class="location">📍 Chicago, IL</div>
+        <button class="heart-btn">♡</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+// Heart button toggle
+document.querySelectorAll('.heart-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.textContent === '♡') {
+      btn.textContent = '♥';
+      btn.style.color = '#E91E63';
+      btn.style.borderColor = '#E91E63';
+      btn.style.background = '#FFE8F0';
+    } else {
+      btn.textContent = '♡';
+      btn.style.color = '';
+      btn.style.borderColor = '';
+      btn.style.background = '';
+    }
+  });
+});
+</script>
+
+</body>
+</html>

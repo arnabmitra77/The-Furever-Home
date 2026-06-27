@@ -16,21 +16,32 @@
   --light-pink: #FFF0F7;
   --light-orange: #FFF4EC;
   --gray: #F5F5F5;
-  --gray-mid: #888;
-  --gray-border: #EEE;
+  --gray-mid: #555;
+  --gray-border: #E8E8E8;
   --text: #29303E;
-  --text-light: #666;
+  --text-light: #555;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --shadow-card: 0 2px 12px rgba(0,0,0,0.06);
+  --shadow-hover: 0 12px 32px rgba(241,58,177,0.12);
+  --transition: 0.2s ease;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { overflow-x: hidden; }
-body { font-family: system-ui, -apple-system, sans-serif; background: var(--cream); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+html { overflow-x: hidden; scroll-behavior: smooth; }
+body { font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; background: var(--cream); color: var(--text); line-height: 1.7; overflow-x: hidden; font-size: 15px; }
+
+/* Focus visible for accessibility */
+:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; border-radius: 4px; }
+label:focus-visible, button:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
 
 input[name="pg"] { display: none; }
 
-.topbar { background: var(--gunmetal); padding: 6px 24px; display: flex; justify-content: flex-end; align-items: center; gap: 16px; font-size: 11px; color: #ccc; }
-.topbar .pill { background: var(--pink); color: #fff; padding: 4px 14px; border-radius: 12px; font-weight: 600; }
+.topbar { background: var(--gunmetal); padding: 8px 24px; display: flex; justify-content: flex-end; align-items: center; gap: 16px; font-size: 12px; color: #ccc; }
+.topbar .pill { background: var(--pink); color: #fff; padding: 5px 16px; border-radius: 14px; font-weight: 700; transition: all var(--transition); }
+.topbar .pill:hover { background: var(--deep-orange); transform: scale(1.02); }
 
-nav { background: var(--white); padding: 8px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 200; border-bottom: 1px solid var(--gray-border); box-shadow: 0 2px 12px rgba(0,0,0,0.04); max-width: 100vw; }
+nav { background: var(--white); padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 200; border-bottom: 1px solid var(--gray-border); box-shadow: 0 2px 16px rgba(0,0,0,0.05); max-width: 100vw; }
 
 /* Logo area */
 .logo-area { display: flex; align-items: center; gap: 14px; }
@@ -41,21 +52,21 @@ nav { background: var(--white); padding: 8px 24px; display: flex; align-items: c
   display: block;
 }
 
-.mnav { display: flex; gap: 2px; align-items: center; }
+.mnav { display: flex; gap: 4px; align-items: center; }
 .ni { position: relative; }
-.ni > label { display: block; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text); transition: all 0.2s; }
+.ni > label { display: block; padding: 9px 18px; border-radius: 22px; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text); transition: all var(--transition); }
 .ni > label:hover { background: var(--light-pink); color: var(--pink); }
-.dd { position: absolute; top: calc(100% + 4px); left: 0; background: var(--white); border: 1px solid var(--gray-border); border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.12); padding: 8px 0; min-width: 200px; opacity: 0; visibility: hidden; transform: translateY(6px); transition: all 0.2s; z-index: 300; }
+.dd { position: absolute; top: calc(100% + 6px); left: 0; background: var(--white); border: 1px solid var(--gray-border); border-radius: var(--radius-md); box-shadow: 0 12px 36px rgba(0,0,0,0.14); padding: 8px 0; min-width: 210px; opacity: 0; visibility: hidden; transform: translateY(8px); transition: all 0.25s ease; z-index: 300; }
 .ni:hover .dd { opacity: 1; visibility: visible; transform: translateY(0); }
 .ni .dd.dd-open { opacity: 1; visibility: visible; transform: translateY(0); }
-.dd label { display: block; padding: 10px 18px; font-size: 13px; color: var(--text); cursor: pointer; transition: all 0.15s; }
-.dd label:hover { background: var(--light-pink); color: var(--pink); }
+.dd label { display: block; padding: 11px 20px; font-size: 14px; color: var(--text); cursor: pointer; transition: all 0.15s; }
+.dd label:hover { background: var(--light-pink); color: var(--pink); padding-left: 24px; }
 
 #pg-home:checked ~ nav .mnav .nh > label { background: var(--pink); color: #fff; }
-#pg-adopt:checked ~ nav .mnav .na > label,
 #pg-dogs:checked ~ nav .mnav .na > label,
 #pg-cats:checked ~ nav .mnav .na > label,
-#pg-quiz:checked ~ nav .mnav .na > label { background: var(--pink); color: #fff; }
+#pg-quiz:checked ~ nav .mnav .na > label,
+#pg-inquiry:checked ~ nav .mnav .na > label { background: var(--pink); color: #fff; }
 #pg-vision:checked ~ nav .mnav .nab > label,
 #pg-stories:checked ~ nav .mnav .nab > label,
 #pg-process:checked ~ nav .mnav .nab > label,
@@ -65,9 +76,8 @@ nav { background: var(--white); padding: 8px 24px; display: flex; align-items: c
 #pg-checklist:checked ~ nav .mnav .nhp > label { background: var(--pink); color: #fff; }
 #pg-wishlist:checked ~ nav .mnav .nw > label { background: var(--pink); color: #fff; }
 
-.page { display: none; padding: 24px; max-width: 1140px; margin: 0 auto; }
+.page { display: none; padding: 24px; max-width: 1140px; margin: 0 auto; animation: pageIn 0.3s ease; }
 #pg-home:checked ~ .pg-home { display: block; }
-#pg-adopt:checked ~ .pg-adopt { display: block; }
 #pg-dogs:checked ~ .pg-dogs { display: block; }
 #pg-cats:checked ~ .pg-cats { display: block; }
 #pg-quiz:checked ~ .pg-quiz { display: block; }
@@ -79,27 +89,28 @@ nav { background: var(--white); padding: 8px 24px; display: flex; align-items: c
 #pg-tips:checked ~ .pg-tips { display: block; }
 #pg-checklist:checked ~ .pg-checklist { display: block; }
 #pg-wishlist:checked ~ .pg-wishlist { display: block; }
-
-/* Petfinder widget container */
-.pf-widget-wrap { margin-top: 8px; }
-.pf-widget-wrap pet-scroller { display: block; width: 100%; }
+#pg-inquiry:checked ~ .pg-inquiry { display: block; }
 
 /* Pet detail page */
 .pdp { display: none; padding: 24px; max-width: 1100px; margin: 0 auto; }
 .pdp.active { display: block; }
-/* Hide listing pages when a detail page is active */
-body.detail-open .pg-dogs,
-body.detail-open .pg-cats { display: none !important; }
+/* Hide all page panels when a detail page is active */
+body.detail-open .page { display: none !important; }
 
-.banner { position: relative; height: 320px; border-radius: 16px; overflow: hidden; margin-bottom: 28px; }
-.banner-track { display: flex; width: 400%; height: 100%; animation: slide 16s infinite; }
+.banner { position: relative; height: 360px; border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 32px; box-shadow: var(--shadow-card); }
+.banner-track { display: flex; width: 400%; height: 100%; animation: slide 20s infinite; }
+.banner:hover .banner-track { animation-play-state: paused; }
 .banner-slide { width: 25%; height: 100%; position: relative; flex-shrink: 0; }
 .banner-slide img { width: 100%; height: 100%; object-fit: cover; }
-.bover { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(41,48,62,0.7), rgba(241,58,177,0.3)); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px; }
-.bover h2 { color: #fff; font-size: 28px; margin-bottom: 8px; text-shadow: 0 2px 8px rgba(0,0,0,0.3); }
-.bover p { color: #fff; font-size: 14px; opacity: 0.9; max-width: 400px; }
-.bover label { display: inline-block; margin-top: 14px; background: var(--pink); color: #fff; padding: 10px 24px; border-radius: 22px; font-weight: 600; font-size: 13px; cursor: pointer; }
-.bover label:hover { background: var(--red); }
+.bover { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(41,48,62,0.72), rgba(241,58,177,0.25)); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 32px; }
+.bover h2 { color: #fff; font-size: 32px; margin-bottom: 10px; text-shadow: 0 2px 12px rgba(0,0,0,0.35); font-weight: 800; }
+.bover p { color: #fff; font-size: 15px; opacity: 0.92; max-width: 440px; line-height: 1.5; }
+.bover label { display: inline-block; margin-top: 18px; background: var(--pink); color: #fff; padding: 12px 28px; border-radius: 24px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all var(--transition); box-shadow: 0 4px 16px rgba(241,58,177,0.3); }
+.bover label:hover { background: var(--red); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(231,39,68,0.35); }
+/* Banner dots */
+.banner-dots { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
+.banner-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.5); border: 2px solid rgba(255,255,255,0.8); transition: all 0.3s; cursor: pointer; }
+.banner-dot.active { background: var(--pink); border-color: #fff; transform: scale(1.2); }
 @keyframes slide {
   0%,22% { transform: translateX(0); }
   25%,47% { transform: translateX(-25%); }
@@ -108,58 +119,66 @@ body.detail-open .pg-cats { display: none !important; }
   100% { transform: translateX(0); }
 }
 
-.stats-row { display: flex; gap: 14px; margin-bottom: 28px; }
-.stat-box { flex: 1; background: var(--white); border-radius: 12px; padding: 18px; text-align: center; border: 1px solid var(--gray-border); }
-.stat-box .snum { font-size: 28px; font-weight: 800; color: var(--pink); }
-.stat-box .stxt { font-size: 11px; color: var(--gray-mid); margin-top: 2px; }
+.stats-row { display: flex; gap: 16px; margin-bottom: 32px; }
+.stat-box { flex: 1; background: var(--white); border-radius: var(--radius-md); padding: 22px 18px; text-align: center; border: 1px solid var(--gray-border); transition: transform var(--transition), box-shadow var(--transition); }
+.stat-box:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+.stat-box .snum { font-size: 32px; font-weight: 800; background: linear-gradient(135deg, var(--pink), var(--deep-orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.stat-box .stxt { font-size: 12px; color: var(--gray-mid); margin-top: 4px; font-weight: 500; }
 
-.quiz-sec { background: var(--white); border-radius: 14px; margin-bottom: 28px; border: 1px solid var(--gray-border); }
-.quiz-sec summary { padding: 18px 24px; cursor: pointer; font-size: 16px; font-weight: 600; list-style: none; }
+.quiz-sec { background: var(--white); border-radius: var(--radius-md); margin-bottom: 28px; border: 1px solid var(--gray-border); }
+.quiz-sec summary { padding: 20px 24px; cursor: pointer; font-size: 17px; font-weight: 700; list-style: none; }
 .quiz-sec summary::-webkit-details-marker { display: none; }
 .quiz-sec summary::after { content: ' ▼'; font-size: 12px; color: var(--pink); }
 .quiz-sec details[open] summary::after { content: ' ▲'; }
 .qbody { padding: 0 24px 24px; }
-.qq { margin-bottom: 14px; }
-.qq .ql { display: block; font-weight: 600; margin-bottom: 6px; font-size: 13px; }
-.qopts { display: flex; flex-wrap: wrap; gap: 6px; }
-.qopts span { padding: 6px 14px; border: 2px solid var(--light-pink); border-radius: 16px; font-size: 12px; cursor: pointer; transition: all 0.15s; }
+.qq { margin-bottom: 16px; }
+.qq .ql { display: block; font-weight: 700; margin-bottom: 8px; font-size: 14px; }
+.qopts { display: flex; flex-wrap: wrap; gap: 8px; }
+.qopts span { padding: 8px 16px; border: 2px solid var(--light-pink); border-radius: 20px; font-size: 13px; cursor: pointer; transition: all 0.15s; font-weight: 500; }
 .qopts span:hover { border-color: var(--pink); background: var(--light-pink); }
-.qopts span.selected { border-color: var(--pink); background: var(--pink); color: #fff; font-weight: 600; }
-.qbtn { display: inline-block; background: linear-gradient(135deg, var(--pink), var(--deep-orange)); color: #fff; padding: 10px 24px; border-radius: 20px; font-weight: 600; font-size: 13px; cursor: pointer; margin-top: 8px; }
+.qopts span.selected { border-color: var(--pink); background: var(--pink); color: #fff; font-weight: 600; box-shadow: 0 3px 10px rgba(241,58,177,0.2); }
+.qbtn { display: inline-block; background: linear-gradient(135deg, var(--pink), var(--deep-orange)); color: #fff; padding: 12px 28px; border-radius: 24px; font-weight: 700; font-size: 14px; cursor: pointer; margin-top: 10px; border: none; transition: all var(--transition); box-shadow: 0 4px 16px rgba(241,58,177,0.25); }
+.qbtn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(241,58,177,0.35); }
 
-.find-layout { display: flex; gap: 20px; }
-.filters { width: 210px; flex-shrink: 0; background: var(--white); border-radius: 12px; padding: 16px; border: 1px solid var(--gray-border); height: fit-content; position: sticky; top: 90px; }
-.filters h3 { font-size: 14px; margin-bottom: 12px; }
-.fg { margin-bottom: 10px; }
-.fg .fl { display: block; font-size: 9px; font-weight: 700; color: var(--gray-mid); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.6px; }
-.fg select { width: 100%; padding: 8px 10px; border: 1px solid var(--gray-border); border-radius: 8px; font-size: 12px; background: var(--gray); }
+.find-layout { display: flex; gap: 24px; }
+.filters { width: 230px; flex-shrink: 0; background: var(--white); border-radius: var(--radius-md); padding: 20px; border: 1px solid var(--gray-border); height: fit-content; position: sticky; top: 90px; box-shadow: var(--shadow-card); }
+.filters h3 { font-size: 15px; margin-bottom: 14px; font-weight: 700; }
+.fg { margin-bottom: 12px; }
+.fg .fl { display: block; font-size: 11px; font-weight: 700; color: var(--gray-mid); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.6px; }
+.fg select { width: 100%; padding: 10px 12px; border: 1.5px solid var(--gray-border); border-radius: var(--radius-sm); font-size: 13px; background: var(--gray); transition: border-color var(--transition); cursor: pointer; }
+.fg select:focus { border-color: var(--pink); outline: none; background: var(--white); }
+/* Clear filters button */
+.filter-clear { display: inline-block; margin-top: 8px; font-size: 12px; color: var(--pink); font-weight: 600; cursor: pointer; padding: 6px 12px; border-radius: var(--radius-sm); background: var(--light-pink); border: none; width: 100%; text-align: center; transition: all var(--transition); }
+.filter-clear:hover { background: var(--pink); color: #fff; }
 
 .pet-results { flex: 1; }
 .pet-results > h2 { font-size: 18px; margin-bottom: 14px; }
-.pgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
-.pc { background: var(--white); border-radius: 14px; overflow: hidden; border: 1px solid var(--gray-border); transition: transform 0.2s, box-shadow 0.2s; position: relative; }
-.pc:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(241,58,177,0.1); }
+.pgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+.pc { background: var(--white); border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--gray-border); transition: transform var(--transition), box-shadow var(--transition); position: relative; }
+.pc:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
 .pc label { display: block; cursor: pointer; }
-.pc img { width: 100%; height: 155px; object-fit: cover; background: var(--light-pink); }
-.pc .mbadge { position: absolute; top: 8px; right: 8px; background: linear-gradient(135deg, var(--pink), var(--deep-orange)); color: #fff; padding: 3px 9px; border-radius: 10px; font-size: 10px; font-weight: 700; }
-.pc .hbadge { position: absolute; top: 8px; left: 8px; background: var(--white); width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-.pci { padding: 12px; }
-.pci h4 { font-size: 14px; margin-bottom: 2px; }
-.pci .pm { font-size: 10px; color: var(--gray-mid); margin-bottom: 3px; }
-.pci .pl { font-size: 10px; color: var(--pink); margin-bottom: 3px; }
-.pci .pf { font-size: 13px; font-weight: 700; }
-.ptags { display: flex; gap: 3px; margin-top: 5px; flex-wrap: wrap; }
-.ptags span { font-size: 9px; padding: 2px 7px; border-radius: 8px; background: var(--light-pink); color: var(--pink); font-weight: 500; }
-.wl-btn { background: linear-gradient(90deg, var(--light-pink), var(--light-orange)); padding: 7px; text-align: center; font-size: 10px; color: var(--red); font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.pc img { width: 100%; height: 200px; object-fit: cover; background: var(--light-pink); transition: transform 0.4s ease; }
+.pc:hover img { transform: scale(1.03); }
+.pc .mbadge { position: absolute; top: 10px; right: 10px; background: linear-gradient(135deg, var(--pink), var(--deep-orange)); color: #fff; padding: 4px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; box-shadow: 0 2px 8px rgba(241,58,177,0.3); }
+.pc .hbadge { position: absolute; top: 10px; left: 10px; background: var(--white); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); transition: transform var(--transition); }
+.pc .hbadge:hover { transform: scale(1.15); }
+.pci { padding: 14px 16px; }
+.pci h4 { font-size: 15px; margin-bottom: 3px; font-weight: 700; }
+.pci .pm { font-size: 12px; color: var(--gray-mid); margin-bottom: 4px; }
+.pci .pl { font-size: 12px; color: var(--pink); margin-bottom: 4px; font-weight: 500; }
+.pci .pf { font-size: 14px; font-weight: 700; }
+.ptags { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+.ptags span { font-size: 10px; padding: 3px 8px; border-radius: 8px; background: var(--light-pink); color: var(--pink); font-weight: 600; }
+.wl-btn { background: linear-gradient(90deg, var(--light-pink), var(--light-orange)); padding: 8px; text-align: center; font-size: 11px; color: var(--red); font-weight: 600; cursor: pointer; transition: all var(--transition); }
 .wl-btn:hover { background: linear-gradient(90deg, #ffd6f0, #ffe8d0); }
 .wl-btn.wishlisted { background: linear-gradient(90deg, var(--pink), var(--deep-orange)); color: #fff; }
 .pc .hbadge.wishlisted { background: var(--pink); color: #fff; }
 
-.back-link { display: inline-block; color: var(--pink); font-size: 13px; cursor: pointer; margin-bottom: 14px; font-weight: 500; }
-.back-link:hover { text-decoration: underline; }
-.dlayout { display: flex; gap: 28px; }
-.dphoto { flex: 1; max-width: 460px; }
-.dphoto > img { width: 100%; height: 320px; object-fit: contain; border-radius: 14px; background: var(--cream); }
+.back-link { display: inline-flex; align-items: center; gap: 4px; color: var(--pink); font-size: 14px; cursor: pointer; margin-bottom: 16px; font-weight: 600; padding: 6px 12px; border-radius: var(--radius-sm); transition: all var(--transition); }
+.back-link:hover { background: var(--light-pink); text-decoration: none; }
+.dlayout { display: flex; gap: 32px; }
+.dphoto { flex: 1; max-width: 480px; }
+.dphoto > img { width: 100%; height: 360px; object-fit: contain; border-radius: var(--radius-md); background: var(--cream); box-shadow: var(--shadow-card); }
 .detail-thumbs { display: flex; gap: 6px; margin-top: 10px; overflow-x: auto; padding: 4px 0; }
 .detail-thumb { width: 38px !important; height: 38px !important; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid transparent; opacity: 0.7; transition: all 0.2s; }
 .detail-thumb:hover { opacity: 1; border-color: var(--pink); }
@@ -198,12 +217,13 @@ body.detail-open .pg-cats { display: none !important; }
 .form-row { margin-bottom: 14px; }
 .form-row label { display: block; font-size: 11px; font-weight: 700; color: var(--gray-mid); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
 .form-row input, .form-row select, .form-row textarea {
-  width: 100%; padding: 10px 12px; border: 1.5px solid var(--gray-border);
-  border-radius: 10px; font-size: 13px; background: var(--gray);
-  font-family: inherit; transition: border-color 0.2s;
+  width: 100%; padding: 12px 14px; border: 1.5px solid var(--gray-border);
+  border-radius: 10px; font-size: 14px; background: var(--gray);
+  font-family: inherit; transition: border-color var(--transition), background var(--transition);
 }
 .form-row input:focus, .form-row select:focus, .form-row textarea:focus {
   outline: none; border-color: var(--pink); background: var(--white);
+  box-shadow: 0 0 0 3px rgba(241,58,177,0.08);
 }
 .form-row textarea { resize: vertical; min-height: 72px; }
 .form-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -221,11 +241,11 @@ body.detail-open .pg-cats { display: none !important; }
 .shcard h4 { font-size: 13px; margin-bottom: 4px; }
 
 .cp { max-width: 780px; margin: 0 auto; }
-.cp h2 { font-size: 22px; margin-bottom: 16px; }
-.cp h3 { font-size: 16px; color: var(--pink); margin: 18px 0 8px; }
-.cp p { font-size: 14px; color: var(--text-light); line-height: 1.7; margin-bottom: 10px; }
-.cp ul { padding-left: 20px; margin-bottom: 12px; }
-.cp li { font-size: 13px; color: var(--text-light); margin-bottom: 6px; }
+.cp h2 { font-size: 24px; margin-bottom: 18px; font-weight: 800; }
+.cp h3 { font-size: 17px; color: var(--pink); margin: 22px 0 10px; font-weight: 700; }
+.cp p { font-size: 15px; color: var(--text-light); line-height: 1.8; margin-bottom: 12px; }
+.cp ul { padding-left: 22px; margin-bottom: 14px; }
+.cp li { font-size: 14px; color: var(--text-light); margin-bottom: 8px; line-height: 1.6; }
 
 .tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
 .tc { background: var(--white); border-radius: 14px; padding: 20px; border: 1px solid var(--gray-border); }
@@ -234,18 +254,21 @@ body.detail-open .pg-cats { display: none !important; }
 .tc h4 { font-size: 14px; margin-bottom: 4px; }
 .tc p { font-size: 12px; color: var(--text-light); line-height: 1.5; }
 
-.clbox { background: var(--white); border-radius: 14px; padding: 24px; border: 1px solid var(--gray-border); max-width: 620px; margin: 0 auto; }
-.clbox h3 { font-size: 16px; margin-bottom: 14px; }
-.cli { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--gray-border); }
-.cli input[type="checkbox"] { width: 17px; height: 17px; accent-color: var(--pink); }
-.cli label { font-size: 13px; cursor: pointer; }
-.cli label small { display: block; font-size: 11px; color: var(--gray-mid); }
+.clbox { background: var(--white); border-radius: var(--radius-md); padding: 28px; border: 1px solid var(--gray-border); max-width: 620px; margin: 0 auto; box-shadow: var(--shadow-card); }
+.clbox h3 { font-size: 17px; margin-bottom: 16px; font-weight: 700; }
+.cli { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--gray-border); transition: background var(--transition); }
+.cli:hover { background: var(--light-pink); margin: 0 -12px; padding: 12px; border-radius: var(--radius-sm); }
+.cli input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--pink); cursor: pointer; flex-shrink: 0; }
+.cli label { font-size: 14px; cursor: pointer; }
+.cli label small { display: block; font-size: 12px; color: var(--gray-mid); margin-top: 2px; }
 
-.fqi { margin-bottom: 8px; }
-.fqi details { background: var(--white); border: 1px solid var(--gray-border); border-radius: 10px; }
-.fqi summary { padding: 14px 18px; cursor: pointer; font-size: 14px; font-weight: 500; }
+.fqi { margin-bottom: 10px; }
+.fqi details { background: var(--white); border: 1px solid var(--gray-border); border-radius: var(--radius-md); transition: box-shadow var(--transition); }
+.fqi details:hover { box-shadow: var(--shadow-card); }
+.fqi details[open] { border-color: var(--pink); box-shadow: 0 4px 16px rgba(241,58,177,0.08); }
+.fqi summary { padding: 16px 20px; cursor: pointer; font-size: 15px; font-weight: 600; transition: color var(--transition); }
 .fqi details[open] summary { color: var(--pink); }
-.fqi .fa { padding: 0 18px 14px; font-size: 13px; color: var(--text-light); line-height: 1.6; }
+.fqi .fa { padding: 0 20px 16px; font-size: 14px; color: var(--text-light); line-height: 1.7; }
 
 .sc { background: var(--white); border: 1px solid var(--gray-border); border-radius: 12px; padding: 20px; margin-bottom: 14px; }
 .sc h4 { font-size: 15px; color: var(--pink); margin-bottom: 6px; }
@@ -259,42 +282,49 @@ body.detail-open .pg-cats { display: none !important; }
 .wl-empty .big { font-size: 56px; margin-bottom: 12px; opacity: 0.4; }
 .wl-empty p { color: var(--gray-mid); font-size: 14px; }
 
-footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-top: 36px; }
-.finner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 24px; }
-.fbrand .flogo { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; }
-.fbrand .fdesc { font-size: 11px; line-height: 1.5; opacity: 0.7; }
-.fcol h4 { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--pink); margin-bottom: 8px; }
-.fcol label, .fcol span { display: block; font-size: 12px; color: #bbb; margin-bottom: 5px; cursor: pointer; }
-.fcol label:hover { color: #fff; }
-.fbot { max-width: 1100px; margin: 16px auto 0; padding-top: 14px; border-top: 1px solid #444; text-align: center; font-size: 10px; opacity: 0.6; }
+footer { background: var(--gunmetal); color: #ccc; padding: 40px 24px; margin-top: 48px; }
+.finner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 28px; }
+.fbrand .flogo { font-size: 16px; font-weight: 800; color: #fff; margin-bottom: 8px; }
+.fbrand .fdesc { font-size: 13px; line-height: 1.6; opacity: 0.75; }
+.fcol h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--pink); margin-bottom: 12px; font-weight: 700; }
+.fcol label, .fcol span { display: block; font-size: 13px; color: #bbb; margin-bottom: 8px; cursor: pointer; transition: all var(--transition); }
+.fcol label:hover { color: #fff; transform: translateX(3px); }
+.fbot { max-width: 1100px; margin: 20px auto 0; padding-top: 18px; border-top: 1px solid #444; text-align: center; font-size: 12px; opacity: 0.6; }
 
 /* ── Chatbot Promo Card ────────────────────────────────────────────────────── */
 .chatbot-promo-card {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   background: linear-gradient(135deg, var(--light-pink), var(--light-orange));
   border: 1.5px solid var(--pink);
-  border-radius: 14px;
-  padding: 16px 20px;
-  margin-bottom: 18px;
+  border-radius: var(--radius-md);
+  padding: 18px 24px;
+  margin-bottom: 24px;
+  transition: transform var(--transition), box-shadow var(--transition);
 }
-.chatbot-promo-icon { font-size: 28px; }
+.chatbot-promo-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(241,58,177,0.12);
+}
+.chatbot-promo-icon { font-size: 32px; }
 .chatbot-promo-text { flex: 1; }
-.chatbot-promo-text strong { font-size: 14px; color: var(--gunmetal); }
-.chatbot-promo-text p { font-size: 12px; color: var(--gunmetal); margin: 2px 0 0; opacity: 0.8; }
+.chatbot-promo-text strong { font-size: 15px; color: var(--gunmetal); }
+.chatbot-promo-text p { font-size: 13px; color: var(--gunmetal); margin: 3px 0 0; opacity: 0.8; }
 .chatbot-promo-btn {
   background: linear-gradient(135deg, var(--pink), var(--deep-orange));
   color: #fff;
   border: none;
-  border-radius: 8px;
-  padding: 10px 16px;
-  font-size: 12px;
-  font-weight: 600;
+  border-radius: var(--radius-sm);
+  padding: 12px 20px;
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
+  transition: all var(--transition);
+  box-shadow: 0 4px 12px rgba(241,58,177,0.25);
 }
-.chatbot-promo-btn:hover { opacity: 0.9; }
+.chatbot-promo-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(241,58,177,0.35); }
 
 /* ── Quiz Result ──────────────────────────────────────────────────────────── */
 .quiz-result {
@@ -303,6 +333,8 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
   background: var(--light-pink);
   border-radius: 12px;
   border: 1.5px solid var(--pink);
+  max-height: none;
+  overflow: visible;
 }
 .quiz-result h4 { margin: 0 0 8px; font-size: 15px; color: var(--gunmetal); }
 .quiz-result p { margin: 0 0 12px; font-size: 13px; color: var(--gunmetal); line-height: 1.5; }
@@ -310,22 +342,31 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
 
 @media (max-width: 768px) {
   .find-layout { flex-direction: column; }
-  .filters { width: 100%; position: static; }
+  .filters { width: 100%; position: static; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .filters h3 { grid-column: 1 / -1; }
+  .filter-clear { grid-column: 1 / -1; }
   .dlayout { flex-direction: column; }
-  .finner { grid-template-columns: 1fr; }
+  .finner { grid-template-columns: 1fr; gap: 20px; }
   .mnav { gap: 0; flex-wrap: wrap; justify-content: center; }
-  .ni > label { padding: 5px 6px; font-size: 9px; }
+  .ni > label { padding: 6px 10px; font-size: 11px; }
   .ni .dd { position: fixed; top: auto; left: 8px; right: 8px; bottom: 0; min-width: auto; width: calc(100% - 16px); border-radius: 14px 14px 0 0; box-shadow: 0 -8px 32px rgba(0,0,0,0.2); z-index: 500; max-height: 50vh; overflow-y: auto; }
   .topbar { display: none; }
-  .banner { height: 220px; }
-  .stats-row { flex-wrap: wrap; }
-  .stat-box { min-width: 45%; }
+  .banner { height: 240px; border-radius: var(--radius-md); }
+  .banner .bover h2 { font-size: 22px; }
+  .banner .bover p { font-size: 13px; }
+  .stats-row { flex-wrap: wrap; gap: 10px; }
+  .stat-box { min-width: 45%; flex: 1 1 45%; }
+  .stat-box .snum { font-size: 24px; }
   .logo-area img.logo-img { height: 40px; }
   .logo-tagline-img { height: 40px; }
-  nav { padding: 6px 10px; flex-wrap: wrap; }
-  .chatbot-promo-card { flex-direction: column; text-align: center; gap: 8px; padding: 14px; }
-  .page { padding: 16px 12px; }
+  nav { padding: 8px 12px; flex-wrap: wrap; gap: 8px; }
+  .chatbot-promo-card { flex-direction: column; text-align: center; gap: 10px; padding: 16px; }
+  .page { padding: 16px 14px; }
   body { overflow-x: hidden; }
+  .pgrid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+  .pc img { height: 160px; }
+  .roadmap-section { padding: 20px 14px; }
+  .dphoto > img { height: 260px; }
 }
 
 /* ── Like Button Card ──────────────────────────────────────────────────────── */
@@ -360,15 +401,17 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
 .roadmap-section {
   background: var(--white);
   border: 1px solid var(--gray-border);
-  border-radius: 14px;
-  padding: 28px 24px;
-  margin-bottom: 28px;
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow-card);
 }
 .roadmap-title {
   text-align: center;
-  font-size: 18px;
-  margin-bottom: 24px;
+  font-size: 20px;
+  margin-bottom: 28px;
   color: var(--text);
+  font-weight: 800;
 }
 .roadmap-steps {
   display: flex;
@@ -384,20 +427,25 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
   transition: transform 0.3s ease;
 }
 .roadmap-step:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px);
 }
 .roadmap-icon {
-  width: 52px;
-  height: 52px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--light-pink), var(--light-orange));
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 8px;
+  margin: 0 auto 10px;
   font-size: 22px;
-  border: 2px solid var(--pink);
+  border: 2.5px solid var(--pink);
   overflow: hidden;
+  box-shadow: 0 4px 12px rgba(241,58,177,0.15);
+  transition: box-shadow 0.3s ease;
+}
+.roadmap-step:hover .roadmap-icon {
+  box-shadow: 0 6px 20px rgba(241,58,177,0.25);
 }
 .roadmap-icon img {
   width: 100%;
@@ -415,21 +463,21 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
   margin-bottom: 3px;
 }
 .roadmap-desc {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text-light);
-  line-height: 1.3;
+  line-height: 1.4;
 }
 .roadmap-connector {
   width: 28px;
-  height: 2px;
+  height: 3px;
   background: linear-gradient(90deg, var(--pink), var(--deep-orange));
-  margin-top: 26px;
+  margin-top: 28px;
   flex-shrink: 0;
   border-radius: 2px;
 }
 @media (max-width: 768px) {
   .roadmap-steps { flex-direction: column; align-items: center; gap: 0; }
-  .roadmap-connector { width: 2px; height: 20px; margin: 4px 0; }
+  .roadmap-connector { width: 3px; height: 20px; margin: 6px 0; }
   .roadmap-step { flex: none; width: 100%; max-width: 200px; }
 }
 
@@ -437,22 +485,22 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
 .process-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 18px;
+  gap: 20px;
 }
 .process-card {
   background: var(--white);
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   overflow: hidden;
   border: 1px solid var(--gray-border);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .process-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 28px rgba(241, 58, 177, 0.12);
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
 }
 .process-card-img-wrap {
   width: 100%;
-  height: 160px;
+  height: 180px;
   overflow: hidden;
   background: var(--cream);
 }
@@ -463,21 +511,21 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
   transition: transform 0.5s ease;
 }
 .process-card:hover .process-card-img-wrap img {
-  transform: scale(1.08);
+  transform: scale(1.06);
 }
 .process-card-content {
-  padding: 16px;
+  padding: 18px 20px;
 }
 .process-card-title {
-  font-size: 15px;
+  font-size: 16px;
   color: var(--gunmetal);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-weight: 700;
 }
 .process-card-desc {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-light);
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 
@@ -508,6 +556,32 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
   color: #fff;
 }
 
+/* ── Password Reset Screen ─────────────────────────────────────────────────── */
+.reset-lockout-msg {
+  font-size: 13px;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-align: center;
+  font-weight: 600;
+}
+.reset-back-btn {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 8px;
+  background: none;
+  border: none;
+  color: var(--pink);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  font-family: inherit;
+}
+.reset-back-btn:hover {
+  text-decoration: underline;
+}
+
 /* ── General Interest Form (Petfinder page) ────────────────────────────────── */
 .general-interest-form {
   background: var(--white);
@@ -520,15 +594,140 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
   font-size: 17px;
   margin-bottom: 4px;
 }
+
+/* ── Story Cards with Images ───────────────────────────────────────────────── */
+.stories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 22px;
+  margin-bottom: 32px;
+}
+.story-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--gray-border);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: block;
+}
+.story-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+}
+.story-card-img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  background: var(--light-pink);
+  transition: transform 0.4s ease;
+}
+.story-card:hover .story-card-img {
+  transform: scale(1.03);
+}
+.story-card-body {
+  padding: 18px 20px;
+}
+.story-card-body h4 {
+  font-size: 16px;
+  color: var(--gunmetal);
+  margin-bottom: 8px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.story-card-body p {
+  font-size: 13px;
+  color: var(--text-light);
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+.story-card-source {
+  display: block;
+  font-size: 11px;
+  color: var(--gray-mid);
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+.story-card-link {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--pink);
+  border: 1.5px solid var(--pink);
+  border-radius: 20px;
+  padding: 6px 16px;
+  text-decoration: none;
+  transition: all var(--transition);
+}
+.story-card-link:hover {
+  background: var(--pink);
+  color: #fff;
+  transform: translateY(-1px);
+}
+.story-card--featured {
+  background: linear-gradient(135deg, var(--light-pink), var(--light-orange));
+  border: 1.5px solid var(--pink);
+}
+.stories-section-title {
+  font-size: 18px;
+  color: var(--pink);
+  margin: 32px 0 18px;
+  font-weight: 800;
+}
+@media (max-width: 768px) {
+  .stories-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Skeleton Loading Cards ────────────────────────────────────────────────── */
+.skeleton-card { pointer-events: none; }
+.skeleton-img {
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(90deg, var(--gray) 25%, var(--light-pink) 50%, var(--gray) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+.skeleton-text {
+  height: 14px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--gray) 25%, var(--light-pink) 50%, var(--gray) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  margin-bottom: 8px;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Wishlist Badge on Nav ─────────────────────────────────────────────────── */
+.wishlist-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--red);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+.wishlist-badge:empty { display: none; }
+
+/* ── Smooth page transitions ───────────────────────────────────────────────── */
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 </style>
 </head>
 <body>
 
-<!-- Petfinder Widget Script — loaded once, used by pg-adopt page -->
-<script src="https://www.petfinder.com/pet-scroller.bundle.js"></script>
-
 <input type="radio" name="pg" id="pg-home" checked aria-label="Home page">
-<input type="radio" name="pg" id="pg-adopt" aria-label="Adopt page">
 <input type="radio" name="pg" id="pg-dogs" aria-label="Dogs page">
 <input type="radio" name="pg" id="pg-cats" aria-label="Cats page">
 <input type="radio" name="pg" id="pg-quiz" aria-label="Quiz page">
@@ -540,6 +739,7 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
 <input type="radio" name="pg" id="pg-tips" aria-label="Tips page">
 <input type="radio" name="pg" id="pg-checklist" aria-label="Checklist page">
 <input type="radio" name="pg" id="pg-wishlist" aria-label="Wishlist page">
+<input type="radio" name="pg" id="pg-inquiry" aria-label="General Inquiry page">
 
 
 
@@ -617,6 +817,19 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
       <p id="su-error" style="display:none;color:var(--red);font-size:12px;margin-top:8px;text-align:center;"></p>
       <p id="su-success" style="display:none;color:green;font-size:12px;margin-top:8px;text-align:center;"></p>
     </form>
+    <!-- Password Reset Screen (shown after lockout) -->
+    <div id="reset-screen" style="display:none;">
+      <p id="reset-lockout-msg" class="reset-lockout-msg">You've exceeded the maximum sign-in attempts.</p>
+      <div class="form-row">
+        <label for="reset-email">Email Address</label>
+        <input type="email" id="reset-email" maxlength="254" placeholder="your@email.com">
+      </div>
+      <button type="button" id="reset-submit-btn" class="btn-submit">Send Reset Link →</button>
+      <div id="reset-error" style="display:none;color:var(--red);font-size:12px;margin-top:8px;text-align:center;"></div>
+      <div id="reset-success" style="display:none;color:green;font-size:12px;margin-top:8px;text-align:center;"></div>
+      <div id="reset-no-email-msg" style="display:none;color:var(--gray-mid);font-size:12px;margin-top:8px;text-align:center;"></div>
+      <button type="button" id="reset-back-btn" class="reset-back-btn">&larr; Back to Sign In</button>
+    </div>
   </div>
 </div>
 
@@ -627,19 +840,20 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
 </div>
 
 <nav>
-  <div class="logo-area">
+  <div class="logo-area" style="cursor:pointer;" onclick="document.getElementById('pg-home').checked=true;">
     <img src="logoTop.png" alt="The Furever Home" class="logo-img">
     <img src="logoBottom.png" alt="The Furever Home tagline" class="logo-tagline-img">
   </div>
   <div class="mnav">
-    <div class="ni nh"><label for="pg-home">Home</label></div>
+    <div class="ni nh"><label for="pg-home" onclick="closeDetailNoRedirect()">Home</label></div>
     <div class="ni na">
       <label>Adopt &#9660;</label>
       <div class="dd">
-        <label for="pg-adopt">&#x1F43E; All Pets — Live Feed</label>
-        <label for="pg-dogs">&#x1F436; Adopt a Dog</label>
-        <label for="pg-cats">&#x1F431; Adopt a Cat</label>
+        <label for="pg-dogs" onclick="closeDetailNoRedirect()">&#x1F436; Adopt a Dog</label>
+        <label for="pg-cats" onclick="closeDetailNoRedirect()">&#x1F431; Adopt a Cat</label>
         <label for="pg-quiz">&#x1F3AF; Find a Match</label>
+
+        <label for="pg-inquiry">&#x1F4CB; General Inquiry</label>
         <label for="pg-home" onclick="setTimeout(function(){document.querySelector('.roadmap-section').scrollIntoView({behavior:'smooth'})},100)">&#x1F5FA;&#xFE0F; Adoption Roadmap</label>
       </div>
     </div>
@@ -660,7 +874,7 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
         <label for="pg-checklist">Adoption Checklist</label>
       </div>
     </div>
-    <div class="ni nw"><label for="pg-wishlist">&#9825; Wishlist</label></div>
+    <div class="ni nw"><label for="pg-wishlist" onclick="closeDetailNoRedirect()">&#9825; Wishlist <span class="wishlist-badge" id="wl-badge"></span></label></div>
   </div>
 </nav>
 
@@ -676,11 +890,11 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
     <div class="banner-track">
       <div class="banner-slide">
         <img src="https://cdn.pixabay.com/photo/2016/12/13/05/15/puppy-1903313_640.jpg" alt="Puppy" loading="eager">
-        <div class="bover"><h2>Adopt Today! &#x1F43E;</h2><p>Give a shelter pet the loving home they deserve</p><label for="pg-adopt">Browse Dogs &rarr;</label></div>
+        <div class="bover"><h2>Adopt Today! &#x1F43E;</h2><p>Give a shelter pet the loving home they deserve</p><label for="pg-dogs">Browse Dogs &rarr;</label></div>
       </div>
       <div class="banner-slide">
         <img src="https://cdn.pixabay.com/photo/2017/02/20/18/03/cat-2083492_640.jpg" alt="Cat" loading="lazy">
-        <div class="bover"><h2>Purrfect Companions Await &#x1F431;</h2><p>Cats of all ages looking for their forever family</p><label for="pg-adopt">Browse Cats &rarr;</label></div>
+        <div class="bover"><h2>Purrfect Companions Await &#x1F431;</h2><p>Cats of all ages looking for their forever family</p><label for="pg-cats">Browse Cats &rarr;</label></div>
       </div>
       <div class="banner-slide">
         <img src="https://cdn.pixabay.com/photo/2019/08/19/07/45/dog-4415649_640.jpg" alt="Dog" loading="lazy">
@@ -688,15 +902,21 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
       </div>
       <div class="banner-slide">
         <img src="https://placedog.net/640/400?random" alt="Happy pets" loading="lazy">
-        <div class="bover"><h2>Every Pet Deserves Love &#x2764;&#xFE0F;</h2><p>Over 500 pets in Bay Area shelters need you right now</p><label for="pg-adopt">Start Browsing &rarr;</label></div>
+        <div class="bover"><h2>Every Pet Deserves Love &#x2764;&#xFE0F;</h2><p>Over 50 pets in Bay Area shelters need you right now</p><label for="pg-dogs">Start Browsing &rarr;</label></div>
       </div>
+    </div>
+    <div class="banner-dots">
+      <span class="banner-dot active" data-slide="0"></span>
+      <span class="banner-dot" data-slide="1"></span>
+      <span class="banner-dot" data-slide="2"></span>
+      <span class="banner-dot" data-slide="3"></span>
     </div>
   </div>
   <div class="stats-row">
     <div class="stat-box"><div class="snum">500+</div><div class="stxt">Pets Available</div></div>
     <div class="stat-box"><div class="snum">10</div><div class="stxt">Partner Shelters</div></div>
-    <div class="stat-box"><div class="snum">100%</div><div class="stxt">Happy Pet Parents</div></div>
-    <div class="stat-box"><div class="snum">96%</div><div class="stxt">Match Accuracy</div></div>
+    <div class="stat-box"><div class="snum">850+</div><div class="stxt">Pets Adopted</div></div>
+    <div class="stat-box"><div class="snum">96%</div><div class="stxt">Match Satisfaction</div></div>
   </div>
 
   <div class="chatbot-promo-card">
@@ -750,63 +970,44 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
     </div>
   </div>
 
-  <div class="quiz-sec"><details><summary>&#x1F43E; Pet Match Quiz &mdash; Find Your Perfect Companion</summary><div class="qbody">
-    <div class="qq"><span class="ql">Are you a...</span><div class="qopts"><span>First-time owner</span><span>Current owner</span><span>Previous owner</span></div></div>
-    <div class="qq"><span class="ql">Would you like to adopt a...</span><div class="qopts"><span>&#x1F436; Dog</span><span>&#x1F431; Cat</span><span>Either!</span></div></div>
-    <div class="qq"><span class="ql">Do you currently have pets?</span><div class="qopts"><span>Dog(s)</span><span>Cat(s)</span><span>None</span></div></div>
-    <div class="qq"><span class="ql">Nearby amenities?</span><div class="qopts"><span>Park</span><span>Yard</span><span>None</span></div></div>
-    <div class="qq"><span class="ql">Gender preference?</span><div class="qopts"><span>Male</span><span>Female</span><span>No preference</span></div></div>
-    <div class="qq"><span class="ql">Open to special needs?</span><div class="qopts"><span>Yes!</span><span>Not right now</span></div></div>
-    <label for="pg-dogs" class="qbtn">See My Matches &rarr;</label>
-  </div></details></div>
+  <div class="quiz-sec" style="background:linear-gradient(135deg,var(--light-pink),var(--light-orange));border-radius:var(--radius-lg);padding:32px;text-align:center;box-shadow:var(--shadow-card);border:1.5px solid rgba(241,58,177,0.15);">
+    <h3 style="font-size:20px;margin-bottom:10px;font-weight:800;">🐾 Find Your Perfect Pet Match</h3>
+    <p style="font-size:14px;color:var(--text-light);margin-bottom:18px;max-width:420px;margin-left:auto;margin-right:auto;">Answer a few quick questions and we'll match you with pets that fit your lifestyle!</p>
+    <label for="pg-quiz" class="qbtn" style="font-size:15px;padding:14px 32px;">Take the Quiz →</label>
+  </div>
 </div>
 
-<!-- ALL PETS — Petfinder Live Widget -->
-<div class="page pg-adopt">
+<!-- GENERAL INQUIRY (standalone tab) -->
+<div class="page pg-inquiry">
   <label for="pg-home" class="back-link">&larr; Back to Home</label>
-  <h2 style="font-size:20px;margin-bottom:4px;">&#x1F43E; Pets Available for Adoption</h2>
-  <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">Live listings from 10 Bay Area shelters — updated directly from Petfinder.</p>
-  <button class="qbtn" style="margin-bottom:18px;" onclick="document.getElementById('general-interest-section').scrollIntoView({behavior:'smooth'});">📝 I'm Interested in Adopting — Fill Out Form ↓</button>
-  <div class="pf-widget-wrap">
-    <pet-scroller
-      s3Url="https://dbw3zep4prcju.cloudfront.net/"
-      apiBase="https://psl.petfinder.com/graphql"
-      organization='["CA1707","CA534","CA1669","CA559","CA560","CA280","CA912","CA301","CA683","CA256"]'
-      status="adoptable"
-      petfinderUrl="https://www.petfinder.com/"
-      hideBreed="false"
-      limit="24"
-      petListTitle="Pets for adoption">
-    </pet-scroller>
-  </div>
-
-  <!-- General Interest Form (not tied to a specific pet) -->
-  <div class="general-interest-form" id="general-interest-section">
+  <h2 style="font-size:20px;margin-bottom:4px;">📋 General Inquiry</h2>
+  <p style="font-size:13px;color:var(--text-light);margin-bottom:18px;">Interested in adopting a pet? Fill out this form and we'll help connect you with a shelter and a pet that's right for you.</p>
+  <div class="general-interest-form" id="general-interest-section-standalone">
     <h3>🐾 Interested in Adopting? Let us know!</h3>
     <p class="modal-sub" style="margin-bottom:18px;">Fill out this form and we'll help connect you with a shelter and a pet that's right for you.</p>
-    <form id="general-interest-form" novalidate>
+    <form id="general-interest-form-standalone" novalidate>
       <div class="form-two-col">
-        <div class="form-row"><label for="gi-firstname">First Name *</label><input type="text" id="gi-firstname" placeholder="First Name" required></div>
-        <div class="form-row"><label for="gi-lastname">Last Name *</label><input type="text" id="gi-lastname" placeholder="Last Name" required></div>
+        <div class="form-row"><label for="gi2-firstname">First Name *</label><input type="text" id="gi2-firstname" placeholder="First Name" required></div>
+        <div class="form-row"><label for="gi2-lastname">Last Name *</label><input type="text" id="gi2-lastname" placeholder="Last Name" required></div>
       </div>
-      <div class="form-row"><label for="gi-email">Email Address *</label><input type="email" id="gi-email" placeholder="EmailID@email.com" required></div>
-      <div class="form-row"><label for="gi-phone">Phone Number</label><input type="tel" id="gi-phone" placeholder="(555) 123-4567"></div>
+      <div class="form-row"><label for="gi2-email">Email Address *</label><input type="email" id="gi2-email" placeholder="EmailID@email.com" required></div>
+      <div class="form-row"><label for="gi2-phone">Phone Number</label><input type="tel" id="gi2-phone" placeholder="(555) 123-4567"></div>
       <div class="form-two-col">
-        <div class="form-row"><label for="gi-city">City</label><input type="text" id="gi-city" placeholder="City Name"></div>
+        <div class="form-row"><label for="gi2-city">City</label><input type="text" id="gi2-city" placeholder="City Name"></div>
         <div class="form-row">
-          <label for="gi-housing">Housing Type</label>
-          <select id="gi-housing"><option value="">Select...</option><option>House with yard</option><option>Apartment</option><option>House no yard</option><option>Condo/Townhouse</option></select>
+          <label for="gi2-housing">Housing Type</label>
+          <select id="gi2-housing"><option value="">Select...</option><option>House with yard</option><option>Apartment</option><option>House no yard</option><option>Condo/Townhouse</option></select>
         </div>
       </div>
       <div class="form-row">
-        <label for="gi-experience">Pet Experience</label>
-        <select id="gi-experience"><option value="">Select...</option><option>First-time pet owner</option><option>Previous pet owner</option><option>Current pet owner</option></select>
+        <label for="gi2-experience">Pet Experience</label>
+        <select id="gi2-experience"><option value="">Select...</option><option>First-time pet owner</option><option>Previous pet owner</option><option>Current pet owner</option></select>
       </div>
-      <div class="form-row"><label for="gi-message">Message (optional)</label><textarea id="gi-message" placeholder="Tell us what kind of pet you're looking for, any preferences, questions..."></textarea></div>
-      <button type="submit" class="btn-submit" id="gi-submit-btn">Submit Interest →</button>
-      <p id="gi-error" style="display:none;color:var(--red);font-size:12px;margin-top:8px;text-align:center;"></p>
+      <div class="form-row"><label for="gi2-message">Message (optional)</label><textarea id="gi2-message" placeholder="Tell us what kind of pet you're looking for, any preferences, questions..."></textarea></div>
+      <button type="submit" class="btn-submit" id="gi2-submit-btn">Submit Interest →</button>
+      <p id="gi2-error" style="display:none;color:var(--red);font-size:12px;margin-top:8px;text-align:center;"></p>
     </form>
-    <div class="form-success" id="gi-success" style="display:none;">
+    <div class="form-success" id="gi2-success" style="display:none;">
       <div class="fs-icon">🐾</div>
       <h4>Interest Submitted!</h4>
       <p>We've received your inquiry. A shelter partner will be in touch with you shortly!</p>
@@ -825,6 +1026,7 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
       <div class="fg"><span class="fl">Gender</span><select id="dog-filter-gender"><option value="">Any</option><option value="male">Male</option><option value="female">Female</option></select></div>
       <div class="fg"><span class="fl">City</span><select id="dog-filter-city"><option value="">All Cities</option></select></div>
       <div class="fg"><span class="fl">Shelter</span><select id="dog-filter-shelter"><option value="">All Shelters</option></select></div>
+      <button class="filter-clear" onclick="clearFilters('dog')">Clear All Filters</button>
     </div>
     <div class="pet-results">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
@@ -833,7 +1035,12 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
       </div>
       <div id="dogs-updated" style="font-size:11px;color:var(--gray-mid);margin-bottom:8px;"></div>
       <div id="dogs-api-note"></div>
-      <div id="dogs-loading" style="padding:24px;color:var(--gray-mid);font-size:13px;">&#x23F3; Loading pets from database...</div>
+      <div id="dogs-loading" class="pgrid" style="margin-bottom:8px;">
+        <div class="pc skeleton-card"><div class="skeleton-img"></div><div class="pci"><div class="skeleton-text" style="width:70%"></div><div class="skeleton-text" style="width:50%"></div></div></div>
+        <div class="pc skeleton-card"><div class="skeleton-img"></div><div class="pci"><div class="skeleton-text" style="width:60%"></div><div class="skeleton-text" style="width:45%"></div></div></div>
+        <div class="pc skeleton-card"><div class="skeleton-img"></div><div class="pci"><div class="skeleton-text" style="width:75%"></div><div class="skeleton-text" style="width:55%"></div></div></div>
+        <div class="pc skeleton-card"><div class="skeleton-img"></div><div class="pci"><div class="skeleton-text" style="width:65%"></div><div class="skeleton-text" style="width:40%"></div></div></div>
+      </div>
       <div class="pgrid" id="dogs-grid"></div>
       <div id="dogs-noresult" style="display:none;padding:24px;color:var(--gray-mid);font-size:13px;">No pets match your filters. Try adjusting the options.</div>
     </div>
@@ -851,6 +1058,7 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
       <div class="fg"><span class="fl">Gender</span><select id="cat-filter-gender"><option value="">Any</option><option value="male">Male</option><option value="female">Female</option></select></div>
       <div class="fg"><span class="fl">City</span><select id="cat-filter-city"><option value="">All Cities</option></select></div>
       <div class="fg"><span class="fl">Shelter</span><select id="cat-filter-shelter"><option value="">All Shelters</option></select></div>
+      <button class="filter-clear" onclick="clearFilters('cat')">Clear All Filters</button>
     </div>
     <div class="pet-results">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
@@ -859,7 +1067,12 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
       </div>
       <div id="cats-updated" style="font-size:11px;color:var(--gray-mid);margin-bottom:8px;"></div>
       <div id="cats-api-note"></div>
-      <div id="cats-loading" style="padding:24px;color:var(--gray-mid);font-size:13px;">&#x23F3; Loading pets from database...</div>
+      <div id="cats-loading" class="pgrid" style="margin-bottom:8px;">
+        <div class="pc skeleton-card"><div class="skeleton-img"></div><div class="pci"><div class="skeleton-text" style="width:70%"></div><div class="skeleton-text" style="width:50%"></div></div></div>
+        <div class="pc skeleton-card"><div class="skeleton-img"></div><div class="pci"><div class="skeleton-text" style="width:60%"></div><div class="skeleton-text" style="width:45%"></div></div></div>
+        <div class="pc skeleton-card"><div class="skeleton-img"></div><div class="pci"><div class="skeleton-text" style="width:75%"></div><div class="skeleton-text" style="width:55%"></div></div></div>
+        <div class="pc skeleton-card"><div class="skeleton-img"></div><div class="pci"><div class="skeleton-text" style="width:65%"></div><div class="skeleton-text" style="width:40%"></div></div></div>
+      </div>
       <div class="pgrid" id="cats-grid"></div>
       <div id="cats-noresult" style="display:none;padding:24px;color:var(--gray-mid);font-size:13px;">No pets match your filters. Try adjusting the options.</div>
     </div>
@@ -884,7 +1097,7 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
 <!-- VISION -->
 <div class="page pg-vision"><div class="cp">
   <h2>Our Vision, Mission &amp; Values</h2>
-  <h3>&#x1F31F; Vision</h3><p>A Bay Area where every adoptable pet finds a loving forever home.</p>
+  <h3>&#x1F31F; Vision</h3><p>A world where every pet finds a loving forever home.</p>
   <h3>&#x1F3AF; Mission</h3><p>To increase pet adoption by aggregating Bay Area shelters into one platform, making it simple for families to discover and connect with their perfect pet match.</p>
   <h3>&#x1F49C; Values</h3>
   <ul>
@@ -897,12 +1110,172 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
 </div></div>
 
 <!-- STORIES -->
-<div class="page pg-stories"><div class="cp">
-  <h2>&#x2764;&#xFE0F; Success Stories</h2>
-  <div class="sc"><h4>&#x1F436; Biscuit &amp; The Patel Family</h4><p>"The Furever Home showed us Biscuit with a 94% match &mdash; love at first sight! Best addition to our family."</p></div>
-  <div class="sc"><h4>&#x1F431; Mittens &amp; Sarah K.</h4><p>"The quiz helped me find Mittens. She's the perfect calm companion &mdash; greets me at the door every day!"</p></div>
-  <div class="sc"><h4>&#x1F436; Duke &amp; The Nguyen Family</h4><p>"Duke was a senior nobody wanted. Two years later, he's the gentlest soul. Best decision ever."</p></div>
-</div></div>
+<div class="page pg-stories">
+<div class="cp">
+  <h2>&#x2764;&#xFE0F; Bay Area Adoption Stories &amp; Transformations</h2>
+  <p style="font-size:13px;color:var(--text-light);margin-bottom:24px;text-align:center;">
+    Real stories of rescue, recovery, and unconditional love from shelters across the San Francisco Bay Area.
+  </p>
+
+  <!-- Category: Dogs -->
+  <h3 class="stories-section-title">&#x1F436; Dog Transformations</h3>
+  <div class="stories-grid">
+
+    <div class="story-card">
+      <img class="story-card-img" src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&h=440&fit=crop&crop=faces" alt="Relic, a mixed breed dog who was named 2025 Rescue Dog of the Year" loading="lazy">
+      <div class="story-card-body">
+        <h4>&#x1F3C6; Relic — From Wild Pup to Champion Companion</h4>
+        <p>Relic arrived at the East Bay SPCA as an undersocialized pup who struggled to connect with people. Through patient foster care and positive reinforcement training, he transformed into a confident companion — and was named the 2025 PEDIGREE Foundation Rescue Dog of the Year.</p>
+        <span class="story-card-source">East Bay SPCA, Oakland</span>
+        <a href="https://eastbayspca.org/stories/relics-journey-from-wild-pup-to-champion-companion" target="_blank" rel="noopener noreferrer" class="story-card-link">Read Full Story &rarr;</a>
+      </div>
+    </div>
+
+    <div class="story-card">
+      <img class="story-card-img" src="https://images.unsplash.com/photo-1605568427561-40dd23c2acea?w=600&h=440&fit=crop&crop=faces" alt="Warner, a husky who recovered from a serious infection at SF SPCA" loading="lazy">
+      <div class="story-card-body">
+        <h4>&#x1F43A; Warner — The Husky Who Never Lost His Spark</h4>
+        <p>Named after 49ers linebacker Fred Warner, this husky arrived at the SF SPCA with a serious infection. Through dedicated veterinary care, he cleared the infection and won hearts with his curious, affectionate personality.</p>
+        <span class="story-card-source">SF SPCA, San Francisco</span>
+        <a href="https://sfspca.org/blog/husky-happy-tails-that-will-warm-your-heart" target="_blank" rel="noopener noreferrer" class="story-card-link">Read Full Story &rarr;</a>
+      </div>
+    </div>
+
+    <div class="story-card">
+      <img class="story-card-img" src="https://images.unsplash.com/photo-1558788353-f76d92427f16?w=600&h=440&fit=crop&crop=faces" alt="Buzz, a shelter pup who became a certified search and rescue dog" loading="lazy">
+      <div class="story-card-body">
+        <h4>&#x1F9ED; Buzz — Shelter Pup Turned Search &amp; Rescue Hero</h4>
+        <p>Adopted from the SF SPCA, Buzz showed incredible intelligence and drive. His adopter trained with the California Rescue Dog Association and together they became a certified search and rescue team saving lives across the state.</p>
+        <span class="story-card-source">SF SPCA, San Francisco</span>
+        <a href="https://www.sfspca.org/blog/happy-tails-buzz/" target="_blank" rel="noopener noreferrer" class="story-card-link">Read Full Story &rarr;</a>
+      </div>
+    </div>
+
+    <div class="story-card">
+      <img class="story-card-img" src="https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?w=600&h=440&fit=crop&crop=faces" alt="Gina, a once-shy dog who blossomed into a confident companion" loading="lazy">
+      <div class="story-card-body">
+        <h4>&#x1F60A; Gina — From Shy to Smiley</h4>
+        <p>Gina arrived at Peninsula Humane Society fearful and withdrawn. After months of medical care, behavior modification, and time in foster care, she blossomed into a confident, happy dog ready for her forever family.</p>
+        <span class="story-card-source">Peninsula Humane Society &amp; SPCA, Burlingame</span>
+        <a href="https://phs-spca.org/gina-from-shy-to-smiley/" target="_blank" rel="noopener noreferrer" class="story-card-link">Read Full Story &rarr;</a>
+      </div>
+    </div>
+
+    <div class="story-card">
+      <img class="story-card-img" src="https://images.unsplash.com/photo-1530281700549-e82e7bf110d6?w=600&h=440&fit=crop&crop=faces" alt="Zippy, a fearful pup who received dedicated care and thrived" loading="lazy">
+      <div class="story-card-body">
+        <h4>&#x1F4AA; Zippy — Fearful Pup to Thriving Dog</h4>
+        <p>Zippy arrived at PHS/SPCA with siblings, all severely undersocialized, covered in fleas, and diagnosed with a GI parasite. Underweight and fearful, Zippy received dedicated medical treatment and patient socialization that completely transformed his life.</p>
+        <span class="story-card-source">Peninsula Humane Society &amp; SPCA, Burlingame</span>
+        <a href="https://phs-spca.org/zippy-transformation-tails/" target="_blank" rel="noopener noreferrer" class="story-card-link">Read Full Story &rarr;</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Category: Cats -->
+  <h3 class="stories-section-title">&#x1F431; Cat Rescue Stories</h3>
+  <div class="stories-grid">
+
+    <div class="story-card">
+      <img class="story-card-img" src="https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?w=600&h=440&fit=crop&crop=faces" alt="Davis, a special cat who received treatment for a painful paw condition" loading="lazy">
+      <div class="story-card-body">
+        <h4>&#x1F43E; Davis — A Special Cat With a Painful Secret</h4>
+        <p>When Davis arrived at Cat Town Oakland, his foster parent could tell he was special. Diagnosed with pododermatitis, he received immediate veterinary treatment and transformed into a loving companion in his foster home.</p>
+        <span class="story-card-source">Cat Town, Oakland</span>
+        <a href="https://www.cattownoakland.org/cat-town-blog/who-did-you-save-part-3-2024" target="_blank" rel="noopener noreferrer" class="story-card-link">Read Full Story &rarr;</a>
+      </div>
+    </div>
+
+    <div class="story-card">
+      <img class="story-card-img" src="https://images.unsplash.com/photo-1574158622682-e40e69881006?w=600&h=440&fit=crop&crop=faces" alt="Caroline, a scared cat who became playful and found her forever home" loading="lazy">
+      <div class="story-card-body">
+        <h4>&#x1F3E0; Caroline — Foster Fail to Forever Home</h4>
+        <p>Caroline was scared and shut down when she arrived. In her foster home, she transformed into a playful, biscuit-making cat who charmed her foster parents so much they joined the foster-to-forever club.</p>
+        <span class="story-card-source">Cat Town, Oakland</span>
+        <a href="https://www.cattownoakland.org/cat-town-blog/december-adoptions-2025" target="_blank" rel="noopener noreferrer" class="story-card-link">Read Full Story &rarr;</a>
+      </div>
+    </div>
+
+    <div class="story-card">
+      <img class="story-card-img" src="https://images.unsplash.com/photo-1495360010541-f48722b34f7d?w=600&h=440&fit=crop&crop=faces" alt="Sonya, a 7-year-old cat who learned to trust people again" loading="lazy">
+      <div class="story-card-body">
+        <h4>&#x1F495; Sonya — Learning to Trust Again at Age 7</h4>
+        <p>After her guardian passed away, 7-year-old Sonya was surrendered to a shelter where other cats caused her distress. Cat Town gave her a peaceful space with patience, attention, and play — helping her learn to trust people again.</p>
+        <span class="story-card-source">Cat Town, Oakland</span>
+        <a href="https://www.cattownoakland.org/cat-town-blog/august-september-adoptions-2025" target="_blank" rel="noopener noreferrer" class="story-card-link">Read Full Story &rarr;</a>
+      </div>
+    </div>
+
+    <div class="story-card">
+      <img class="story-card-img" src="https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=600&h=440&fit=crop&crop=faces" alt="Sesame, a cat who found two loving homes through SF SPCA volunteers" loading="lazy">
+      <div class="story-card-body">
+        <h4>&#x1F338; Sesame — Two Volunteers, Two Chances at Love</h4>
+        <p>Sesame came from SF Animal Care and Control and was adopted by a dedicated SF SPCA volunteer. After his adopter passed away, Sesame found a new loving home with another volunteer — proof that community truly takes care of its own.</p>
+        <span class="story-card-source">SF SPCA, San Francisco</span>
+        <a href="https://www.sfspca.org/blog/happy-tails-holidays-2025/" target="_blank" rel="noopener noreferrer" class="story-card-link">Read Full Story &rarr;</a>
+      </div>
+    </div>
+
+    <div class="story-card">
+      <img class="story-card-img" src="https://images.unsplash.com/photo-1561948955-570b270e7c36?w=600&h=440&fit=crop&crop=faces" alt="Abby Cadabby, a playful puppy with expressive eyes" loading="lazy">
+      <div class="story-card-body">
+        <h4>&#x2728; Abby Cadabby — Big Eyes, Bigger Heart</h4>
+        <p>With her big, expressive eyes and playful personality, Abby quickly won hearts across the Bay Area. When Allie inquired about adopting her, she was heartbroken to learn Abby was already adopted — but fate brought them together in the end.</p>
+        <span class="story-card-source">SF SPCA, San Francisco</span>
+        <a href="https://www.sfspca.org/blog/happy-tails-abby-cadabby/" target="_blank" rel="noopener noreferrer" class="story-card-link">Read Full Story &rarr;</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Community Impact Section -->
+  <h3 class="stories-section-title">&#x1F30E; Bay Area Community Impact</h3>
+  <div class="stories-grid">
+
+    <div class="story-card story-card--featured">
+      <img class="story-card-img" src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=600&h=440&fit=crop&crop=faces" alt="Adopted pets finding homes at a shelter event" loading="lazy">
+      <div class="story-card-body">
+        <h4>&#x1F389; 161 Adoptions in One Day — SF SPCA's Record-Breaking Event</h4>
+        <p>On August 23, 2025, the SF SPCA hosted a special celebration with waived adoption fees. By the end of the day, 161 cats and dogs found loving homes — the largest single adoption day in the organization's history.</p>
+        <span class="story-card-source">SF SPCA, San Francisco</span>
+        <a href="https://www.sfspca.org/blog/clear-the-shelters-2025-recap/" target="_blank" rel="noopener noreferrer" class="story-card-link">Read Full Story &rarr;</a>
+      </div>
+    </div>
+
+    <div class="story-card story-card--featured">
+      <img class="story-card-img" src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=600&h=440&fit=crop&crop=faces" alt="Dogs playing together at an adoption event" loading="lazy">
+      <div class="story-card-body">
+        <h4>&#x1F43E; California Adopt-a-Pet Day — 4,979 Pets Find Homes</h4>
+        <p>A total of 148 animal welfare organizations across 212 locations worked together to find homes for nearly 5,000 pets in a single day — outpacing the 3,609 adopted during the inaugural event in 2024.</p>
+        <span class="story-card-source">Statewide Initiative</span>
+        <a href="https://www.sfspca.org/press-releases/second-california-adopt-a-pet-day-finds-homes-for-nearly-5000-pets/" target="_blank" rel="noopener noreferrer" class="story-card-link">Read Full Story &rarr;</a>
+      </div>
+    </div>
+
+    <div class="story-card story-card--featured">
+      <img class="story-card-img" src="https://images.unsplash.com/photo-1541599540903-216a46ab5b18?w=600&h=440&fit=crop&crop=faces" alt="A pit bull mix who recovered from severe skin condition" loading="lazy">
+      <div class="story-card-body">
+        <h4>&#x1F4AA; The Unstoppable Spirit of Pit Bull Mixes</h4>
+        <p>One pit bull mix arrived at the East Bay SPCA with the worst case of demodex the medical team had ever seen. Weeks of careful treatment and foster coordination brought her back to full health and a loving home.</p>
+        <span class="story-card-source">East Bay SPCA, Oakland</span>
+        <a href="https://eastbayspca.org/news-press/an-underdog-story-the-unstoppable-spirit-of-pit-bull-mixes" target="_blank" rel="noopener noreferrer" class="story-card-link">Read Full Story &rarr;</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Attribution -->
+  <p style="font-size:10px;color:var(--gray-mid);margin-top:28px;text-align:center;">
+    Stories sourced from <a href="https://sfspca.org" target="_blank" rel="noopener" style="color:var(--pink);">SF SPCA</a>,
+    <a href="https://eastbayspca.org" target="_blank" rel="noopener" style="color:var(--pink);">East Bay SPCA</a>,
+    <a href="https://www.cattownoakland.org" target="_blank" rel="noopener" style="color:var(--pink);">Cat Town Oakland</a>, and
+    <a href="https://phs-spca.org" target="_blank" rel="noopener" style="color:var(--pink);">Peninsula Humane Society &amp; SPCA</a>.
+    Photos via <a href="https://unsplash.com" target="_blank" rel="noopener" style="color:var(--pink);">Unsplash</a>.
+    Content was rephrased for compliance with licensing restrictions.
+  </p>
+</div>
+</div>
 
 <!-- PROCESS -->
 <div class="page pg-process"><div class="cp">
@@ -969,40 +1342,48 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
 <!-- PARTNERS -->
 <div class="page pg-partners"><div class="cp">
   <h2 style="text-align:center;margin-bottom:8px;">Our Partner Shelters</h2>
-  <p style="text-align:center;font-size:13px;color:var(--text-light);margin-bottom:28px;">We partner with these trusted Bay Area shelters. Contact them directly for adoption inquiries.</p>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;">
+  <p style="text-align:center;font-size:13px;color:var(--text-light);margin-bottom:28px;">We partner with these trusted Bay Area shelters and rescue organizations connected through RescueGroups.org. Contact them directly for adoption inquiries.</p>
+
+  <h3 style="font-size:16px;margin-bottom:14px;color:var(--gunmetal);">🏠 Featured Partners</h3>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-bottom:32px;">
     <div style="background:var(--white);border-radius:14px;padding:20px;border:1px solid var(--gray-border);display:flex;gap:14px;align-items:flex-start;">
       <div style="width:48px;height:48px;border-radius:12px;background:var(--light-orange);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🏠</div>
-      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">Valley Humane Society</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 3670 Nevada St, Pleasanton, CA<br>📞 (925) 426-8656</p><a href="https://www.valleyhumane.org" target="_blank" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
+      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">Valley Humane Society</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 3670 Nevada St, Pleasanton, CA<br>📞 (925) 426-8656</p><a href="https://www.valleyhumane.org" target="_blank" rel="noopener noreferrer" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
     </div>
     <div style="background:var(--white);border-radius:14px;padding:20px;border:1px solid var(--gray-border);display:flex;gap:14px;align-items:flex-start;">
       <div style="width:48px;height:48px;border-radius:12px;background:var(--light-pink);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🐕</div>
-      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">East County Animal Shelter</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 4595 Gleason Dr, Dublin, CA<br>📞 (925) 803-7040</p><a href="https://www.alamedasheriff.gov/community/adopt-a-pet" target="_blank" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
+      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">East County Animal Shelter</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 4595 Gleason Dr, Dublin, CA<br>📞 (925) 803-7040</p><a href="https://www.alamedasheriff.gov/community/adopt-a-pet" target="_blank" rel="noopener noreferrer" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
     </div>
     <div style="background:var(--white);border-radius:14px;padding:20px;border:1px solid var(--gray-border);display:flex;gap:14px;align-items:flex-start;">
       <div style="width:48px;height:48px;border-radius:12px;background:var(--light-orange);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🐾</div>
-      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">East Bay SPCA — Dublin</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 4651 Gleason Dr, Dublin, CA<br>📞 (510) 563-9000</p><a href="https://www.eastbayspca.org" target="_blank" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
+      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">East Bay SPCA — Dublin</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 4651 Gleason Dr, Dublin, CA<br>📞 (510) 563-9000</p><a href="https://www.eastbayspca.org" target="_blank" rel="noopener noreferrer" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
     </div>
     <div style="background:var(--white);border-radius:14px;padding:20px;border:1px solid var(--gray-border);display:flex;gap:14px;align-items:flex-start;">
       <div style="width:48px;height:48px;border-radius:12px;background:var(--light-pink);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🐾</div>
-      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">East Bay SPCA — Oakland</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 8323 Baldwin St, Oakland, CA<br>📞 (510) 563-9000</p><a href="https://www.eastbayspca.org" target="_blank" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
+      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">East Bay SPCA — Oakland</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 8323 Baldwin St, Oakland, CA<br>📞 (510) 563-9000</p><a href="https://www.eastbayspca.org" target="_blank" rel="noopener noreferrer" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
     </div>
     <div style="background:var(--white);border-radius:14px;padding:20px;border:1px solid var(--gray-border);display:flex;gap:14px;align-items:flex-start;">
       <div style="width:48px;height:48px;border-radius:12px;background:var(--light-orange);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🐱</div>
-      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">Berkeley Humane</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 2700 Ninth St, Berkeley, CA<br>📞 (510) 845-7735</p><a href="https://berkeleyhumane.org" target="_blank" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
+      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">Berkeley Humane</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 2700 Ninth St, Berkeley, CA<br>📞 (510) 845-7735</p><a href="https://berkeleyhumane.org" target="_blank" rel="noopener noreferrer" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
     </div>
     <div style="background:var(--white);border-radius:14px;padding:20px;border:1px solid var(--gray-border);display:flex;gap:14px;align-items:flex-start;">
       <div style="width:48px;height:48px;border-radius:12px;background:var(--light-pink);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🏠</div>
-      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">Friends of Alameda Animal Shelter</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 1590 Fortmann Way, Alameda, CA<br>📞 (510) 337-8565</p><a href="https://www.alamedaanimalshelter.org" target="_blank" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
+      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">Friends of Alameda Animal Shelter</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 1590 Fortmann Way, Alameda, CA<br>📞 (510) 337-8565</p><a href="https://www.alamedaanimalshelter.org" target="_blank" rel="noopener noreferrer" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
     </div>
     <div style="background:var(--white);border-radius:14px;padding:20px;border:1px solid var(--gray-border);display:flex;gap:14px;align-items:flex-start;">
       <div style="width:48px;height:48px;border-radius:12px;background:var(--light-orange);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🐕</div>
-      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">Tri-City Animal Shelter</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 1950 Stevenson Blvd, Fremont, CA<br>📞 (510) 790-6635</p><a href="https://www.fremont.gov/government/departments/animal-services/tri-city/animal-shelter" target="_blank" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
+      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">Tri-City Animal Shelter</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 1950 Stevenson Blvd, Fremont, CA<br>📞 (510) 790-6635</p><a href="https://www.fremont.gov/government/departments/animal-services/tri-city/animal-shelter" target="_blank" rel="noopener noreferrer" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
     </div>
     <div style="background:var(--white);border-radius:14px;padding:20px;border:1px solid var(--gray-border);display:flex;gap:14px;align-items:flex-start;">
       <div style="width:48px;height:48px;border-radius:12px;background:var(--light-pink);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🐱</div>
-      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">Humane Society Silicon Valley</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 901 Ames Ave, Milpitas, CA<br>📞 (408) 262-5921</p><a href="https://www.hssv.org" target="_blank" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
+      <div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">Humane Society Silicon Valley</h4><p style="font-size:11px;color:var(--text-light);line-height:1.5;">📍 901 Ames Ave, Milpitas, CA<br>📞 (408) 262-5921</p><a href="https://www.hssv.org" target="_blank" rel="noopener noreferrer" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a></div>
     </div>
+  </div>
+
+  <h3 style="font-size:16px;margin-bottom:14px;color:var(--gunmetal);">🌐 RescueGroups.org Partners</h3>
+  <p style="font-size:12px;color:var(--text-light);margin-bottom:14px;">These Bay Area shelters and rescue organizations are connected through RescueGroups.org and have pets listed on our platform.</p>
+  <div id="dynamic-partners-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;">
+    <p style="font-size:12px;color:var(--gray-mid);padding:16px;">Loading partner shelters from database...</p>
   </div>
 </div></div>
 
@@ -1010,7 +1391,7 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
 <div class="page pg-faq"><div class="cp">
   <h2>&#x2753; FAQs</h2>
   <div class="fqi"><details><summary>What does the match percentage mean?</summary><div class="fa">Based on your quiz answers and pet characteristics. Higher = more compatible. Always visit in person!</div></details></div>
-  <div class="fqi"><details><summary>How much does adoption cost?</summary><div class="fa">Dogs: $200&ndash;$350, Cats: $75&ndash;$150. Includes spay/neuter, vaccines, and microchip.</div></details></div>
+  <div class="fqi"><details><summary>How much does adoption cost?</summary><div class="fa">Approximately Dogs: $110&ndash;$120, Cats: $90&ndash;$150. Includes spay/neuter, vaccines, and microchip. Fees and services may differ a bit based on adoption shelter.</div></details></div>
   <div class="fqi"><details><summary>Can I adopt in an apartment?</summary><div class="fa">Yes! Use size and energy filters to find apartment-friendly pets.</div></details></div>
   <div class="fqi"><details><summary>What if it doesn't work out?</summary><div class="fa">All partner shelters have return policies. No judgment.</div></details></div>
   <div class="fqi"><details><summary>Do you house animals directly?</summary><div class="fa">No. We aggregate listings from partner shelters.</div></details></div>
@@ -1018,14 +1399,81 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
 
 <!-- TIPS -->
 <div class="page pg-tips"><div class="cp">
-  <h2>&#x1F4A1; Tips for New Pet Parents</h2>
-  <div class="tgrid">
-    <div class="tc"><div class="ticon">&#x1F3E1;</div><h4>Prepare Your Home</h4><p>Remove toxic plants, secure wires, set up a cozy area.</p></div>
-    <div class="tc"><div class="ticon">&#x1FA7A;</div><h4>First Vet Visit</h4><p>Schedule within the first week. Bring shelter records.</p></div>
-    <div class="tc"><div class="ticon">&#x1F37D;&#xFE0F;</div><h4>Nutrition</h4><p>Transition food slowly over 7&ndash;10 days.</p></div>
-    <div class="tc"><div class="ticon">&#x23F0;</div><h4>Establish Routine</h4><p>Consistent times for feeding, walks, play, and sleep.</p></div>
-    <div class="tc"><div class="ticon">&#x1F49B;</div><h4>3-3-3 Rule</h4><p>3 days to decompress, 3 weeks to learn routine, 3 months to feel at home.</p></div>
-    <div class="tc"><div class="ticon">&#x1F4CB;</div><h4>Get Licensed</h4><p>Required in most Bay Area cities. Helps reunite if lost.</p></div>
+  <h2 style="text-align:center;margin-bottom:8px;">💡 Tips for New Pet Parents</h2>
+  <p style="text-align:center;font-size:13px;color:var(--text-light);margin-bottom:28px;">Essential advice to help you and your new companion start off on the right paw.</p>
+  <div class="process-grid">
+    <div class="process-card">
+      <div class="process-card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1450778869180-e23fc54c209c?w=640&h=360&fit=crop" alt="Prepare Your Home" loading="lazy">
+      </div>
+      <div class="process-card-content">
+        <h4 class="process-card-title">🏡 Prepare Your Home</h4>
+        <p class="process-card-desc">Remove toxic plants and chemicals from reach. Secure loose wires and cords. Set up a cozy, quiet area with a bed where your pet can retreat and feel safe during the first days.</p>
+      </div>
+    </div>
+    <div class="process-card">
+      <div class="process-card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?w=640&h=360&fit=crop" alt="First Vet Visit" loading="lazy">
+      </div>
+      <div class="process-card-content">
+        <h4 class="process-card-title">🩺 First Vet Visit</h4>
+        <p class="process-card-desc">Schedule a vet appointment within the first week. Bring all shelter medical records. Discuss vaccinations, spay/neuter status, flea prevention, and any behavioral concerns.</p>
+      </div>
+    </div>
+    <div class="process-card">
+      <div class="process-card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=640&h=360&fit=crop" alt="Nutrition" loading="lazy">
+      </div>
+      <div class="process-card-content">
+        <h4 class="process-card-title">🍽️ Nutrition Matters</h4>
+        <p class="process-card-desc">Transition to new food slowly over 7–10 days by mixing increasing amounts with their current food. Ask the shelter what brand they've been eating. Always provide fresh water.</p>
+      </div>
+    </div>
+    <div class="process-card">
+      <div class="process-card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=640&h=360&fit=crop" alt="Establish Routine" loading="lazy">
+      </div>
+      <div class="process-card-content">
+        <h4 class="process-card-title">⏰ Establish a Routine</h4>
+        <p class="process-card-desc">Pets thrive on consistency. Set regular times for feeding, walks, play, and sleep. A predictable schedule helps them feel secure and speeds up adjustment to their new home.</p>
+      </div>
+    </div>
+    <div class="process-card">
+      <div class="process-card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1544568100-847a948585b9?w=640&h=360&fit=crop" alt="The 3-3-3 Rule" loading="lazy">
+      </div>
+      <div class="process-card-content">
+        <h4 class="process-card-title">💛 The 3-3-3 Rule</h4>
+        <p class="process-card-desc"><strong>3 days</strong> to decompress and feel overwhelmed. <strong>3 weeks</strong> to learn your routine and start settling in. <strong>3 months</strong> to truly feel at home and show their real personality.</p>
+      </div>
+    </div>
+    <div class="process-card">
+      <div class="process-card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=640&h=360&fit=crop" alt="Training & Socialization" loading="lazy">
+      </div>
+      <div class="process-card-content">
+        <h4 class="process-card-title">🎓 Training & Socialization</h4>
+        <p class="process-card-desc">Start basic commands (sit, stay, come) right away using positive reinforcement. Gradually introduce new people, pets, and environments. Patience is key — never punish, always reward.</p>
+      </div>
+    </div>
+    <div class="process-card">
+      <div class="process-card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=640&h=360&fit=crop" alt="Pet License" loading="lazy">
+      </div>
+      <div class="process-card-content">
+        <h4 class="process-card-title">📋 Get Licensed & Chipped</h4>
+        <p class="process-card-desc">Pet licenses are required in most Bay Area cities and help reunite you if your pet gets lost. Register or update their microchip with your current contact info immediately.</p>
+      </div>
+    </div>
+    <div class="process-card">
+      <div class="process-card-img-wrap">
+        <img src="https://images.unsplash.com/photo-1574158622682-e40e69881006?w=640&h=360&fit=crop" alt="Love & Patience" loading="lazy">
+      </div>
+      <div class="process-card-content">
+        <h4 class="process-card-title">❤️ Love & Patience</h4>
+        <p class="process-card-desc">Your new pet may be shy, anxious, or overly excited at first. Give them space when needed, gentle affection when welcomed, and time to trust. The bond you'll build is worth the wait!</p>
+      </div>
+    </div>
   </div>
 </div></div>
 
@@ -1054,6 +1502,7 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
 <!-- WISHLIST -->
 <div class="page pg-wishlist"><div class="cp">
   <h2>&#9825; Your Wishlist</h2>
+  <div id="adoption-notice" style="display:none;"></div>
   <div id="wl-content">
     <div class="wl-empty" id="wl-empty">
       <div class="big">&#x1F43E;</div>
@@ -1077,10 +1526,10 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
     </div>
     <div class="fcol">
       <h4>Adopt</h4>
-      <label for="pg-adopt">&#x1F43E; All Pets — Live</label>
       <label for="pg-dogs">&#x1F436; Adopt a Dog</label>
       <label for="pg-cats">&#x1F431; Adopt a Cat</label>
       <label for="pg-quiz">&#x1F3AF; Find a Match</label>
+      <label for="pg-inquiry">&#x1F4CB; General Inquiry</label>
     </div>
     <div class="fcol">
       <h4>About</h4>
@@ -1388,6 +1837,77 @@ footer { background: var(--gunmetal); color: #ccc; padding: 32px 24px; margin-to
 </div>
 
 <script>
+// ── Clear Filters Utility ───────────────────────────────────────────────────
+function clearFilters(type) {
+  var selects = document.querySelectorAll('#' + type + '-filter-size, #' + type + '-filter-age, #' + type + '-filter-gender, #' + type + '-filter-city, #' + type + '-filter-shelter');
+  selects.forEach(function(s) { s.selectedIndex = 0; });
+  var searchInput = document.getElementById(type + '-search');
+  if (searchInput) searchInput.value = '';
+  if (typeof renderGrid === 'function') renderGrid(type);
+}
+
+// ── Banner Dots Sync ────────────────────────────────────────────────────────
+(function() {
+  var dots = document.querySelectorAll('.banner-dot');
+  if (!dots.length) return;
+  var track = document.querySelector('.banner-track');
+  if (!track) return;
+
+  // Update dots based on animation progress
+  function updateDots() {
+    var style = window.getComputedStyle(track);
+    var matrix = style.transform || style.webkitTransform;
+    var idx = 0;
+    if (matrix && matrix !== 'none') {
+      var values = matrix.match(/matrix.*\((.+)\)/);
+      if (values) {
+        var parts = values[1].split(',');
+        var tx = parseFloat(parts[4]) || 0;
+        var totalWidth = track.scrollWidth;
+        var slideWidth = totalWidth / 4;
+        idx = Math.round(Math.abs(tx) / slideWidth);
+        if (idx > 3) idx = 0;
+      }
+    }
+    dots.forEach(function(d, i) {
+      d.classList.toggle('active', i === idx);
+    });
+    requestAnimationFrame(updateDots);
+  }
+  requestAnimationFrame(updateDots);
+
+  // Click dot to jump to slide
+  dots.forEach(function(dot) {
+    dot.addEventListener('click', function() {
+      var slideIdx = parseInt(dot.getAttribute('data-slide'));
+      track.style.animation = 'none';
+      track.style.transform = 'translateX(-' + (slideIdx * 25) + '%)';
+      dots.forEach(function(d) { d.classList.remove('active'); });
+      dot.classList.add('active');
+      // Resume animation after 4s
+      setTimeout(function() {
+        track.style.animation = '';
+        track.style.transform = '';
+      }, 4000);
+    });
+  });
+})();
+
+// ── Wishlist Badge Updater ──────────────────────────────────────────────────
+function updateWishlistBadge() {
+  var badge = document.getElementById('wl-badge');
+  if (!badge) return;
+  try {
+    var wl = JSON.parse(localStorage.getItem('furever_wishlist') || '[]');
+    badge.textContent = wl.length > 0 ? wl.length : '';
+  } catch(e) { badge.textContent = ''; }
+}
+// Run on load and periodically
+updateWishlistBadge();
+setInterval(updateWishlistBadge, 2000);
+</script>
+
+<script>
 // ── Chatbot Widget — full state management (task 4.2) ──────────────────────
 var ChatbotWidget = {
   isOpen: false,
@@ -1642,14 +2162,13 @@ var ChatbotWidget = {
 ChatbotWidget.init();
 </script>
 
+<script src="config.js"></script>
 <script>
-// ── Chatbot Configuration ──────────────────────────────────────────────────
-window.CHATBOT_CONFIG = {
-  apiKey: '',           // Google Gemini API key (primary)
-  openaiApiKey: '',     // OpenAI API key (fallback)
-  sheetId: '1Xg4T3vmhoLxN0C2lEBFaN88Y2LSvoF6DQVoCxL3dt80',
-  kbSheetName: 'pet_care_kb'
-};
+// ── Chatbot Configuration loaded from config.js ────────────────────────────
+// If config.js is missing, set defaults so the page still loads
+if (!window.CHATBOT_CONFIG) {
+  window.CHATBOT_CONFIG = { apiKey: '', openaiApiKey: '', sheetId: '', kbSheetName: 'pet_care_kb' };
+}
 
 // ── Retriever Module — Knowledge Base fetch + session caching ──────────────
 var Retriever = {
@@ -1959,7 +2478,7 @@ var AIResponder = {
    */
   callGemini: async function(prompt) {
     var apiKey = window.CHATBOT_CONFIG.apiKey;
-    var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=' + apiKey;
+    var url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + apiKey;
     var body = {
       systemInstruction: {
         parts: [{ text: prompt.systemPrompt }]
@@ -2035,13 +2554,13 @@ var AIResponder = {
 // GOOGLE SHEET DATABASE (kept as fallback)
 // Sheet ID extracted from your published URL
 // ─────────────────────────────────────────────────────────────────────────────
-var SHEET_ID  = '1Xg4T3vmhoLxN0C2lEBFaN88Y2LSvoF6DQVoCxL3dt80';
+var SHEET_ID  = (window.SITE_CONFIG && window.SITE_CONFIG.sheetId) || '';
 var SHEET_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:json&sheet=Sheet1';
 
 // ── RESCUEGROUPS.ORG API v5 — PRIMARY PET DATA SOURCE ─────────────────────────
-var RG_API_KEY = 'GaOYfCI7';
-var RG_DOGS_URL = 'https://api.rescuegroups.org/v5/public/animals/search/available/dogs/haspic?limit=25&sort=random&include=pictures,colors,locations';
-var RG_CATS_URL = 'https://api.rescuegroups.org/v5/public/animals/search/available/cats/haspic?limit=25&sort=random&include=pictures,colors,locations';
+var RG_API_KEY = (window.SITE_CONFIG && window.SITE_CONFIG.rescueGroupsApiKey) || '';
+var RG_DOGS_URL = 'https://api.rescuegroups.org/v5/public/animals/search/available/dogs/haspic?limit=25&sort=random&include=pictures,colors,locations,orgs';
+var RG_CATS_URL = 'https://api.rescuegroups.org/v5/public/animals/search/available/cats/haspic?limit=25&sort=random&include=pictures,colors,locations,orgs';
 var RG_LOCATION_FILTER = JSON.stringify({ data: { filterRadius: { postalcode: "94536", miles: 50 } } });
 
 // All pets loaded (from RescueGroups or Google Sheet fallback)
@@ -2156,6 +2675,7 @@ function mapRescueGroupsAnimal(animal, species, orgsMap, picturesMap, locationsM
     shelterName:  orgName,
     shelterPhone: orgPhone,
     shelterUrl:   orgUrl,
+    petUrl:       attrs.url || ('https://www.rescuegroups.org/animals/detail?animalID=' + (animal.id || '')),
     pictures:     pictures,
     available:    'yes',
     source:       'rescuegroups',
@@ -2168,7 +2688,10 @@ function mapRescueGroupsAnimal(animal, species, orgsMap, picturesMap, locationsM
     isHousetrained:        attrs.isHousetrained,
     isCurrentVaccinations: attrs.isCurrentVaccinations,
     vocalLevel:            attrs.vocalLevel || '',
-    newPeopleReaction:     attrs.newPeopleReaction || ''
+    newPeopleReaction:     attrs.newPeopleReaction || '',
+    isEuthanasiaListed:    attrs.isEuthanasiaListed || false,
+    killDate:              attrs.killDate || attrs.killDatetime || '',
+    killReason:            attrs.killReason || ''
   };
 }
 
@@ -2232,13 +2755,14 @@ function loadPetsFromRescueGroups() {
     var cats = (catsData.data || []).map(function(a) { return mapRescueGroupsAnimal(a, 'Cat', orgsMap, picturesMap, locationsMap, colorsMap); });
 
     ALL_PETS = dogs.concat(cats);
+
     LOAD_TIME = new Date();
     DATA_SOURCE = 'rescuegroups';
 
     // Cache the RescueGroups results
     try {
       localStorage.setItem(CACHE_KEY, JSON.stringify({
-        pets: ALL_PETS, timestamp: LOAD_TIME.getTime(), source: 'rescuegroups'
+        pets: ALL_PETS, timestamp: LOAD_TIME.getTime(), source: 'rescuegroups', version: CACHE_VERSION
       }));
     } catch(e) { /* ignore quota errors */ }
 
@@ -2271,7 +2795,19 @@ function showApiNote(errMsg) {
 
 // ── FETCH FROM GOOGLE SHEET — FALLBACK ────────────────────────────────────────
 var CACHE_KEY = 'furever_pets_cache';
+var CACHE_VERSION = 'v4'; // Increment to force cache invalidation after code changes
 var CACHE_TTL = 30 * 60 * 1000; // 30 minutes in milliseconds
+
+// Clear stale cache on load (ensures fresh data after code updates)
+try {
+  var _raw = localStorage.getItem(CACHE_KEY);
+  if (_raw) {
+    var _cached = JSON.parse(_raw);
+    if (!_cached.version || _cached.version !== CACHE_VERSION) {
+      localStorage.removeItem(CACHE_KEY);
+    }
+  }
+} catch(e) { localStorage.removeItem(CACHE_KEY); }
 
 function loadPets() {
   // Check cache first — avoids unnecessary fetch on every page load
@@ -2280,7 +2816,7 @@ function loadPets() {
     var raw = localStorage.getItem(CACHE_KEY);
     if (raw) {
       cached = JSON.parse(raw);
-      if (Date.now() - cached.timestamp < CACHE_TTL) {
+      if (cached.version === CACHE_VERSION && Date.now() - cached.timestamp < CACHE_TTL) {
         ALL_PETS  = cached.pets;
         LOAD_TIME = new Date(cached.timestamp);
         DATA_SOURCE = cached.source || 'sheets';
@@ -2348,7 +2884,7 @@ function loadPetsFromRescueGroupsSilent() {
     DATA_SOURCE = 'rescuegroups';
     try {
       localStorage.setItem(CACHE_KEY, JSON.stringify({
-        pets: ALL_PETS, timestamp: LOAD_TIME.getTime(), source: 'rescuegroups'
+        pets: ALL_PETS, timestamp: LOAD_TIME.getTime(), source: 'rescuegroups', version: CACHE_VERSION
       }));
     } catch(e) {}
   })
@@ -2373,7 +2909,7 @@ function fetchSheet(silent) {
       // Save to cache
       try {
         localStorage.setItem(CACHE_KEY, JSON.stringify({
-          pets: ALL_PETS, timestamp: LOAD_TIME.getTime(), source: 'sheets'
+          pets: ALL_PETS, timestamp: LOAD_TIME.getTime(), source: 'sheets', version: CACHE_VERSION
         }));
       } catch(e) { /* ignore quota errors */ }
 
@@ -2443,14 +2979,14 @@ function populateShelterDropdown() {
   if (dogSel) {
     dogShelters.forEach(function(s) {
       var opt = document.createElement('option');
-      opt.value = s; opt.textContent = s;
+      opt.value = s.toLowerCase(); opt.textContent = s;
       dogSel.appendChild(opt);
     });
   }
   if (catSel) {
     catShelters.forEach(function(s) {
       var opt = document.createElement('option');
-      opt.value = s; opt.textContent = s;
+      opt.value = s.toLowerCase(); opt.textContent = s;
       catSel.appendChild(opt);
     });
   }
@@ -2496,7 +3032,7 @@ function applyFilters(pets, f) {
         return false;
       }
     }
-    if (f.gender && !(p.gender || '').toLowerCase().includes(f.gender)) return false;
+    if (f.gender && (p.gender || '').toLowerCase() !== f.gender) return false;
     if (f.shelter && !(p.shelterName || '').toLowerCase().includes(f.shelter)) return false;
     if (f.city) {
       var petCity = (p.location || '').toLowerCase().split(',')[0].trim();
@@ -2528,7 +3064,8 @@ function bindFilterEvents() {
 
 // ── BUILD ONE LISTING CARD ─────────────────────────────────────────────────────
 function buildCard(pet) {
-  var pid    = pet.petId;
+  var pid    = pet.petId || pet.id || pet.ID || '';
+  if (!pid) return ''; // Skip cards with no ID
   var name   = pet.petName  || pet.name  || '';
   var species= (pet.species || '').toLowerCase();
   var breed  = pet.breed    || '';
@@ -2540,11 +3077,13 @@ function buildCard(pet) {
   var saved  = isWishlisted(pid);
   var breedSize = [breed, size].filter(Boolean).join(' · ');
   var emoji = species === 'cat' ? '🐱' : '🐶';
+  var urgentBadge = pet.isEuthanasiaListed ? '<span style="position:absolute;top:8px;left:8px;background:#ff4444;color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:8px;z-index:1;">⚠️ URGENT</span>' : '';
   return '<div class="pc"'
     + ' data-pid="'    + pid    + '" data-name="'  + name
     + '" data-breed="' + breed + '" data-loc="'+ loc
     + '" data-img="'  + img + '">'
-    + '<div class="pc-click" data-pid="' + pid + '" style="cursor:pointer;">'
+    + '<div class="pc-click" data-pid="' + pid + '" style="cursor:pointer;position:relative;">'
+      + urgentBadge
       + '<img src="' + img + '" alt="' + name + '" loading="lazy" onerror="this.src=\'https://placehold.co/300x155?text=No+Photo\'">'
       + '<div class="pci"><h4>' + name + ' ' + emoji + '</h4>'
         + (city ? '<p class="pl">📍 ' + city + '</p>' : '')
@@ -2575,30 +3114,101 @@ function renderGrid(type) {
 
   grid.innerHTML = filtered.map(buildCard).join('');
   if (noRes) noRes.style.display = filtered.length === 0 ? '' : 'none';
-
-  // Bind click events only within this grid to avoid double-binding
-  grid.querySelectorAll('.pc-click[data-pid]').forEach(function(el) {
-    el.addEventListener('click', function() { openDetail(el.dataset.pid); });
-  });
-  grid.querySelectorAll('.wl-btn[data-pid]').forEach(function(btn) {
-    btn.addEventListener('click', function(e) { e.stopPropagation(); toggleWishlist(btn.dataset.pid); });
-  });
 }
+
+// ── EVENT DELEGATION FOR PET CARDS (works regardless of render timing) ─────────
+document.addEventListener('click', function(e) {
+  // 1. Handle wishlist button click first (so it doesn't trigger card detail open)
+  var wlBtn = e.target.closest('.wl-btn[data-pid]');
+  if (wlBtn) {
+    e.stopPropagation();
+    e.preventDefault();
+    toggleWishlist(wlBtn.dataset.pid);
+    return;
+  }
+
+  // 2. Handle pet card click → open detail
+  var card = e.target.closest('.pc[data-pid]');
+  if (card && card.dataset.pid) {
+    openDetail(card.dataset.pid);
+    return;
+  }
+});
 
 // ── RENDER BOTH GRIDS ──────────────────────────────────────────────────────────
 function renderListings() {
   renderGrid('dog');
   renderGrid('cat');
+  updateDynamicStats();
+  updateDynamicPartners();
+}
+
+// ── UPDATE DYNAMIC STATISTICS ──────────────────────────────────────────────────
+function updateDynamicStats() {
+  var statNums = document.querySelectorAll('.stats-row .snum');
+  if (statNums.length >= 2 && ALL_PETS.length > 0) {
+    statNums[0].textContent = ALL_PETS.length + '+';
+    var uniqueShelters = new Set(ALL_PETS.map(function(p) { return p.shelterName; }));
+    statNums[1].textContent = uniqueShelters.size;
+  }
+}
+
+// ── UPDATE DYNAMIC PARTNERS GRID ─────────────────────────────────────────────
+function updateDynamicPartners() {
+  var grid = document.getElementById('dynamic-partners-grid');
+  if (!grid || ALL_PETS.length === 0) return;
+
+  // Collect unique shelters from ALL_PETS with their info
+  var shelterMap = {};
+  ALL_PETS.forEach(function(p) {
+    var name = p.shelterName || '';
+    if (!name || shelterMap[name]) return;
+    shelterMap[name] = {
+      name: name,
+      phone: p.shelterPhone || '',
+      url: p.shelterUrl || '',
+      location: p.location || '',
+      petCount: 0
+    };
+  });
+  // Count pets per shelter
+  ALL_PETS.forEach(function(p) {
+    var name = p.shelterName || '';
+    if (name && shelterMap[name]) shelterMap[name].petCount++;
+  });
+
+  var shelters = Object.values(shelterMap).sort(function(a, b) {
+    return b.petCount - a.petCount; // Most pets first
+  });
+
+  if (shelters.length === 0) {
+    grid.innerHTML = '<p style="font-size:12px;color:var(--gray-mid);padding:16px;">No additional partner shelters found in current data.</p>';
+    return;
+  }
+
+  var emojis = ['🐾', '🐕', '🐱', '🏠'];
+  var bgColors = ['var(--light-orange)', 'var(--light-pink)'];
+
+  grid.innerHTML = shelters.map(function(s, i) {
+    var emoji = emojis[i % emojis.length];
+    var bg = bgColors[i % bgColors.length];
+    var city = s.location ? s.location.split(',')[0].trim() : '';
+    var infoLine = (city ? '📍 ' + city : '') + (s.phone ? (city ? '<br>' : '') + '📞 ' + s.phone : '');
+    var linkHtml = s.url ? '<a href="' + s.url + '" target="_blank" rel="noopener noreferrer" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a>' : '';
+    var petBadge = '<span style="font-size:10px;background:var(--light-pink);color:var(--pink);padding:2px 8px;border-radius:8px;font-weight:600;">' + s.petCount + ' pets listed</span>';
+
+    return '<div style="background:var(--white);border-radius:14px;padding:20px;border:1px solid var(--gray-border);display:flex;gap:14px;align-items:flex-start;">'
+      + '<div style="width:48px;height:48px;border-radius:12px;background:' + bg + ';display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">' + emoji + '</div>'
+      + '<div><h4 style="font-size:14px;color:var(--gunmetal);margin-bottom:4px;">' + s.name + '</h4>'
+      + (infoLine ? '<p style="font-size:11px;color:var(--text-light);line-height:1.5;">' + infoLine + '</p>' : '')
+      + '<div style="display:flex;gap:10px;align-items:center;margin-top:6px;">' + petBadge + linkHtml + '</div>'
+      + '</div></div>';
+  }).join('');
 }
 
 // ── BIND CLICK EVENTS ON CARDS (called from initial load; scoped binding now in renderGrid) ──
 function bindCardEvents() {
-  document.querySelectorAll('.pc-click[data-pid]').forEach(function(el) {
-    el.addEventListener('click', function() { openDetail(el.dataset.pid); });
-  });
-  document.querySelectorAll('.wl-btn[data-pid]').forEach(function(btn) {
-    btn.addEventListener('click', function(e) { e.stopPropagation(); toggleWishlist(btn.dataset.pid); });
-  });
+  // No-op: event delegation handles all clicks now
 }
 
 // ── INTEREST FORM MODAL ────────────────────────────────────────────────────────
@@ -2631,7 +3241,7 @@ function bindCardEvents() {
 //                        .setMimeType(ContentService.MimeType.JSON);
 // }
 // -----------------------------------------------------------------------------
-var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwmtLgxXy3hhXM3XVULRLSgNrm8lcjtD7wlLpg3bB691tQhXl5hnqqCdi_MdKzKzu5a/exec';
+var APPS_SCRIPT_URL = (window.SITE_CONFIG && window.SITE_CONFIG.appsScriptUrl) || '';
 
 // Known shelter emails map
 var SHELTER_EMAILS = {
@@ -2785,7 +3395,7 @@ function showFormSuccess(petName) {
 }
 
 function openDetail(pid) {
-  var pet = ALL_PETS.find(function(p) { return String(p.petId) === String(pid); });
+  var pet = ALL_PETS.find(function(p) { return String(p.petId || p.id || p.ID || '') === String(pid); });
   if (!pet) { console.error('[Detail] Pet not found for pid:', pid); return; }
 
   // Helper to escape HTML special chars in text content
@@ -2802,12 +3412,22 @@ function openDetail(pid) {
   var weight   = pet.weight   || '';
   var loc      = pet.location || '';
   var price    = pet.price    ? (pet.price.toString().charAt(0) === '$' || pet.price.toLowerCase().indexOf('contact') !== -1 ? pet.price : '$' + pet.price) : '';
+  // Check if price is a date-like string (Bug 1.6 fix)
+  var priceRaw = pet.price ? pet.price.toString() : '';
+  var isDateLike = /^\d{4}-\d{2}-\d{2}/.test(priceRaw) || /^\d{1,2}\/\d{1,2}\/\d{2,4}/.test(priceRaw);
+  if (isDateLike) {
+    price = 'Contact shelter';
+  }
   var match    = pet.match    ? pet.match + '%' : '';
   var img      = pet.imageUrl || pet.image || '';
   var story    = pet.story    || '';
   var shelter  = pet.shelterName  || '';
   var phone    = pet.shelterPhone || '';
-  var url      = pet.shelterUrl   || '#';
+  var url      = pet.shelterUrl || '#';
+  // Ensure URL has a protocol
+  if (url !== '#' && url && !url.startsWith('http')) {
+    url = 'https://' + url;
+  }
   var tags     = pet.tags         || '';
   var gender   = pet.gender       || '';
   var energy   = pet.energy       || '';
@@ -2817,8 +3437,14 @@ function openDetail(pid) {
   var vocalLevel = pet.vocalLevel || '';
   var newPeopleReaction = pet.newPeopleReaction || '';
   var emoji    = species === 'cat' ? '🐱' : '🐶';
-  var backPage = species === 'cat' ? 'pg-cats' : 'pg-dogs';
-  var backText = species === 'cat' ? 'Back to Cats' : 'Back to Dogs';
+  var activeRadio = document.querySelector('input[name="pg"]:checked');
+  var backPage = activeRadio ? activeRadio.id : (species === 'cat' ? 'pg-cats' : 'pg-dogs');
+  var backText = 'Back';
+  if (backPage === 'pg-dogs') backText = 'Back to Dogs';
+  else if (backPage === 'pg-cats') backText = 'Back to Cats';
+  else if (backPage === 'pg-wishlist') backText = 'Back to Wishlist';
+  else if (backPage === 'pg-home') backText = 'Back to Home';
+
   var saved    = isWishlisted(pid);
 
   // Format qualities: space-separated traits → comma-separated, capitalize first letter
@@ -2857,6 +3483,8 @@ function openDetail(pid) {
       + '<div class="dinfo">'
         + '<h1>' + esc(name) + ' ' + emoji + '</h1>'
         + '<p class="dbr">' + esc(breed) + (loc ? ' \u00B7 ' + esc(loc) : '') + '</p>'
+        + (shelter ? '<p style="font-size:13px;color:var(--pink);font-weight:600;margin-bottom:14px;">\uD83C\uDFE0 ' + esc(shelter) + '</p>' : '')
+        + (pet.isEuthanasiaListed ? '<div class="euth-warning" style="background:linear-gradient(135deg,#ff4444,#cc0000);color:white;padding:14px 16px;border-radius:10px;margin:10px 0;font-weight:bold;text-align:center;box-shadow:0 4px 12px rgba(255,0,0,0.3);"><div style="font-size:16px;margin-bottom:4px;">\u26A0\uFE0F URGENT — AT RISK OF EUTHANASIA</div><div style="font-size:12px;font-weight:500;opacity:0.95;">' + (pet.killDate ? 'Scheduled date: ' + esc(pet.killDate) + ' — ' : '') + 'This pet needs a home immediately. Please consider adopting or fostering today!' + (pet.killReason ? '<br>Reason: ' + esc(pet.killReason) : '') + '</div></div>' : '')
         + '<div class="sgrid">'
           + (weight ? '<div class="si"><div class="sl">Size</div><div class="sv">' + esc(weight) + '</div></div>' : '')
           + (age    ? '<div class="si"><div class="sl">Age</div><div class="sv">' + esc(age) + '</div></div>' : '')
@@ -2869,7 +3497,7 @@ function openDetail(pid) {
           + (newPeopleReaction ? '<div class="si"><div class="sl">New People</div><div class="sv">' + esc(newPeopleReaction) + '</div></div>' : '')
         + '</div>'
         + '<div class="dacts">'
-          + (safeUrl !== '#' ? '<a href="' + safeUrl + '" target="_blank" class="btn-main">Visit Shelter \u2192</a>' : '')
+          + (safeUrl !== '#' && safeUrl ? '<a href="' + safeUrl + '" target="_blank" rel="noopener noreferrer" class="btn-main">\uD83C\uDFE0 Visit ' + esc(shelter || 'Shelter') + ' \u2192</a>' : '')
           + '<span class="wl-btn' + (saved?' wishlisted':'') + '" data-pid="' + pid + '" style="cursor:pointer;border-radius:20px;padding:10px 20px;">'
             + (saved ? '\u2665 Wishlisted!' : '\u2661 Add to Wishlist')
           + '</span>'
@@ -2878,17 +3506,28 @@ function openDetail(pid) {
       + '</div>'
     + '</div>'
     + '<div id="detail-story-area"></div>'
-    + '<div id="detail-compat-area"></div>'
-    + (shelter ? '<div class="shcard"><h4>\uD83C\uDFE0 ' + esc(shelter) + '</h4><p>\uD83D\uDCCD ' + esc(loc) + (phone ? ' \u00B7 \u260E\uFE0F ' + esc(phone) : '') + '</p></div>' : '');
+    + '<div id="detail-compat-area"></div>';
 
   container.innerHTML = html;
 
-  // Add story safely via textContent (avoids XSS and broken HTML from API descriptions)
+  // Add story safely — clean up &nbsp; and make URLs clickable
   if (story) {
+    // Clean up HTML entities and &nbsp;
+    var cleanStory = story.replace(/&nbsp;/g, ' ').replace(/&#39;/g, "'").replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/\s+/g, ' ').trim();
+    // Make URLs clickable
+    cleanStory = cleanStory.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" style="color:var(--pink);word-break:break-all;">$1</a>');
     var storyDiv = document.getElementById('detail-story-area');
-    storyDiv.innerHTML = '<div class="dstory"><h3></h3><p></p></div>';
-    storyDiv.querySelector('h3').textContent = '\uD83D\uDCD6 ' + name + "'s Story";
-    storyDiv.querySelector('p').textContent = story;
+    storyDiv.innerHTML = '<div class="dstory"><h3>\uD83D\uDCD6 ' + esc(name) + "\'s Story</h3><p>" + cleanStory + '</p></div>';
+  }
+
+  // Show shelter name in detail view
+  if (shelter) {
+    var shelterHtml = '<div class="shcard" style="margin-top:14px;"><h4>\uD83C\uDFE0 ' + esc(shelter) + '</h4>'
+      + '<p>\uD83D\uDCCD ' + esc(loc) + (phone ? ' \u00B7 \u260E\uFE0F ' + esc(phone) : '') + '</p>'
+      + (url !== '#' ? '<a href="' + url.replace(/'/g,'%27') + '" target="_blank" rel="noopener noreferrer" style="color:var(--pink);font-size:12px;font-weight:600;">Visit Shelter Website \u2192</a>' : '')
+      + '</div>';
+    var storyArea = document.getElementById('detail-story-area');
+    storyArea.insertAdjacentHTML('afterend', shelterHtml);
   }
 
   // Add compatibility section
@@ -2919,6 +3558,34 @@ function openDetail(pid) {
   container.querySelectorAll('.wl-btn[data-pid]').forEach(function(btn) {
     btn.addEventListener('click', function(e) { e.stopPropagation(); toggleWishlist(btn.dataset.pid); });
   });
+
+  // ── Shelter Visit Tracking → logs to "Shown Interest" tab in Google Sheets ──
+  var visitLink = container.querySelector('.btn-main');
+  if (visitLink) {
+    visitLink.addEventListener('click', function() {
+      var user = getStoredUser();
+      var now = new Date();
+      var payload = {
+        action: 'shownInterest',
+        petName: pet.petName || pet.name || '',
+        petId: pet.petId || pet.id || '',
+        breed: pet.breed || '',
+        shelterName: pet.shelterName || '',
+        shelterUrl: pet.shelterUrl || '',
+        date: now.toLocaleDateString(),
+        time: now.toLocaleTimeString(),
+        userName: (user && user.name) ? user.name : 'Guest',
+        userEmail: (user && user.email) ? user.email : 'Not signed in'
+      };
+      fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(payload)
+      }).catch(function() { /* fire and forget */ });
+      // Link still opens normally via default <a> behavior
+    });
+  }
 }
 
 function switchDetailPhoto(thumbEl) {
@@ -2933,12 +3600,20 @@ function switchDetailPhoto(thumbEl) {
 }
 
 function closeDetail(backPageId) {
-  var c = document.getElementById('pet-detail-container');
-  c.classList.remove('active'); c.innerHTML = '';
-  document.body.classList.remove('detail-open');
+  closeDetailNoRedirect();
   var t = document.getElementById(backPageId); if (t) t.checked = true;
   window.scrollTo(0, 0);
 }
+
+function closeDetailNoRedirect() {
+  var c = document.getElementById('pet-detail-container');
+  if (c && c.classList.contains('active')) {
+    c.classList.remove('active');
+    c.innerHTML = '';
+    document.body.classList.remove('detail-open');
+  }
+}
+
 
 // ── QUIZ OPTION SELECTION ──────────────────────────────────────────────────────
 document.querySelectorAll('.qopts').forEach(function(group) {
@@ -2952,15 +3627,58 @@ document.querySelectorAll('.qopts').forEach(function(group) {
 });
 
 // ── WISHLIST ───────────────────────────────────────────────────────────────────
-var WL_KEY = 'furever_wishlist';
-function getWishlist()     { try { return JSON.parse(localStorage.getItem(WL_KEY)) || {}; } catch(e) { return {}; } }
-function saveWishlist(wl)  { localStorage.setItem(WL_KEY, JSON.stringify(wl)); }
+function getWishlistKey(email) { return 'furever_wishlist_' + email; }
+
+function getWishlist() {
+  var user = getStoredUser();
+  if (!user || !user.email) return {};
+  try {
+    return JSON.parse(localStorage.getItem(getWishlistKey(user.email))) || {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function saveWishlist(wl) {
+  var user = getStoredUser();
+  if (!user || !user.email) return;
+  localStorage.setItem(getWishlistKey(user.email), JSON.stringify(wl));
+}
+
+function loadUserWishlist() {
+  var user = getStoredUser();
+  if (user && user.email && localStorage.getItem(getWishlistKey(user.email)) === null) {
+    saveWishlist({});
+  }
+  refreshWishlistUI();
+  if (document.getElementById('pg-wishlist').checked) renderWishlistPage();
+}
+
+function clearWishlistUI() {
+  // Clear heart badges and wishlist buttons without deleting localStorage data
+  document.querySelectorAll('.wl-btn[data-pid]').forEach(function(btn) {
+    btn.innerHTML = '♡ Add to Wishlist';
+    btn.classList.remove('wishlisted');
+  });
+  document.querySelectorAll('.hbadge.wl-heart[data-pid]').forEach(function(h) {
+    h.classList.remove('wishlisted');
+    h.innerHTML = '♡';
+  });
+  if (document.getElementById('pg-wishlist').checked) renderWishlistPage();
+}
+
 function isWishlisted(pid) { return !!getWishlist()[String(pid)]; }
 
 function toggleWishlist(pid) {
+  // Sign-in gate: if user is not signed in, open auth modal and return early
+  var user = getStoredUser();
+  if (!user || !user.email) {
+    openAuthModal();
+    return;
+  }
   pid = String(pid);
   var wl  = getWishlist();
-  var pet = ALL_PETS.find(function(p) { return String(p.petId) === pid; });
+  var pet = ALL_PETS.find(function(p) { return String(p.petId || p.id || p.ID || '') === pid; });
   if (wl[pid]) {
     delete wl[pid];
   } else if (pet) {
@@ -2993,10 +3711,153 @@ function refreshWishlistUI() {
   });
 }
 
+// ── ADOPTION NOTIFIER ──────────────────────────────────────────────────────────
+function checkAdoptedPets(wishlist) {
+  var adopted = [];
+  var available = [];
+  var entries = Object.values(wishlist);
+  // If ALL_PETS is empty, undefined, or not an array → data source unavailable (Req 7.4)
+  if (typeof ALL_PETS === 'undefined' || !ALL_PETS || !Array.isArray(ALL_PETS) || ALL_PETS.length === 0) {
+    return { adopted: [], available: entries };
+  }
+  entries.forEach(function(entry) {
+    var pid = String(entry.pid || '');
+    var foundPet = ALL_PETS.find(function(p) {
+      return String(p.petId || p.id || p.ID || '') === pid;
+    });
+    // Pet is "adopted" if not found in ALL_PETS OR found but marked adopted
+    if (!foundPet || foundPet.adopted === true) {
+      adopted.push(entry);
+    } else {
+      available.push(entry);
+    }
+  });
+  return { adopted: adopted, available: available };
+}
+
+function showAdoptionNotification(adoptedPets) {
+  var container = document.getElementById('adoption-notice');
+  if (!container) return;
+  if (!adoptedPets || adoptedPets.length === 0) {
+    container.style.display = 'none';
+    container.innerHTML = '';
+    window._currentAdoptedPets = [];
+    return;
+  }
+  // Store currently displayed adopted pets for dismissal persistence
+  window._currentAdoptedPets = adoptedPets;
+  var names = adoptedPets.map(function(p) { return p.name || 'A pet'; });
+  var allAdopted = (Object.keys(getWishlist()).length === 0);
+  var message = '';
+  if (allAdopted) {
+    message = '<p style="font-size:14px;color:var(--text-light);margin:0;">Your saved pets have found their forever homes 🎉</p>';
+  } else {
+    message = '<p style="font-size:14px;color:var(--text-light);margin:0;">These pets found their forever homes: <strong>' + names.join(', ') + '</strong></p>';
+  }
+  container.innerHTML = '<div class="sc" style="background:linear-gradient(135deg,#fff8f0,#fff);border-left:4px solid var(--orange);display:flex;align-items:flex-start;gap:12px;">'
+    + '<span style="font-size:22px;line-height:1;">🏠</span>'
+    + '<div style="flex:1;">' + message + '</div>'
+    + '<button onclick="dismissAdoptionNotification()" style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--gray-mid);padding:0 4px;" aria-label="Dismiss notification">&times;</button>'
+    + '</div>';
+  container.style.display = '';
+}
+
+function getDismissedNotices(email) {
+  if (!email) return [];
+  try {
+    var data = localStorage.getItem('furever_dismissed_adoptions_' + email);
+    if (!data) return [];
+    var parsed = JSON.parse(data);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch(e) {
+    return [];
+  }
+}
+
+function dismissAdoptionNotice(petId) {
+  var user = getStoredUser();
+  if (!user || !user.email) return;
+  var dismissed = getDismissedNotices(user.email);
+  if (dismissed.indexOf(String(petId)) === -1) {
+    dismissed.push(String(petId));
+  }
+  localStorage.setItem('furever_dismissed_adoptions_' + user.email, JSON.stringify(dismissed));
+}
+
+function dismissAdoptionNotification() {
+  var container = document.getElementById('adoption-notice');
+  if (container) {
+    // Persist dismissal for all currently displayed adopted pets
+    if (window._currentAdoptedPets && window._currentAdoptedPets.length > 0) {
+      window._currentAdoptedPets.forEach(function(p) {
+        dismissAdoptionNotice(String(p.pid));
+      });
+    }
+    container.style.display = 'none';
+    container.innerHTML = '';
+  }
+}
+
 function renderWishlistPage() {
   var wl = getWishlist(), pets = Object.values(wl);
   var empty = document.getElementById('wl-empty'), grid = document.getElementById('wl-grid');
+  var noticeContainer = document.getElementById('adoption-notice');
   if (!empty || !grid) return;
+
+  // Run adoption check
+  var result = checkAdoptedPets(wl);
+  var adoptedPets = result.adopted;
+  var availablePets = result.available;
+
+  // If there are adopted pets, remove them from stored wishlist
+  if (adoptedPets.length > 0) {
+    adoptedPets.forEach(function(p) {
+      delete wl[String(p.pid)];
+    });
+    saveWishlist(wl);
+  }
+
+  // Filter out dismissed pets from notification (but they are still removed from wishlist above)
+  var user = getStoredUser();
+  var dismissed = user ? getDismissedNotices(user.email) : [];
+  var notifiablePets = adoptedPets.filter(function(p) {
+    return dismissed.indexOf(String(p.pid)) === -1;
+  });
+
+  // All adopted: show empty state + notification (only for non-dismissed)
+  if (pets.length > 0 && availablePets.length === 0 && adoptedPets.length > 0) {
+    empty.style.display = '';
+    grid.style.display = 'none';
+    grid.innerHTML = '';
+    showAdoptionNotification(notifiablePets);
+    return;
+  }
+
+  // Some adopted: show available pets + notification (only for non-dismissed)
+  if (adoptedPets.length > 0 && availablePets.length > 0) {
+    empty.style.display = 'none';
+    grid.style.display = '';
+    showAdoptionNotification(notifiablePets);
+    grid.innerHTML = availablePets.map(function(p) {
+      var tags = (p.tags||'').split(',').filter(Boolean).map(function(t){return '<span>'+t.trim()+'</span>';}).join('');
+      return '<div class="pc" data-pid="'+p.pid+'" data-name="'+p.name+'" data-breed="'+p.breed
+        +'" data-loc="'+p.loc+'" data-price="'+p.price+'" data-img="'+p.img
+        +'" data-tags="'+p.tags+'" data-match="'+p.match+'">'
+        +'<div class="pc-click" data-pid="'+p.pid+'" style="cursor:pointer;">'
+          +'<img src="'+p.img+'" alt="'+p.name+'" style="width:100%;height:155px;object-fit:cover;">'
+          +(p.match?'<span class="mbadge">'+p.match+'</span>':'')
+          +'<div class="pci"><h4>'+p.name+'</h4><p class="pm">'+p.breed+'</p>'
+          +'<p class="pl">📍 '+p.loc+'</p><p class="pf">'+p.price+'</p>'
+          +(tags?'<div class="ptags">'+tags+'</div>':'')+'</div>'
+        +'</div>'
+        +'<div class="wls wl-btn wishlisted" data-pid="'+p.pid+'" style="cursor:pointer;">♥ Remove</div>'
+        +'</div>';
+    }).join('');
+    return;
+  }
+
+  // No adopted: display normally, hide notification
+  if (noticeContainer) { noticeContainer.style.display = 'none'; noticeContainer.innerHTML = ''; }
   if (pets.length === 0) { empty.style.display=''; grid.style.display='none'; grid.innerHTML=''; return; }
   empty.style.display = 'none'; grid.style.display = '';
   grid.innerHTML = pets.map(function(p) {
@@ -3014,16 +3875,14 @@ function renderWishlistPage() {
       +'<div class="wls wl-btn wishlisted" data-pid="'+p.pid+'" style="cursor:pointer;">♥ Remove</div>'
       +'</div>';
   }).join('');
-  grid.querySelectorAll('.pc-click[data-pid]').forEach(function(el) {
-    el.addEventListener('click', function() { openDetail(el.dataset.pid); });
-  });
-  grid.querySelectorAll('.wl-btn[data-pid]').forEach(function(btn) {
-    btn.addEventListener('click', function(e) { e.stopPropagation(); toggleWishlist(btn.dataset.pid); });
-  });
+  // Click handling via event delegation — no manual binding needed
 }
 
 document.querySelectorAll('input[name="pg"]').forEach(function(r) {
-  r.addEventListener('change', function() { if (r.id==='pg-wishlist') renderWishlistPage(); });
+  r.addEventListener('change', function() {
+    closeDetailNoRedirect();
+    if (r.id === 'pg-wishlist') renderWishlistPage();
+  });
 });
 
 // ── INIT ───────────────────────────────────────────────────────────────────────
@@ -3034,6 +3893,7 @@ if (document.getElementById('pg-wishlist').checked) renderWishlistPage();
 <script>
 // ── Quiz Result Summary ────────────────────────────────────────────────────
 function showQuizResult() {
+  // Try to read answers from the dedicated quiz page first
   var quizPage = document.querySelector('.pg-quiz .qbody');
   var questions = quizPage.querySelectorAll('.qq');
   var answers = {};
@@ -3044,53 +3904,138 @@ function showQuizResult() {
     answers[label] = selected ? selected.textContent.trim() : '';
   });
 
-  var petType = answers['Would you like to adopt a...'] || 'a pet';
+  var petType = answers['Would you like to adopt a...'] || '';
   var amenities = answers['Nearby amenities?'] || '';
-  var experience = answers['Are you a...'] || '';
-  var existingPets = answers['Do you currently have pets?'] || '';
+  var genderPref = answers['Gender preference?'] || '';
   var specialNeeds = answers['Open to special needs?'] || '';
 
-  // Build personalized recommendation
-  var rec = '';
-  var emoji = '🐾';
+  // Determine size preferences based on amenities/living space
+  // Park → active/larger dogs ok, any size
+  // Yard → any size
+  // None (apartment) → Small or Medium preferred
+  var preferredSizes = [];
+  if (amenities === 'None') {
+    preferredSizes = ['small', 'medium'];
+  }
+  // Park or Yard → all sizes acceptable, no size filter
 
-  if (petType.indexOf('Dog') !== -1) {
-    emoji = '🐶';
-    if (amenities === 'Park') {
-      rec = 'Look for an active, energetic dog who loves outdoor adventures! A medium-to-large breed that enjoys walks and fetch would be perfect for you.';
-    } else if (amenities === 'Yard') {
-      rec = 'A calm, low-energy dog companion would be ideal for your yard space. Consider a relaxed breed that enjoys lounging and short play sessions.';
+  // Filter ALL_PETS based on quiz answers and calculate match percentage
+  var matchedPets = [];
+
+  ALL_PETS.forEach(function(pet) {
+    var criteria = 0;
+    var matched = 0;
+
+    // 1. Species match
+    criteria++;
+    var speciesMatch = false;
+    if (petType.indexOf('Dog') !== -1) {
+      speciesMatch = (pet.species || '').toLowerCase() === 'dog';
+    } else if (petType.indexOf('Cat') !== -1) {
+      speciesMatch = (pet.species || '').toLowerCase() === 'cat';
     } else {
-      rec = 'Consider a smaller, apartment-friendly dog with moderate energy. Breeds that adapt well to indoor living would suit your lifestyle.';
+      // "Either!" or no selection — matches both
+      speciesMatch = true;
     }
-  } else if (petType.indexOf('Cat') !== -1) {
-    emoji = '🐱';
-    if (existingPets === 'Dog(s)') {
-      rec = 'Look for a confident, dog-friendly cat. Many adult cats adapt well to homes with dogs — shelters can help identify good matches.';
-    } else if (existingPets === 'Cat(s)') {
-      rec = 'Consider a social cat who enjoys feline company. A younger cat often adapts more easily to multi-cat households.';
+    if (speciesMatch) matched++;
+
+    // 2. Size preference (only applies if apartment/no amenities)
+    if (preferredSizes.length > 0) {
+      criteria++;
+      var petSize = (pet.size || pet.weight || '').toLowerCase();
+      var sizeMatch = preferredSizes.some(function(s) { return petSize.indexOf(s) !== -1; });
+      if (sizeMatch) matched++;
+    }
+
+    // 3. Gender preference
+    if (genderPref && genderPref !== 'No preference') {
+      criteria++;
+      var petGender = (pet.gender || '').toLowerCase();
+      if (petGender === genderPref.toLowerCase()) matched++;
+    }
+
+    // 4. Special needs tolerance
+    criteria++;
+    var petHasSpecialNeeds = (pet.tags || '').toLowerCase().indexOf('special needs') !== -1;
+    if (specialNeeds.indexOf('Yes') !== -1) {
+      // User is open to special needs — all pets match this criterion
+      matched++;
     } else {
-      rec = 'A sweet, affectionate cat would make a wonderful first companion. Consider their energy level — playful kittens or calm adults.';
+      // User doesn't want special needs — only non-special-needs pets match
+      if (!petHasSpecialNeeds) matched++;
     }
-  } else {
-    emoji = '🐾';
-    rec = 'You\'re open to both — great! Browse our live feed to discover dogs and cats of all personalities. Your perfect match could be either!';
-  }
 
-  if (experience === 'First-time owner') {
-    rec += ' As a first-time owner, look for pets described as "easy-going" or "good for beginners."';
-  }
-  if (specialNeeds.indexOf('Yes') !== -1) {
-    rec += ' Your openness to special needs pets is wonderful — they often make the most grateful companions! ❤️';
-  }
+    // Only include pets that match species (minimum requirement)
+    if (speciesMatch) {
+      var matchPercent = Math.round((matched / criteria) * 100);
+      matchedPets.push({ pet: pet, matchPercent: matchPercent });
+    }
+  });
 
+  // Sort by match percentage descending
+  matchedPets.sort(function(a, b) { return b.matchPercent - a.matchPercent; });
+
+  // Render results
   var resultDiv = document.getElementById('quiz-result');
   resultDiv.style.display = 'block';
-  resultDiv.innerHTML = '<h4>' + emoji + ' Your Personalized Recommendation</h4>' +
-    '<p>' + rec + '</p>' +
-    '<label for="pg-adopt" class="qbtn">Browse Pets →</label>';
+
+  if (matchedPets.length === 0) {
+    var browseLabel = petType.indexOf('Cat') !== -1 ? 'pg-cats' : 'pg-dogs';
+    var browseText = petType.indexOf('Cat') !== -1 ? 'Browse All Cats →' : 'Browse All Dogs →';
+    resultDiv.innerHTML = '<h4>🐾 No Matches Found</h4>' +
+      '<p>We couldn\'t find pets matching your criteria right now. Try adjusting your preferences or check back soon as new pets are added daily!</p>' +
+      '<label for="' + browseLabel + '" class="qbtn">' + browseText + '</label>';
+  } else {
+    var heading = '<h4>🐾 Your Matched Pets (' + matchedPets.length + ' found)</h4>' +
+      '<p>Based on your quiz answers, here are your best matches:</p>';
+
+    var cardsHtml = '<div class="pgrid" style="margin-top:14px;">';
+    // Show up to 12 top matches
+    var displayPets = matchedPets.slice(0, 12);
+    displayPets.forEach(function(item) {
+      cardsHtml += buildQuizCard(item.pet, item.matchPercent);
+    });
+    cardsHtml += '</div>';
+
+    resultDiv.innerHTML = heading + cardsHtml;
+  }
 
   resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// Build a pet card with match badge for quiz results
+function buildQuizCard(pet, matchPercent) {
+  var pid    = pet.petId || pet.id || pet.ID || '';
+  var name   = pet.petName  || pet.name  || '';
+  var species= (pet.species || '').toLowerCase();
+  var breed  = pet.breed    || '';
+  var size   = pet.size     || pet.weight || '';
+  var loc    = pet.location || '';
+  var city   = loc.split(',')[0].trim();
+  var img    = pet.imageUrl || pet.image || '';
+  var shelter= pet.shelterName || '';
+  var saved  = isWishlisted(pid);
+  var breedSize = [breed, size].filter(Boolean).join(' · ');
+  var emoji  = species === 'cat' ? '🐱' : '🐶';
+  var badgeHtml = '<span class="mbadge">' + matchPercent + '% match</span>';
+
+  return '<div class="pc"'
+    + ' data-pid="'    + pid    + '" data-name="'  + name
+    + '" data-breed="' + breed + '" data-loc="'+ loc
+    + '" data-img="'  + img + '">'
+    + '<div class="pc-click" data-pid="' + pid + '" style="cursor:pointer;position:relative;">'
+      + '<img src="' + img + '" alt="' + name + '" loading="lazy" onerror="this.src=\'https://placehold.co/300x155?text=No+Photo\'">'
+      + badgeHtml
+      + '<div class="pci"><h4>' + name + ' ' + emoji + '</h4>'
+        + (city ? '<p class="pl">📍 ' + city + '</p>' : '')
+        + (shelter ? '<p class="pm">🏠 ' + shelter + '</p>' : '')
+        + (breedSize ? '<p class="pm">' + breedSize + '</p>' : '')
+      + '</div>'
+    + '</div>'
+    + '<div class="wls wl-btn' + (saved?' wishlisted':'') + '" data-pid="' + pid + '">'
+      + (saved ? '♥ Wishlisted!' : '♡ Add to Wishlist')
+    + '</div>'
+    + '</div>';
 }
 </script>
 
@@ -3132,13 +4077,13 @@ function handleLikeClick() {
 </script>
 
 <script>
-// ── GENERAL INTEREST FORM (Petfinder page) ─────────────────────────────────────
-document.getElementById('general-interest-form').addEventListener('submit', function(e) {
+// ── GENERAL INTEREST FORM (Standalone Inquiry page) ────────────────────────────
+document.getElementById('general-interest-form-standalone').addEventListener('submit', function(e) {
   e.preventDefault();
-  var firstName = document.getElementById('gi-firstname').value.trim();
-  var lastName  = document.getElementById('gi-lastname').value.trim();
-  var email     = document.getElementById('gi-email').value.trim();
-  var errEl     = document.getElementById('gi-error');
+  var firstName = document.getElementById('gi2-firstname').value.trim();
+  var lastName  = document.getElementById('gi2-lastname').value.trim();
+  var email     = document.getElementById('gi2-email').value.trim();
+  var errEl     = document.getElementById('gi2-error');
 
   if (!firstName || !lastName || !email) {
     errEl.textContent = 'Please fill in First Name, Last Name, and Email.';
@@ -3152,23 +4097,23 @@ document.getElementById('general-interest-form').addEventListener('submit', func
   }
   errEl.style.display = 'none';
 
-  var btn = document.getElementById('gi-submit-btn');
+  var btn = document.getElementById('gi2-submit-btn');
   btn.disabled = true;
   btn.textContent = 'Sending...';
 
   var payload = {
     petId:      'general-inquiry',
-    petName:    'General Inquiry (Petfinder)',
+    petName:    'General Inquiry',
     breed:      '',
     shelter:    '',
     firstName:  firstName,
     lastName:   lastName,
     email:      email,
-    phone:      document.getElementById('gi-phone').value.trim(),
-    city:       document.getElementById('gi-city').value.trim(),
-    housing:    document.getElementById('gi-housing').value,
-    experience: document.getElementById('gi-experience').value,
-    message:    document.getElementById('gi-message').value.trim()
+    phone:      document.getElementById('gi2-phone').value.trim(),
+    city:       document.getElementById('gi2-city').value.trim(),
+    housing:    document.getElementById('gi2-housing').value,
+    experience: document.getElementById('gi2-experience').value,
+    message:    document.getElementById('gi2-message').value.trim()
   };
 
   fetch(APPS_SCRIPT_URL, {
@@ -3178,12 +4123,12 @@ document.getElementById('general-interest-form').addEventListener('submit', func
     body: JSON.stringify(payload)
   })
   .then(function() {
-    document.getElementById('general-interest-form').style.display = 'none';
-    document.getElementById('gi-success').style.display = 'block';
+    document.getElementById('general-interest-form-standalone').style.display = 'none';
+    document.getElementById('gi2-success').style.display = 'block';
   })
   .catch(function() {
-    document.getElementById('general-interest-form').style.display = 'none';
-    document.getElementById('gi-success').style.display = 'block';
+    document.getElementById('general-interest-form-standalone').style.display = 'none';
+    document.getElementById('gi2-success').style.display = 'block';
   });
 });
 </script>
@@ -3253,6 +4198,7 @@ function closeAuthModal() {
 function showSignOutConfirm() {
   if (confirm('Sign out of your account?')) {
     clearStoredUser();
+    clearWishlistUI();
     updateAuthPill();
   }
 }
@@ -3302,7 +4248,7 @@ document.getElementById('signup-form').addEventListener('submit', function(e) {
     errEl.style.display = 'block';
     return;
   }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  if (!validateEmail(email)) {
     errEl.textContent = 'Please enter a valid email.';
     errEl.style.display = 'block';
     return;
@@ -3339,10 +4285,173 @@ document.getElementById('signup-form').addEventListener('submit', function(e) {
   // Auto sign in
   setStoredUser({ name: name, email: email });
   updateAuthPill();
+  loadUserWishlist();
 
   sucEl.textContent = 'Account created! You are now signed in.';
   sucEl.style.display = 'block';
   setTimeout(function() { closeAuthModal(); }, 1500);
+});
+
+// ── FAILED ATTEMPT TRACKER ──────────────────────────────────────────────────
+// Tracks consecutive failed sign-in attempts per email in sessionStorage.
+// Triggers password reset screen after 3 failed attempts.
+var FAILED_ATTEMPTS_KEY = 'furever_failed_attempts';
+
+function getFailedAttempts(email) {
+  try {
+    var data = JSON.parse(sessionStorage.getItem(FAILED_ATTEMPTS_KEY) || '{}');
+    return (data[email] && typeof data[email].count === 'number') ? data[email].count : 0;
+  } catch (e) {
+    return 0;
+  }
+}
+
+function incrementFailedAttempts(email) {
+  try {
+    var data = JSON.parse(sessionStorage.getItem(FAILED_ATTEMPTS_KEY) || '{}');
+    if (!data[email]) {
+      data[email] = { count: 0, lastAttempt: Date.now() };
+    }
+    data[email].count += 1;
+    data[email].lastAttempt = Date.now();
+    sessionStorage.setItem(FAILED_ATTEMPTS_KEY, JSON.stringify(data));
+    return data[email].count;
+  } catch (e) {
+    return 1;
+  }
+}
+
+function resetFailedAttempts(email) {
+  try {
+    var data = JSON.parse(sessionStorage.getItem(FAILED_ATTEMPTS_KEY) || '{}');
+    if (data[email]) {
+      data[email].count = 0;
+      data[email].lastAttempt = Date.now();
+      sessionStorage.setItem(FAILED_ATTEMPTS_KEY, JSON.stringify(data));
+    }
+  } catch (e) { /* ignore */ }
+}
+
+function isLockedOut(email) {
+  return getFailedAttempts(email) >= 3;
+}
+
+// ── PASSWORD RESET SCREEN FUNCTIONS ──────────────────────────────────────────
+// Shows/hides the password reset screen in response to lockout or back navigation.
+
+function showPasswordResetScreen(email) {
+  // Hide sign-in and sign-up forms
+  document.getElementById('signin-form').style.display = 'none';
+  document.getElementById('signup-form').style.display = 'none';
+  // Hide auth tabs
+  var authTabs = document.querySelector('.auth-tabs');
+  if (authTabs) authTabs.style.display = 'none';
+  // Show reset screen
+  document.getElementById('reset-screen').style.display = '';
+  // Clear any previous error/success messages
+  document.getElementById('reset-error').style.display = 'none';
+  document.getElementById('reset-error').textContent = '';
+  document.getElementById('reset-success').style.display = 'none';
+  document.getElementById('reset-success').textContent = '';
+
+  // Guard: check if account has a registered email (Req 4.2, 4.3)
+  var noEmailMsg = document.getElementById('reset-no-email-msg');
+  var resetEmailInput = document.getElementById('reset-email');
+  var resetSubmitBtn = document.getElementById('reset-submit-btn');
+  var resetLockoutMsg = document.getElementById('reset-lockout-msg');
+
+  if (!email) {
+    // No email on account — block access to reset form
+    resetEmailInput.parentElement.style.display = 'none';
+    resetSubmitBtn.style.display = 'none';
+    resetLockoutMsg.style.display = 'none';
+    noEmailMsg.textContent = 'Password reset is unavailable without a registered email. Please contact support at support@furever.home for account recovery.';
+    noEmailMsg.style.display = '';
+  } else {
+    // Valid email — show reset form normally
+    resetEmailInput.parentElement.style.display = '';
+    resetSubmitBtn.style.display = '';
+    resetLockoutMsg.style.display = '';
+    noEmailMsg.style.display = 'none';
+    noEmailMsg.textContent = '';
+    // Pre-populate email input with the failed email
+    resetEmailInput.value = email;
+  }
+}
+
+function hidePasswordResetScreen() {
+  // Hide reset screen
+  document.getElementById('reset-screen').style.display = 'none';
+  // Show sign-in form
+  document.getElementById('signin-form').style.display = '';
+  // Show auth tabs
+  var authTabs = document.querySelector('.auth-tabs');
+  if (authTabs) authTabs.style.display = '';
+  // Clear any error/success messages on reset screen
+  document.getElementById('reset-error').style.display = 'none';
+  document.getElementById('reset-error').textContent = '';
+  document.getElementById('reset-success').style.display = 'none';
+  document.getElementById('reset-success').textContent = '';
+  // NOTE: Failed attempt counter is NOT reset (Requirement 2.4)
+}
+
+// Wire back button to hidePasswordResetScreen
+document.getElementById('reset-back-btn').addEventListener('click', function() {
+  hidePasswordResetScreen();
+});
+
+// ── HANDLE RESET SUBMIT ──────────────────────────────────────────────────────
+// Validates email, checks rate limit, POSTs to Apps Script for password reset.
+function handleResetSubmit() {
+  var emailInput = document.getElementById('reset-email');
+  var errorEl = document.getElementById('reset-error');
+  var successEl = document.getElementById('reset-success');
+  var email = emailInput.value.trim();
+
+  // Clear previous messages
+  errorEl.style.display = 'none';
+  errorEl.textContent = '';
+  successEl.style.display = 'none';
+  successEl.textContent = '';
+
+  // 1. Validate email format
+  if (!validateEmail(email)) {
+    errorEl.textContent = 'Please enter a valid email address';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  // 2. Check rate limiter
+  if (!canRequestReset(email)) {
+    errorEl.textContent = 'Too many attempts. Please try again later.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  // 3. Record the reset request timestamp
+  recordResetRequest(email);
+
+  // 4. POST to Apps Script
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'resetPassword', email: email })
+  }).then(function() {
+    // 5. On success: show identical confirmation regardless of email existence
+    successEl.textContent = 'If an account exists for that email, a reset link has been sent.';
+    successEl.style.display = 'block';
+    errorEl.style.display = 'none';
+  }).catch(function() {
+    // 6. On fetch error (network failure): show error
+    errorEl.textContent = 'Request could not be completed. Try again later.';
+    errorEl.style.display = 'block';
+  });
+}
+
+// Wire reset submit button to handleResetSubmit
+document.getElementById('reset-submit-btn').addEventListener('click', function() {
+  handleResetSubmit();
 });
 
 // Sign In form submit
@@ -3360,23 +4469,117 @@ document.getElementById('signin-form').addEventListener('submit', function(e) {
     return;
   }
 
+  // Check if already locked out before attempting sign-in
+  if (isLockedOut(email)) {
+    showPasswordResetScreen(email);
+    return;
+  }
+
   var encoded = btoa(password);
   var accounts = JSON.parse(localStorage.getItem('furever_accounts') || '[]');
   var match = accounts.find(function(a) { return a.email === email && a.password === encoded; });
 
   if (!match) {
+    // Determine if the email exists in accounts (wrong password vs non-existent email)
+    var emailExists = accounts.some(function(a) { return a.email === email; });
+
+    // Increment failed attempt counter for any sign-in failure
+    // (Even for non-existent emails, guide user toward reset after repeated failures)
+    incrementFailedAttempts(email);
+
+    // Check if lockout threshold reached after increment
+    if (isLockedOut(email)) {
+      showPasswordResetScreen(email);
+      return;
+    }
+
     errEl.textContent = 'Invalid email or password. Please try again or sign up.';
     errEl.style.display = 'block';
     return;
   }
 
+  // Successful sign-in — reset failed attempt counter
+  resetFailedAttempts(email);
   setStoredUser({ name: match.name, email: match.email });
   updateAuthPill();
+  loadUserWishlist();
   closeAuthModal();
 });
 
 // On page load, check if user is already signed in
 updateAuthPill();
+
+// ── RESET RATE LIMITER ─────────────────────────────────────────────────────
+// Limits password reset requests to 3 per 15-minute window per email.
+// Uses sessionStorage so data auto-clears when the browser tab closes.
+var RESET_TIMESTAMPS_KEY = 'furever_reset_timestamps';
+var RESET_WINDOW_MS = 15 * 60 * 1000; // 15 minutes in milliseconds
+var RESET_MAX_REQUESTS = 3;
+
+function getResetTimestamps() {
+  try {
+    return JSON.parse(sessionStorage.getItem(RESET_TIMESTAMPS_KEY)) || {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function saveResetTimestamps(data) {
+  sessionStorage.setItem(RESET_TIMESTAMPS_KEY, JSON.stringify(data));
+}
+
+function filterRecentTimestamps(timestamps) {
+  var now = Date.now();
+  return timestamps.filter(function(ts) {
+    return (now - ts) < RESET_WINDOW_MS;
+  });
+}
+
+function canRequestReset(email) {
+  var data = getResetTimestamps();
+  var timestamps = data[email] || [];
+  var recent = filterRecentTimestamps(timestamps);
+  return recent.length < RESET_MAX_REQUESTS;
+}
+
+function recordResetRequest(email) {
+  var data = getResetTimestamps();
+  var timestamps = data[email] || [];
+  timestamps.push(Date.now());
+  data[email] = timestamps;
+  saveResetTimestamps(data);
+}
+
+function getTimeUntilNextReset(email) {
+  var data = getResetTimestamps();
+  var timestamps = data[email] || [];
+  var recent = filterRecentTimestamps(timestamps);
+  if (recent.length < RESET_MAX_REQUESTS) {
+    return 0;
+  }
+  // Find the oldest timestamp in the recent window — that's the one that will expire first
+  var oldest = Math.min.apply(null, recent);
+  var now = Date.now();
+  var timeUntilExpiry = (oldest + RESET_WINDOW_MS) - now;
+  return Math.max(0, timeUntilExpiry);
+}
+
+// ── EMAIL VALIDATION (shared between sign-up and reset forms) ──────────────
+// Validates: non-empty (after trim), at most 254 chars, exactly one "@",
+// domain part (after "@") contains at least one dot.
+function validateEmail(email) {
+  if (typeof email !== 'string') return false;
+  var trimmed = email.trim();
+  if (!trimmed) return false;
+  if (trimmed.length > 254) return false;
+  var parts = trimmed.split('@');
+  if (parts.length !== 2) return false; // exactly one "@"
+  var local = parts[0];
+  var domain = parts[1];
+  if (!local || !domain) return false;
+  if (domain.indexOf('.') === -1) return false; // domain must have at least one dot
+  return true;
+}
 
 // ── MOBILE DROPDOWN TOGGLE (tap to open on touch devices) ──────────────────
 (function() {
@@ -3401,9 +4604,10 @@ updateAuthPill();
       });
     }
   });
-  // Close dropdown when a menu item is clicked
+  // Close dropdown when a menu item is clicked AND close detail view if open
   document.querySelectorAll('.dd label').forEach(function(lbl) {
     lbl.addEventListener('click', function() {
+      closeDetailNoRedirect();
       document.querySelectorAll('.dd.dd-open').forEach(function(d) {
         d.classList.remove('dd-open');
       });

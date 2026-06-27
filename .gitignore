@@ -1,12 +1,41 @@
-# Google service account — NEVER commit this
-cron/service_account.json
-_temp_creds.json
+# Dependencies
+node_modules/
 
 # Python
 __pycache__/
 *.pyc
 *.pyo
 
+# Credentials / secrets
+config.js
+cron/service_account.json
+_temp_creds.json
+
 # Logs
 *.log
 refresh_log.txt
+
+# IDE / editor
+.vscode/
+.kiro/
+
+# Test cache
+.pytest_cache/
+cron/.pytest_cache/
+
+# Planning docs (not for web)
+*.xlsx
+*.docx
+
+# Local scripts
+deploy.bat
+nightly_refresh.bat
+
+# Test infrastructure (not needed for site)
+jest.config.js
+package.json
+package-lock.json
+tests/
+
+# Cron jobs (disabled)
+cron/

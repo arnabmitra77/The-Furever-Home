@@ -7,7 +7,6 @@ __pycache__/
 *.pyo
 
 # Credentials / secrets
-config.js
 cron/service_account.json
 _temp_creds.json
 

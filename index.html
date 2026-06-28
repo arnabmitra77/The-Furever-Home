@@ -3306,9 +3306,19 @@ function updateDynamicPartners() {
   var grid = document.getElementById('dynamic-partners-grid');
   if (!grid || ALL_PETS.length === 0) return;
 
-  // Collect unique shelters from ALL_PETS with their info
+  // Only include pets sourced from RescueGroups (have rescuegroups.org in their URL)
+  var rgPets = ALL_PETS.filter(function(p) {
+    return (p.petUrl && p.petUrl.indexOf('rescuegroups.org') !== -1);
+  });
+
+  if (rgPets.length === 0) {
+    grid.innerHTML = '<p style="font-size:12px;color:var(--gray-mid);padding:16px;">No RescueGroups.org partner shelters loaded yet. Data will appear once the API responds.</p>';
+    return;
+  }
+
+  // Collect unique shelters from RescueGroups pets only
   var shelterMap = {};
-  ALL_PETS.forEach(function(p) {
+  rgPets.forEach(function(p) {
     var name = p.shelterName || '';
     if (!name || shelterMap[name]) return;
     shelterMap[name] = {
@@ -3320,8 +3330,8 @@ function updateDynamicPartners() {
       petCount: 0
     };
   });
-  // Count pets per shelter
-  ALL_PETS.forEach(function(p) {
+  // Count pets per shelter (only RescueGroups pets)
+  rgPets.forEach(function(p) {
     var name = p.shelterName || '';
     if (name && shelterMap[name]) shelterMap[name].petCount++;
   });

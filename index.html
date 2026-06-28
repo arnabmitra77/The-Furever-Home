@@ -914,7 +914,7 @@ footer { background: var(--gunmetal); color: #ccc; padding: 40px 24px; margin-to
       </div>
       <div class="banner-slide">
         <img src="https://placedog.net/640/400?random" alt="Adopt pets near me — happy rescue pets" loading="lazy">
-        <div class="bover"><h2>Adopt Pets Near You &#x2764;&#xFE0F;</h2><p>Over 50 rescue dogs and cats in Bay Area pet shelters need a loving home right now</p><label for="pg-dogs">Start Browsing &rarr;</label></div>
+        <div class="bover"><h2>Adopt Pets Near You &#x2764;&#xFE0F;</h2><p>Over 1500 rescue dogs and cats in Bay Area pet shelters need a loving home right now</p><label for="pg-dogs">Start Browsing &rarr;</label></div>
       </div>
     </div>
     <div class="banner-dots">
@@ -1540,7 +1540,7 @@ footer { background: var(--gunmetal); color: #ccc; padding: 40px 24px; margin-to
       <label for="pg-wishlist">Your Wishlist</label>
     </div>
   </div>
-  <div class="fbot">&copy; 2025 The Furever Home &mdash; All rights reserved. Not affiliated with any shelter. All adoption inquiries go directly to partner shelters.</div>
+  <div class="fbot">&copy; 2026 The Furever Home &mdash; All rights reserved. Not affiliated with any shelter. All adoption inquiries go directly to partner shelters.</div>
 </footer>
 
 <!-- ── PET CARE FAQ CHATBOT ─────────────────────────────────────────────── -->
@@ -4434,6 +4434,9 @@ function setStoredUser(user) {
 
 function clearStoredUser() {
   localStorage.removeItem(AUTH_STORAGE_KEY);
+  // Clear pet data cache on logout (forces fresh fetch on next visit)
+  localStorage.removeItem('furever_pets_cache');
+  // Note: furever_accounts is intentionally preserved so user can log back in
 }
 
 function updateAuthPill() {
@@ -4749,32 +4752,62 @@ document.getElementById('signin-form').addEventListener('submit', function(e) {
   var accounts = JSON.parse(localStorage.getItem('furever_accounts') || '[]');
   var match = accounts.find(function(a) { return a.email === email && a.password === encoded; });
 
-  if (!match) {
-    // Determine if the email exists in accounts (wrong password vs non-existent email)
-    var emailExists = accounts.some(function(a) { return a.email === email; });
-
-    // Increment failed attempt counter for any sign-in failure
-    // (Even for non-existent emails, guide user toward reset after repeated failures)
-    incrementFailedAttempts(email);
-
-    // Check if lockout threshold reached after increment
-    if (isLockedOut(email)) {
-      showPasswordResetScreen(email);
-      return;
-    }
-
-    errEl.textContent = 'Invalid email or password. Please try again or sign up.';
-    errEl.style.display = 'block';
+  if (match) {
+    // Successful sign-in from localStorage
+    resetFailedAttempts(email);
+    setStoredUser({ name: match.name, email: match.email });
+    updateAuthPill();
+    loadUserWishlist();
+    closeAuthModal();
     return;
   }
 
-  // Successful sign-in — reset failed attempt counter
-  resetFailedAttempts(email);
-  setStoredUser({ name: match.name, email: match.email });
-  updateAuthPill();
-  loadUserWishlist();
-  closeAuthModal();
+  // Not found locally — try server (Google Sheets) for accounts created on other devices
+  if (APPS_SCRIPT_URL) {
+    var submitBtn = document.querySelector('#signin-form button[type="submit"]');
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Signing in...'; }
+
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'login', email: email, password: encoded })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(resp) {
+      if (resp.status === 'ok' && resp.name) {
+        // Found on server — save locally for future logins
+        accounts.push({ name: resp.name, email: resp.email || email, password: encoded });
+        localStorage.setItem('furever_accounts', JSON.stringify(accounts));
+        resetFailedAttempts(email);
+        setStoredUser({ name: resp.name, email: resp.email || email });
+        updateAuthPill();
+        loadUserWishlist();
+        closeAuthModal();
+      } else {
+        handleSignInFailure(email, errEl);
+      }
+    })
+    .catch(function() {
+      // Server unreachable — fail based on local data only
+      handleSignInFailure(email, errEl);
+    })
+    .finally(function() {
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Sign In'; }
+    });
+  } else {
+    handleSignInFailure(email, errEl);
+  }
 });
+
+function handleSignInFailure(email, errEl) {
+  incrementFailedAttempts(email);
+  if (isLockedOut(email)) {
+    showPasswordResetScreen(email);
+    return;
+  }
+  errEl.textContent = 'Invalid email or password. Please try again or sign up.';
+  errEl.style.display = 'block';
+}
 
 // On page load, check if user is already signed in
 updateAuthPill();

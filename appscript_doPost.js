@@ -23,60 +23,33 @@ function doPost(e) {
       usersSheet.appendRow(['Timestamp', 'Full Name', 'Email', 'Password (encoded)']);
       usersSheet.setFrozenRows(1);
     }
+    // Check if email already exists (prevent duplicate accounts)
+    var email = (d.email || '').trim().toLowerCase();
+    var data = usersSheet.getDataRange().getValues();
+    for (var i = 1; i < data.length; i++) {
+      if ((data[i][2] || '').trim().toLowerCase() === email) {
+        return ContentService.createTextOutput(JSON.stringify({status:'duplicate', message:'Email already registered'})).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
     usersSheet.appendRow([new Date(), d.name || '', d.email || '', d.password || '']);
     return ContentService.createTextOutput(JSON.stringify({status:'ok'})).setMimeType(ContentService.MimeType.JSON);
   }
 
-  // ── PASSWORD RESET ──────────────────────────────────────────────────
-  if (d.action === 'resetPassword') {
-    var email = (d.email || '').trim().toLowerCase();
-
-    // Look up email in User Accounts sheet (column C)
+  // ── LOGIN VERIFICATION ────────────────────────────────────────────────
+  if (d.action === 'login') {
     var usersSheet = ss.getSheetByName('User Accounts');
-    var emailFound = false;
-    if (usersSheet && email) {
-      var data = usersSheet.getDataRange().getValues();
-      for (var i = 1; i < data.length; i++) {
-        if ((data[i][2] || '').trim().toLowerCase() === email) {
-          emailFound = true;
-          break;
-        }
+    if (!usersSheet) {
+      return ContentService.createTextOutput(JSON.stringify({status:'error', message:'No accounts found'})).setMimeType(ContentService.MimeType.JSON);
+    }
+    var email = (d.email || '').trim().toLowerCase();
+    var password = d.password || '';
+    var data = usersSheet.getDataRange().getValues();
+    for (var i = 1; i < data.length; i++) {
+      if ((data[i][2] || '').trim().toLowerCase() === email && (data[i][3] || '') === password) {
+        return ContentService.createTextOutput(JSON.stringify({status:'ok', name: data[i][1], email: data[i][2]})).setMimeType(ContentService.MimeType.JSON);
       }
     }
-
-    if (emailFound) {
-      // Generate 32-character hex token
-      var token = '';
-      var hexChars = '0123456789abcdef';
-      for (var j = 0; j < 32; j++) {
-        token += hexChars.charAt(Math.floor(Math.random() * 16));
-      }
-
-      // Store token in Password Resets sheet
-      var resetSheet = ss.getSheetByName('Password Resets');
-      if (!resetSheet) {
-        resetSheet = ss.insertSheet('Password Resets');
-        resetSheet.appendRow(['Timestamp', 'Email', 'Token', 'Expiry', 'Used']);
-        resetSheet.setFrozenRows(1);
-      }
-
-      var now = new Date();
-      var expiry = new Date(now.getTime() + 15 * 60 * 1000); // 15 minutes from now
-      resetSheet.appendRow([now, email, token, expiry, false]);
-
-      // Send reset email
-      var resetLink = 'https://furever.home/reset?token=' + token;
-      var subject = 'Furever Home - Password Reset Request';
-      var body = 'Hello,\n\nYou requested a password reset for your Furever Home account.\n\n'
-        + 'Click the link below to reset your password (expires in 15 minutes):\n'
-        + resetLink + '\n\n'
-        + 'If you did not request this, please ignore this email.\n\n'
-        + 'Best regards,\nThe Furever Home Team';
-      MailApp.sendEmail(email, subject, body);
-    }
-
-    // Always return ok regardless of whether email was found (prevent enumeration)
-    return ContentService.createTextOutput(JSON.stringify({status:'ok'})).setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(JSON.stringify({status:'error', message:'Invalid credentials'})).setMimeType(ContentService.MimeType.JSON);
   }
 
   // ── SHOWN INTEREST TAB ─────────────────────────────────────────────

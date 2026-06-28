@@ -925,8 +925,8 @@ footer { background: var(--gunmetal); color: #ccc; padding: 40px 24px; margin-to
     </div>
   </div>
   <div class="stats-row">
-    <div class="stat-box"><div class="snum">3500+</div><div class="stxt">Rescue Pets Available</div></div>
-    <div class="stat-box"><div class="snum">220+</div><div class="stxt">Pet Shelters Near You</div></div>
+    <div class="stat-box"><div class="snum">1500+</div><div class="stxt">Rescue Pets Available</div></div>
+    <div class="stat-box"><div class="snum">80+</div><div class="stxt">Pet Shelters Near You</div></div>
     <div class="stat-box"><div class="snum">850+</div><div class="stxt">Dogs & Cats Adopted</div></div>
     <div class="stat-box"><div class="snum">96%</div><div class="stxt">Adoption Match Rate</div></div>
   </div>
@@ -1366,7 +1366,7 @@ footer { background: var(--gunmetal); color: #ccc; padding: 40px 24px; margin-to
 <!-- PARTNERS -->
 <div class="page pg-partners"><div class="cp">
   <h2 style="text-align:center;margin-bottom:8px;">Our Partner Shelters</h2>
-  <p style="text-align:center;font-size:13px;color:var(--text-light);margin-bottom:28px;">We partner with 220+ trusted shelters and rescue organizations within 100 miles. Contact them directly for adoption inquiries.</p>
+  <p style="text-align:center;font-size:13px;color:var(--text-light);margin-bottom:28px;">We partner with 80+ trusted shelters and rescue organizations within 100 miles. Contact them directly for adoption inquiries.</p>
 
   <h3 style="font-size:16px;margin-bottom:14px;color:var(--gunmetal);">🌐 Our Partners</h3>
   <p style="font-size:12px;color:var(--text-light);margin-bottom:14px;">These shelters and rescue organizations in California have pets listed on our platform.</p>
@@ -3328,12 +3328,7 @@ function renderListings() {
 
 // ── UPDATE DYNAMIC STATISTICS ──────────────────────────────────────────────────
 function updateDynamicStats() {
-  var statNums = document.querySelectorAll('.stats-row .snum');
-  if (statNums.length >= 2 && ALL_PETS.length > 0) {
-    statNums[0].textContent = ALL_PETS.length + '+';
-    var uniqueShelters = new Set(ALL_PETS.map(function(p) { return p.shelterName; }));
-    statNums[1].textContent = uniqueShelters.size;
-  }
+  // Stats are hardcoded to 1500+ pets and 80+ shelters — no dynamic override
 }
 
 // ── UPDATE DYNAMIC PARTNERS GRID ─────────────────────────────────────────────

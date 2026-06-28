@@ -3636,6 +3636,9 @@ function openDetail(pid) {
   var shelter  = pet.shelterName  || '';
   var phone    = pet.shelterPhone || '';
   var url      = pet.shelterUrl || '#';
+  // Apply URL override for shelters with known incorrect URLs
+  var urlOverride = getShelterUrlOverride(shelter);
+  if (urlOverride) url = urlOverride;
   // Ensure URL has a protocol
   if (url !== '#' && url && !url.startsWith('http')) {
     url = 'https://' + url;

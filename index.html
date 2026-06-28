@@ -2726,7 +2726,12 @@ function loadPetsFromRescueGroups() {
         if (!r.ok) throw new Error('API HTTP ' + r.status);
         return r.json();
       }).then(function(json) {
-        allData = allData.concat(json.data || []);
+        // Deduplicate: only add animals not already fetched
+        (json.data || []).forEach(function(animal) {
+          if (!allData.some(function(a) { return a.id === animal.id; })) {
+            allData.push(animal);
+          }
+        });
         allIncluded = allIncluded.concat(json.included || []);
 
         // Count pets per shelter from fetched data
@@ -2796,7 +2801,13 @@ function loadPetsFromRescueGroups() {
     var dogs = (dogsData.data || []).map(function(a) { return mapRescueGroupsAnimal(a, 'Dog', orgsMap, picturesMap, locationsMap, colorsMap); });
     var cats = (catsData.data || []).map(function(a) { return mapRescueGroupsAnimal(a, 'Cat', orgsMap, picturesMap, locationsMap, colorsMap); });
 
-    ALL_PETS = dogs.concat(cats);
+    // Deduplicate by petId
+    var seen = {};
+    ALL_PETS = dogs.concat(cats).filter(function(p) {
+      if (!p.petId || seen[p.petId]) return false;
+      seen[p.petId] = true;
+      return true;
+    });
 
     LOAD_TIME = new Date();
     DATA_SOURCE = 'rescuegroups';
@@ -2899,7 +2910,11 @@ function loadPetsFromRescueGroupsSilent() {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.json();
       }).then(function(json) {
-        allData = allData.concat(json.data || []);
+        (json.data || []).forEach(function(animal) {
+          if (!allData.some(function(a) { return a.id === animal.id; })) {
+            allData.push(animal);
+          }
+        });
         allIncluded = allIncluded.concat(json.included || []);
         shelterCounts = {};
         allData.forEach(function(animal) {
@@ -2946,7 +2961,12 @@ function loadPetsFromRescueGroupsSilent() {
     });
     var dogs = (results[0].data || []).map(function(a) { return mapRescueGroupsAnimal(a, 'Dog', orgsMap, picturesMap, locationsMap, colorsMap); });
     var cats = (results[1].data || []).map(function(a) { return mapRescueGroupsAnimal(a, 'Cat', orgsMap, picturesMap, locationsMap, colorsMap); });
-    ALL_PETS = dogs.concat(cats);
+    var seen = {};
+    ALL_PETS = dogs.concat(cats).filter(function(p) {
+      if (!p.petId || seen[p.petId]) return false;
+      seen[p.petId] = true;
+      return true;
+    });
     LOAD_TIME = new Date();
     DATA_SOURCE = 'rescuegroups';
     try {

@@ -2617,7 +2617,7 @@ function mapRescueGroupsAnimal(animal, species, orgsMap, picturesMap, locationsM
   var orgPhone = org.phone || '';
   var orgUrl = org.url || '';
   // Apply URL override if shelter has a known incorrect URL in RescueGroups
-  var urlOverride = getShelterUrlOverride(orgName);
+  var urlOverride = getShelterUrlOverride(orgName, orgUrl);
   if (urlOverride) orgUrl = urlOverride;
   var orgCity = org.city || '';
   var orgState = org.state || '';
@@ -3454,14 +3454,22 @@ var SHELTER_URL_OVERRIDES = {
   'tri city animal shelter': 'https://www.fremont.gov/government/departments/animal-services/tri-city/animal-shelter/adopt',
   'tricity':                 'https://www.fremont.gov/government/departments/animal-services/tri-city/animal-shelter/adopt',
   'fremont (tricity)':       'https://www.fremont.gov/government/departments/animal-services/tri-city/animal-shelter/adopt',
-  'city of fremont':         'https://www.fremont.gov/government/departments/animal-services/tri-city/animal-shelter/adopt'
+  'city of fremont':         'https://www.fremont.gov/government/departments/animal-services/tri-city/animal-shelter/adopt',
+  'ci.fremont.ca.us':        'https://www.fremont.gov/government/departments/animal-services/tri-city/animal-shelter/adopt'
 };
 
-function getShelterUrlOverride(shelterName) {
-  if (!shelterName) return '';
-  var key = shelterName.toLowerCase().trim();
+function getShelterUrlOverride(shelterName, currentUrl) {
+  if (!shelterName && !currentUrl) return '';
+  var key = (shelterName || '').toLowerCase().trim();
   for (var k in SHELTER_URL_OVERRIDES) {
     if (key.includes(k)) return SHELTER_URL_OVERRIDES[k];
+  }
+  // Also check by URL (for cases where shelter name doesn't match but URL does)
+  if (currentUrl) {
+    var urlLower = currentUrl.toLowerCase();
+    for (var k in SHELTER_URL_OVERRIDES) {
+      if (urlLower.includes(k)) return SHELTER_URL_OVERRIDES[k];
+    }
   }
   return '';
 }
@@ -3639,7 +3647,7 @@ function openDetail(pid) {
   var phone    = pet.shelterPhone || '';
   var url      = pet.shelterUrl || '#';
   // Apply URL override for shelters with known incorrect URLs
-  var urlOverride = getShelterUrlOverride(shelter);
+  var urlOverride = getShelterUrlOverride(shelter, url);
   if (urlOverride) url = urlOverride;
   // Ensure URL has a protocol
   if (url !== '#' && url && !url.startsWith('http')) {

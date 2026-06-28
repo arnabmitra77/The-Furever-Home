@@ -925,8 +925,8 @@ footer { background: var(--gunmetal); color: #ccc; padding: 40px 24px; margin-to
     </div>
   </div>
   <div class="stats-row">
-    <div class="stat-box"><div class="snum">500+</div><div class="stxt">Rescue Pets Available</div></div>
-    <div class="stat-box"><div class="snum">10</div><div class="stxt">Pet Shelters Near You</div></div>
+    <div class="stat-box"><div class="snum">3500+</div><div class="stxt">Rescue Pets Available</div></div>
+    <div class="stat-box"><div class="snum">220+</div><div class="stxt">Pet Shelters Near You</div></div>
     <div class="stat-box"><div class="snum">850+</div><div class="stxt">Dogs & Cats Adopted</div></div>
     <div class="stat-box"><div class="snum">96%</div><div class="stxt">Adoption Match Rate</div></div>
   </div>
@@ -1043,7 +1043,7 @@ footer { background: var(--gunmetal); color: #ccc; padding: 40px 24px; margin-to
     <div class="pet-results">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
         <h2 style="margin:0;">&#x1F436; Dogs Available</h2>
-        <input type="text" id="dog-search" placeholder="🔍 Search by name, breed, shelter..." style="padding:8px 14px;border:1.5px solid var(--gray-border);border-radius:20px;font-size:12px;width:220px;font-family:inherit;" oninput="renderGrid('dog')">
+        <input type="text" id="dog-search" placeholder="🔍 Search by name, breed, shelter..." style="padding:8px 14px;border:1.5px solid var(--gray-border);border-radius:20px;font-size:12px;width:220px;font-family:inherit;" oninput="currentDogPage=1;renderGrid('dog')">
       </div>
       <div id="dogs-updated" style="font-size:11px;color:var(--gray-mid);margin-bottom:8px;"></div>
       <div id="dogs-api-note"></div>
@@ -1075,7 +1075,7 @@ footer { background: var(--gunmetal); color: #ccc; padding: 40px 24px; margin-to
     <div class="pet-results">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
         <h2 style="margin:0;">&#x1F431; Cats Available</h2>
-        <input type="text" id="cat-search" placeholder="🔍 Search by name, breed, shelter..." style="padding:8px 14px;border:1.5px solid var(--gray-border);border-radius:20px;font-size:12px;width:220px;font-family:inherit;" oninput="renderGrid('cat')">
+        <input type="text" id="cat-search" placeholder="🔍 Search by name, breed, shelter..." style="padding:8px 14px;border:1.5px solid var(--gray-border);border-radius:20px;font-size:12px;width:220px;font-family:inherit;" oninput="currentCatPage=1;renderGrid('cat')">
       </div>
       <div id="cats-updated" style="font-size:11px;color:var(--gray-mid);margin-bottom:8px;"></div>
       <div id="cats-api-note"></div>
@@ -1354,7 +1354,7 @@ footer { background: var(--gunmetal); color: #ccc; padding: 40px 24px; margin-to
 <!-- PARTNERS -->
 <div class="page pg-partners"><div class="cp">
   <h2 style="text-align:center;margin-bottom:8px;">Our Partner Shelters</h2>
-  <p style="text-align:center;font-size:13px;color:var(--text-light);margin-bottom:28px;">We partner with these trusted Bay Area shelters and rescue organizations connected through RescueGroups.org. Contact them directly for adoption inquiries.</p>
+  <p style="text-align:center;font-size:13px;color:var(--text-light);margin-bottom:28px;">We partner with 220+ trusted shelters and rescue organizations within 100 miles, connected through RescueGroups.org. Contact them directly for adoption inquiries.</p>
 
   <h3 style="font-size:16px;margin-bottom:14px;color:var(--gunmetal);">🏠 Featured Partners</h3>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-bottom:32px;">
@@ -1393,7 +1393,13 @@ footer { background: var(--gunmetal); color: #ccc; padding: 40px 24px; margin-to
   </div>
 
   <h3 style="font-size:16px;margin-bottom:14px;color:var(--gunmetal);">🌐 RescueGroups.org Partners</h3>
-  <p style="font-size:12px;color:var(--text-light);margin-bottom:14px;">These Bay Area shelters and rescue organizations are connected through RescueGroups.org and have pets listed on our platform.</p>
+  <p style="font-size:12px;color:var(--text-light);margin-bottom:14px;">These shelters and rescue organizations within 100 miles are connected through RescueGroups.org and have pets listed on our platform.</p>
+  <div style="margin-bottom:14px;">
+    <select id="partner-city-filter" style="padding:10px 14px;border:1.5px solid var(--gray-border);border-radius:8px;font-size:13px;background:var(--gray);cursor:pointer;" onchange="updateDynamicPartners()">
+      <option value="">All Cities</option>
+    </select>
+    <span id="partner-count" style="font-size:12px;color:var(--gray-mid);margin-left:12px;"></span>
+  </div>
   <div id="dynamic-partners-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;">
     <p style="font-size:12px;color:var(--gray-mid);padding:16px;">Loading partner shelters from database...</p>
   </div>
@@ -1855,6 +1861,7 @@ function clearFilters(type) {
   selects.forEach(function(s) { s.selectedIndex = 0; });
   var searchInput = document.getElementById(type + '-search');
   if (searchInput) searchInput.value = '';
+  if (type === 'dog') currentDogPage = 1; else currentCatPage = 1;
   if (typeof renderGrid === 'function') renderGrid(type);
 }
 
@@ -2571,9 +2578,14 @@ var SHEET_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq
 
 // ── RESCUEGROUPS.ORG API v5 — PRIMARY PET DATA SOURCE ─────────────────────────
 var RG_API_KEY = (window.SITE_CONFIG && window.SITE_CONFIG.rescueGroupsApiKey) || '';
-var RG_DOGS_URL = 'https://api.rescuegroups.org/v5/public/animals/search/available/dogs/haspic?limit=25&sort=random&include=pictures,colors,locations,orgs';
-var RG_CATS_URL = 'https://api.rescuegroups.org/v5/public/animals/search/available/cats/haspic?limit=25&sort=random&include=pictures,colors,locations,orgs';
-var RG_LOCATION_FILTER = JSON.stringify({ data: { filterRadius: { postalcode: "94536", miles: 50 } } });
+var RG_DOGS_URL = 'https://api.rescuegroups.org/v5/public/animals/search/available/dogs/haspic?limit=100&sort=random&include=pictures,colors,locations,orgs';
+var RG_CATS_URL = 'https://api.rescuegroups.org/v5/public/animals/search/available/cats/haspic?limit=100&sort=random&include=pictures,colors,locations,orgs';
+var RG_LOCATION_FILTER = JSON.stringify({ data: { filterRadius: { postalcode: "94536", miles: 100 } } });
+
+// Pagination settings
+var PETS_PER_PAGE = 27;
+var currentDogPage = 1;
+var currentCatPage = 1;
 
 // All pets loaded (from RescueGroups or Google Sheet fallback)
 var ALL_PETS  = [];
@@ -2967,6 +2979,10 @@ function populateShelterDropdown() {
   var dogCities = [];
   var catCities = [];
 
+  // Build city-to-shelters mapping
+  var dogCityShelterMap = {};
+  var catCityShelterMap = {};
+
   ALL_PETS.forEach(function(p) {
     var s = (p.shelterName || '').trim();
     var loc = (p.location || '').trim();
@@ -2977,9 +2993,17 @@ function populateShelterDropdown() {
     if (species === 'dog') {
       if (s && dogShelters.indexOf(s) === -1) dogShelters.push(s);
       if (city && dogCities.indexOf(city) === -1) dogCities.push(city);
+      if (city && s) {
+        if (!dogCityShelterMap[city]) dogCityShelterMap[city] = [];
+        if (dogCityShelterMap[city].indexOf(s) === -1) dogCityShelterMap[city].push(s);
+      }
     } else if (species === 'cat') {
       if (s && catShelters.indexOf(s) === -1) catShelters.push(s);
       if (city && catCities.indexOf(city) === -1) catCities.push(city);
+      if (city && s) {
+        if (!catCityShelterMap[city]) catCityShelterMap[city] = [];
+        if (catCityShelterMap[city].indexOf(s) === -1) catCityShelterMap[city].push(s);
+      }
     }
   });
 
@@ -2988,32 +3012,58 @@ function populateShelterDropdown() {
   dogCities.sort();
   catCities.sort();
 
-  if (dogSel) {
-    dogShelters.forEach(function(s) {
+  // Populate all shelters initially
+  function populateShelterOptions(sel, shelters) {
+    if (!sel) return;
+    sel.innerHTML = '<option value="">All Shelters</option>';
+    shelters.forEach(function(s) {
       var opt = document.createElement('option');
       opt.value = s.toLowerCase(); opt.textContent = s;
-      dogSel.appendChild(opt);
+      sel.appendChild(opt);
     });
   }
-  if (catSel) {
-    catShelters.forEach(function(s) {
-      var opt = document.createElement('option');
-      opt.value = s.toLowerCase(); opt.textContent = s;
-      catSel.appendChild(opt);
-    });
-  }
+
+  populateShelterOptions(dogSel, dogShelters);
+  populateShelterOptions(catSel, catShelters);
+
   if (dogCitySel) {
+    dogCitySel.innerHTML = '<option value="">All Cities</option>';
     dogCities.forEach(function(c) {
       var opt = document.createElement('option');
       opt.value = c; opt.textContent = c;
       dogCitySel.appendChild(opt);
     });
+    // When city changes, update shelter dropdown to show only shelters in that city
+    dogCitySel.addEventListener('change', function() {
+      var selectedCity = dogCitySel.value;
+      if (selectedCity && dogCityShelterMap[selectedCity]) {
+        var sheltersInCity = dogCityShelterMap[selectedCity].slice().sort();
+        populateShelterOptions(dogSel, sheltersInCity);
+      } else {
+        populateShelterOptions(dogSel, dogShelters);
+      }
+      currentDogPage = 1;
+      renderGrid('dog');
+    });
   }
   if (catCitySel) {
+    catCitySel.innerHTML = '<option value="">All Cities</option>';
     catCities.forEach(function(c) {
       var opt = document.createElement('option');
       opt.value = c; opt.textContent = c;
       catCitySel.appendChild(opt);
+    });
+    // When city changes, update shelter dropdown to show only shelters in that city
+    catCitySel.addEventListener('change', function() {
+      var selectedCity = catCitySel.value;
+      if (selectedCity && catCityShelterMap[selectedCity]) {
+        var sheltersInCity = catCityShelterMap[selectedCity].slice().sort();
+        populateShelterOptions(catSel, sheltersInCity);
+      } else {
+        populateShelterOptions(catSel, catShelters);
+      }
+      currentCatPage = 1;
+      renderGrid('cat');
     });
   }
 }
@@ -3066,11 +3116,11 @@ function applyFilters(pets, f) {
 function bindFilterEvents() {
   ['dog-filter-size','dog-filter-age','dog-filter-gender','dog-filter-shelter','dog-filter-city'].forEach(function(id) {
     var el = document.getElementById(id);
-    if (el) el.addEventListener('change', function() { renderGrid('dog'); });
+    if (el) el.addEventListener('change', function() { currentDogPage = 1; renderGrid('dog'); });
   });
   ['cat-filter-size','cat-filter-age','cat-filter-gender','cat-filter-shelter','cat-filter-city'].forEach(function(id) {
     var el = document.getElementById(id);
-    if (el) el.addEventListener('change', function() { renderGrid('cat'); });
+    if (el) el.addEventListener('change', function() { currentCatPage = 1; renderGrid('cat'); });
   });
 }
 
@@ -3124,8 +3174,66 @@ function renderGrid(type) {
   var filters   = getFilters(type);
   var filtered  = applyFilters(pets, filters);
 
-  grid.innerHTML = filtered.map(buildCard).join('');
+  // Pagination
+  var page = type === 'dog' ? currentDogPage : currentCatPage;
+  var totalPages = Math.ceil(filtered.length / PETS_PER_PAGE);
+  if (page > totalPages) page = 1;
+  if (type === 'dog') currentDogPage = page; else currentCatPage = page;
+
+  var start = (page - 1) * PETS_PER_PAGE;
+  var pageItems = filtered.slice(start, start + PETS_PER_PAGE);
+
+  grid.innerHTML = pageItems.map(buildCard).join('');
   if (noRes) noRes.style.display = filtered.length === 0 ? '' : 'none';
+
+  // Render pagination controls
+  renderPagination(type, page, totalPages, filtered.length);
+}
+
+// ── PAGINATION CONTROLS ────────────────────────────────────────────────────────
+function renderPagination(type, currentPage, totalPages, totalItems) {
+  var containerId = type + 's-pagination';
+  var container = document.getElementById(containerId);
+  if (!container) {
+    // Create pagination container after the grid
+    var grid = document.getElementById(type + 's-grid');
+    if (!grid) return;
+    container = document.createElement('div');
+    container.id = containerId;
+    container.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:8px;padding:20px 0;flex-wrap:wrap;';
+    grid.parentNode.insertBefore(container, grid.nextSibling);
+  }
+
+  if (totalPages <= 1) { container.innerHTML = ''; return; }
+
+  var html = '<span style="font-size:12px;color:var(--gray-mid);margin-right:12px;">Showing ' + ((currentPage-1)*PETS_PER_PAGE+1) + '-' + Math.min(currentPage*PETS_PER_PAGE, totalItems) + ' of ' + totalItems + '</span>';
+
+  // Prev button
+  html += '<button onclick="changePage(\'' + type + '\',' + (currentPage-1) + ')" ' + (currentPage===1?'disabled':'') + ' style="padding:6px 12px;border:1.5px solid var(--gray-border);border-radius:8px;background:var(--white);cursor:pointer;font-size:12px;font-weight:600;' + (currentPage===1?'opacity:0.4;cursor:not-allowed;':'') + '">&laquo; Prev</button>';
+
+  // Page numbers (show max 5 pages around current)
+  var startPage = Math.max(1, currentPage - 2);
+  var endPage = Math.min(totalPages, startPage + 4);
+  if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
+
+  for (var i = startPage; i <= endPage; i++) {
+    var isActive = i === currentPage;
+    html += '<button onclick="changePage(\'' + type + '\',' + i + ')" style="padding:6px 10px;border:1.5px solid ' + (isActive?'var(--pink)':'var(--gray-border)') + ';border-radius:8px;background:' + (isActive?'var(--pink)':'var(--white)') + ';color:' + (isActive?'#fff':'var(--text)') + ';cursor:pointer;font-size:12px;font-weight:600;">' + i + '</button>';
+  }
+
+  // Next button
+  html += '<button onclick="changePage(\'' + type + '\',' + (currentPage+1) + ')" ' + (currentPage===totalPages?'disabled':'') + ' style="padding:6px 12px;border:1.5px solid var(--gray-border);border-radius:8px;background:var(--white);cursor:pointer;font-size:12px;font-weight:600;' + (currentPage===totalPages?'opacity:0.4;cursor:not-allowed;':'') + '">Next &raquo;</button>';
+
+  container.innerHTML = html;
+}
+
+function changePage(type, page) {
+  if (page < 1) return;
+  if (type === 'dog') currentDogPage = page; else currentCatPage = page;
+  renderGrid(type);
+  // Scroll to top of grid
+  var grid = document.getElementById(type + 's-grid');
+  if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // ── EVENT DELEGATION FOR PET CARDS (works regardless of render timing) ─────────
@@ -3180,6 +3288,7 @@ function updateDynamicPartners() {
       phone: p.shelterPhone || '',
       url: p.shelterUrl || '',
       location: p.location || '',
+      city: (p.location || '').split(',')[0].trim(),
       petCount: 0
     };
   });
@@ -3189,12 +3298,35 @@ function updateDynamicPartners() {
     if (name && shelterMap[name]) shelterMap[name].petCount++;
   });
 
-  var shelters = Object.values(shelterMap).sort(function(a, b) {
+  var allShelters = Object.values(shelterMap).sort(function(a, b) {
     return b.petCount - a.petCount; // Most pets first
   });
 
+  // Populate partner city filter dropdown (once)
+  var cityFilter = document.getElementById('partner-city-filter');
+  if (cityFilter && cityFilter.options.length <= 1) {
+    var cities = [];
+    allShelters.forEach(function(s) {
+      if (s.city && cities.indexOf(s.city) === -1) cities.push(s.city);
+    });
+    cities.sort();
+    cities.forEach(function(c) {
+      var opt = document.createElement('option');
+      opt.value = c; opt.textContent = c;
+      cityFilter.appendChild(opt);
+    });
+  }
+
+  // Apply city filter
+  var selectedCity = cityFilter ? cityFilter.value : '';
+  var shelters = selectedCity ? allShelters.filter(function(s) { return s.city === selectedCity; }) : allShelters;
+
+  // Update count
+  var countEl = document.getElementById('partner-count');
+  if (countEl) countEl.textContent = shelters.length + ' shelter' + (shelters.length !== 1 ? 's' : '') + ' found';
+
   if (shelters.length === 0) {
-    grid.innerHTML = '<p style="font-size:12px;color:var(--gray-mid);padding:16px;">No additional partner shelters found in current data.</p>';
+    grid.innerHTML = '<p style="font-size:12px;color:var(--gray-mid);padding:16px;">No partner shelters found for this city.</p>';
     return;
   }
 
@@ -3204,8 +3336,7 @@ function updateDynamicPartners() {
   grid.innerHTML = shelters.map(function(s, i) {
     var emoji = emojis[i % emojis.length];
     var bg = bgColors[i % bgColors.length];
-    var city = s.location ? s.location.split(',')[0].trim() : '';
-    var infoLine = (city ? '📍 ' + city : '') + (s.phone ? (city ? '<br>' : '') + '📞 ' + s.phone : '');
+    var infoLine = (s.city ? '📍 ' + s.city : '') + (s.phone ? (s.city ? '<br>' : '') + '📞 ' + s.phone : '');
     var linkHtml = s.url ? '<a href="' + s.url + '" target="_blank" rel="noopener noreferrer" style="font-size:11px;color:var(--deep-orange);font-weight:600;text-decoration:none;">Visit Website →</a>' : '';
     var petBadge = '<span style="font-size:10px;background:var(--light-pink);color:var(--pink);padding:2px 8px;border-radius:8px;font-weight:600;">' + s.petCount + ' pets listed</span>';
 

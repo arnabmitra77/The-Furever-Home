@@ -2731,16 +2731,55 @@ function loadPetsFromRescueGroups() {
     body: RG_LOCATION_FILTER
   };
 
-  // Fetch dogs and cats in parallel
+  // Fetch multiple pages to ensure at least 5 pets per shelter
+  var MIN_PETS_PER_SHELTER = 5;
+  var MAX_PAGES = 5; // Max pages to fetch per species (200 * 5 = 1000 max per species)
+
+  function fetchAllPages(baseUrl) {
+    var allData = [];
+    var allIncluded = [];
+    var page = 1;
+    var shelterCounts = {};
+
+    function fetchPage() {
+      var url = baseUrl + '&page=' + page;
+      return fetch(url, fetchOpts).then(function(r) {
+        if (!r.ok) throw new Error('API HTTP ' + r.status);
+        return r.json();
+      }).then(function(json) {
+        allData = allData.concat(json.data || []);
+        allIncluded = allIncluded.concat(json.included || []);
+
+        // Count pets per shelter from fetched data
+        shelterCounts = {};
+        allData.forEach(function(animal) {
+          var orgRels = (animal.relationships && animal.relationships.orgs && animal.relationships.orgs.data) || [];
+          orgRels.forEach(function(rel) {
+            shelterCounts[rel.id] = (shelterCounts[rel.id] || 0) + 1;
+          });
+        });
+
+        // Check if all shelters have at least MIN_PETS_PER_SHELTER
+        var totalPages = json.meta && json.meta.pages ? json.meta.pages : 1;
+        var underRepresented = Object.values(shelterCounts).some(function(count) { return count < MIN_PETS_PER_SHELTER; });
+
+        // Fetch more pages if shelters are under-represented AND more pages exist
+        if (underRepresented && page < totalPages && page < MAX_PAGES) {
+          page++;
+          return fetchPage();
+        }
+
+        return { data: allData, included: allIncluded };
+      });
+    }
+
+    return fetchPage();
+  }
+
+  // Fetch dogs and cats in parallel with multi-page support
   Promise.all([
-    fetch(RG_DOGS_URL, fetchOpts).then(function(r) {
-      if (!r.ok) throw new Error('Dogs API HTTP ' + r.status);
-      return r.json();
-    }),
-    fetch(RG_CATS_URL, fetchOpts).then(function(r) {
-      if (!r.ok) throw new Error('Cats API HTTP ' + r.status);
-      return r.json();
-    })
+    fetchAllPages(RG_DOGS_URL),
+    fetchAllPages(RG_CATS_URL)
   ])
   .then(function(results) {
     var dogsData = results[0];
@@ -2748,7 +2787,7 @@ function loadPetsFromRescueGroups() {
 
     // Build org lookup and pictures lookup from included arrays
     var orgsMap = {};
-    var picturesMap = {}; // pictureId → {small, large}
+    var picturesMap = {};
     var locationsMap = {};
     var colorsMap = {};
     [dogsData, catsData].forEach(function(d) {
@@ -2798,9 +2837,7 @@ function loadPetsFromRescueGroups() {
   })
   .catch(function(err) {
     console.warn('RescueGroups API failed, falling back to Google Sheets:', err.message);
-    // Show a brief note about the fallback
     showApiNote(err.message);
-    // Fall back to Google Sheets
     fetchSheet(false);
   });
 }
@@ -2868,13 +2905,40 @@ function loadPetsFromRescueGroupsSilent() {
   };
   var fetchOpts = { method: 'POST', headers: headers, body: RG_LOCATION_FILTER };
 
+  var MIN_PETS_PER_SHELTER = 5;
+  var MAX_PAGES = 5;
+
+  function fetchAllPages(baseUrl) {
+    var allData = [];
+    var allIncluded = [];
+    var page = 1;
+    var shelterCounts = {};
+
+    function fetchPage() {
+      var url = baseUrl + '&page=' + page;
+      return fetch(url, fetchOpts).then(function(r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      }).then(function(json) {
+        allData = allData.concat(json.data || []);
+        allIncluded = allIncluded.concat(json.included || []);
+        shelterCounts = {};
+        allData.forEach(function(animal) {
+          var orgRels = (animal.relationships && animal.relationships.orgs && animal.relationships.orgs.data) || [];
+          orgRels.forEach(function(rel) { shelterCounts[rel.id] = (shelterCounts[rel.id] || 0) + 1; });
+        });
+        var totalPages = json.meta && json.meta.pages ? json.meta.pages : 1;
+        var underRepresented = Object.values(shelterCounts).some(function(count) { return count < MIN_PETS_PER_SHELTER; });
+        if (underRepresented && page < totalPages && page < MAX_PAGES) { page++; return fetchPage(); }
+        return { data: allData, included: allIncluded };
+      });
+    }
+    return fetchPage();
+  }
+
   Promise.all([
-    fetch(RG_DOGS_URL, fetchOpts).then(function(r) {
-      if (!r.ok) throw new Error('HTTP ' + r.status); return r.json();
-    }),
-    fetch(RG_CATS_URL, fetchOpts).then(function(r) {
-      if (!r.ok) throw new Error('HTTP ' + r.status); return r.json();
-    })
+    fetchAllPages(RG_DOGS_URL),
+    fetchAllPages(RG_CATS_URL)
   ])
   .then(function(results) {
     var orgsMap = {};

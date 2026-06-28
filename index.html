@@ -814,9 +814,9 @@ footer { background: var(--gunmetal); color: #ccc; padding: 40px 24px; margin-to
       <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Sign Up</button>
     </div>
     <!-- Sign In Form -->
-    <form id="signin-form" novalidate>
-      <div class="form-row"><label for="si-email">Email *</label><input type="email" id="si-email" placeholder="your@email.com" required></div>
-      <div class="form-row"><label for="si-password">Password *</label><input type="password" id="si-password" placeholder="Your password" required></div>
+    <form id="signin-form" novalidate autocomplete="off">
+      <div class="form-row"><label for="si-email">Email *</label><input type="email" id="si-email" placeholder="your@email.com" required autocomplete="off"></div>
+      <div class="form-row"><label for="si-password">Password *</label><input type="password" id="si-password" placeholder="Your password" required autocomplete="new-password"></div>
       <button type="submit" class="btn-submit">Sign In →</button>
       <p id="si-error" style="display:none;color:var(--red);font-size:12px;margin-top:8px;text-align:center;"></p>
     </form>
@@ -4466,6 +4466,11 @@ function openAuthModal() {
 function closeAuthModal() {
   document.getElementById('auth-modal').classList.remove('open');
   document.body.style.overflow = '';
+  // Clear form fields for security (don't leave credentials visible)
+  var siEmail = document.getElementById('si-email');
+  var siPass = document.getElementById('si-password');
+  if (siEmail) siEmail.value = '';
+  if (siPass) siPass.value = '';
 }
 
 function showSignOutConfirm() {
@@ -4473,6 +4478,11 @@ function showSignOutConfirm() {
     clearStoredUser();
     clearWishlistUI();
     updateAuthPill();
+    // Clear sign-in form fields
+    var siEmail = document.getElementById('si-email');
+    var siPass = document.getElementById('si-password');
+    if (siEmail) siEmail.value = '';
+    if (siPass) siPass.value = '';
   }
 }
 

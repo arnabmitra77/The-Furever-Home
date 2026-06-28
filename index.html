@@ -2616,6 +2616,9 @@ function mapRescueGroupsAnimal(animal, species, orgsMap, picturesMap, locationsM
   var orgName = org.name || '';
   var orgPhone = org.phone || '';
   var orgUrl = org.url || '';
+  // Apply URL override if shelter has a known incorrect URL in RescueGroups
+  var urlOverride = getShelterUrlOverride(orgName);
+  if (urlOverride) orgUrl = urlOverride;
   var orgCity = org.city || '';
   var orgState = org.state || '';
 
@@ -3444,6 +3447,22 @@ var SHELTER_EMAILS = {
   'hssv':                          'adoption@hssv.org',
   'milo foundation':               'info@milofoundation.org'
 };
+
+// Shelter URL overrides (when RescueGroups has incorrect URLs)
+var SHELTER_URL_OVERRIDES = {
+  'tri-city animal shelter': 'https://www.fremont.gov/government/departments/animal-services/tri-city/animal-shelter/adopt',
+  'tri city animal shelter': 'https://www.fremont.gov/government/departments/animal-services/tri-city/animal-shelter/adopt',
+  'city of fremont':         'https://www.fremont.gov/government/departments/animal-services/tri-city/animal-shelter/adopt'
+};
+
+function getShelterUrlOverride(shelterName) {
+  if (!shelterName) return '';
+  var key = shelterName.toLowerCase().trim();
+  for (var k in SHELTER_URL_OVERRIDES) {
+    if (key.includes(k)) return SHELTER_URL_OVERRIDES[k];
+  }
+  return '';
+}
 
 function getShelterEmail(shelterName) {
   if (!shelterName) return '';

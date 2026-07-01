@@ -47,6 +47,12 @@ body { font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; background
 :focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; border-radius: 4px; }
 label:focus-visible, button:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
 
+/* Mobile auth button - hidden on desktop (topbar is visible), shown on mobile */
+.nav-auth-mobile { display: none; }
+@media (max-width: 768px) {
+  .nav-auth-mobile { display: block; }
+}
+
 input[name="pg"] { display: none; }
 
 .topbar { background: var(--gunmetal); padding: 8px 24px; display: flex; justify-content: flex-end; align-items: center; gap: 16px; font-size: 12px; color: #ccc; }
@@ -887,6 +893,7 @@ footer { background: var(--gunmetal); color: #ccc; padding: 40px 24px; margin-to
       </div>
     </div>
     <div class="ni nw"><label for="pg-wishlist" onclick="closeDetailNoRedirect()">&#9825; Wishlist <span class="wishlist-badge" id="wl-badge"></span></label></div>
+    <div class="ni nav-auth-mobile"><span id="auth-pill-mobile" style="display:block;padding:9px 18px;border-radius:22px;cursor:pointer;font-size:14px;font-weight:600;background:var(--pink);color:#fff;" onclick="openAuthModal()">👤 Sign In</span></div>
   </div>
 </nav>
 
@@ -4480,14 +4487,14 @@ function clearStoredUser() {
 
 function updateAuthPill() {
   var pill = document.getElementById('auth-pill');
-  if (!pill) return;
+  var mobilePill = document.getElementById('auth-pill-mobile');
   var user = getStoredUser();
   if (user && user.name) {
-    pill.textContent = '👤 ' + user.name;
-    pill.onclick = function() { showSignOutConfirm(); };
+    if (pill) { pill.textContent = '👤 ' + user.name; pill.onclick = function() { showSignOutConfirm(); }; }
+    if (mobilePill) { mobilePill.textContent = '👤 ' + user.name.split(' ')[0]; mobilePill.onclick = function() { showSignOutConfirm(); }; }
   } else {
-    pill.textContent = 'Sign Up / Sign In';
-    pill.onclick = function() { openAuthModal(); };
+    if (pill) { pill.textContent = 'Sign Up / Sign In'; pill.onclick = function() { openAuthModal(); }; }
+    if (mobilePill) { mobilePill.textContent = '👤 Sign In'; mobilePill.onclick = function() { openAuthModal(); }; }
   }
 }
 

@@ -2918,26 +2918,17 @@ function loadPets() {
     }
   } catch(e) { /* ignore bad cache */ }
 
-  // No valid cache — try RescueGroups first with a timeout fallback to Sheets
-  var sheetsLoaded = false;
+  // No valid cache — load Sheets immediately for instant display, then try API to upgrade
+  fetchSheet(false);
 
-  // Set a 8-second timer: if RescueGroups hasn't responded, load Sheets as fallback
-  var fallbackTimer = setTimeout(function() {
-    if (ALL_PETS.length === 0) {
-      sheetsLoaded = true;
-      fetchSheet(false);
-    }
-  }, 8000);
-
-  // Try RescueGroups as primary
-  loadPetsFromRescueGroups(function onSuccess() {
-    clearTimeout(fallbackTimer);
-  }, function onError() {
-    clearTimeout(fallbackTimer);
-    if (!sheetsLoaded && ALL_PETS.length === 0) {
-      fetchSheet(false);
-    }
-  });
+  // Try RescueGroups API in background — if it succeeds, replace Sheet data
+  setTimeout(function() {
+    loadPetsFromRescueGroups(function onSuccess() {
+      // API succeeded — data is now from RescueGroups (replaces Sheet data)
+    }, function onError() {
+      // API failed — keep using Sheet data already displayed
+    });
+  }, 1000);
 }
 
 // ── SILENT BACKGROUND REFRESH VIA RESCUEGROUPS ────────────────────────────────

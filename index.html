@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <!-- Google tag (gtag.js) -->
@@ -808,46 +808,51 @@ footer { background: var(--gunmetal); color: #ccc; padding: 40px 24px; margin-to
   </div>
 </div>
 
-<!-- ── AUTH MODAL (Sign Up / Sign In) ───────────────────────────────────── -->
+<!-- ── AUTH MODAL (OTP Login) ─────────────────────────────────────────────── -->
 <div class="modal-overlay" id="auth-modal">
-  <div class="modal-box" style="max-width:400px;">
+  <div class="modal-box" style="max-width:380px;">
     <button class="modal-close" onclick="closeAuthModal()" aria-label="Close">&#x2715;</button>
     <h3 id="auth-modal-title">🐾 Welcome to Furever Home</h3>
-    <p class="modal-sub">Sign in to save your preferences and track your adoption journey.</p>
-    <!-- Tab switcher -->
-    <div class="auth-tabs">
-      <button class="auth-tab active" id="tab-signin" onclick="switchAuthTab('signin')">Sign In</button>
-      <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Sign Up</button>
+    <p class="modal-sub">Enter your email to sign in or create an account. We'll send you a 4-digit code.</p>
+
+    <!-- Step 1: Email input -->
+    <div id="otp-step-email">
+      <form id="otp-email-form" novalidate autocomplete="off">
+        <div class="form-row"><label for="otp-email">Email Address *</label><input type="email" id="otp-email" placeholder="your@email.com" required autocomplete="off"></div>
+        <button type="submit" class="btn-submit" id="otp-send-btn">Send Code →</button>
+        <p id="otp-email-error" style="display:none;color:var(--red);font-size:12px;margin-top:8px;text-align:center;"></p>
+      </form>
     </div>
-    <!-- Sign In Form -->
-    <form id="signin-form" novalidate autocomplete="off">
-      <div class="form-row"><label for="si-email">Email *</label><input type="email" id="si-email" placeholder="your@email.com" required autocomplete="off"></div>
-      <div class="form-row"><label for="si-password">Password *</label><input type="password" id="si-password" placeholder="Your password" required autocomplete="new-password"></div>
-      <button type="submit" class="btn-submit">Sign In →</button>
-      <p id="si-error" style="display:none;color:var(--red);font-size:12px;margin-top:8px;text-align:center;"></p>
-    </form>
-    <!-- Sign Up Form -->
-    <form id="signup-form" style="display:none;" novalidate>
-      <div class="form-row"><label for="su-name">Full Name *</label><input type="text" id="su-name" placeholder="Your Name" required></div>
-      <div class="form-row"><label for="su-email">Email *</label><input type="email" id="su-email" placeholder="your@email.com" required></div>
-      <div class="form-row"><label for="su-password">Password *</label><input type="password" id="su-password" placeholder="Create a password" required></div>
-      <button type="submit" class="btn-submit">Create Account →</button>
-      <p id="su-error" style="display:none;color:var(--red);font-size:12px;margin-top:8px;text-align:center;"></p>
-      <p id="su-success" style="display:none;color:green;font-size:12px;margin-top:8px;text-align:center;"></p>
-    </form>
-    <!-- Password Reset Screen (shown after lockout) -->
-    <div id="reset-screen" style="display:none;">
-      <p id="reset-lockout-msg" class="reset-lockout-msg">You've exceeded the maximum sign-in attempts.</p>
-      <div class="form-row">
-        <label for="reset-email">Email Address</label>
-        <input type="email" id="reset-email" maxlength="254" placeholder="your@email.com">
-      </div>
-      <button type="button" id="reset-submit-btn" class="btn-submit">Send Reset Link →</button>
-      <div id="reset-error" style="display:none;color:var(--red);font-size:12px;margin-top:8px;text-align:center;"></div>
-      <div id="reset-success" style="display:none;color:green;font-size:12px;margin-top:8px;text-align:center;"></div>
-      <div id="reset-no-email-msg" style="display:none;color:var(--gray-mid);font-size:12px;margin-top:8px;text-align:center;"></div>
-      <button type="button" id="reset-back-btn" class="reset-back-btn">&larr; Back to Sign In</button>
+
+    <!-- Step 2: OTP input -->
+    <div id="otp-step-code" style="display:none;">
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:14px;">📧 Code sent to <strong id="otp-sent-email"></strong></p>
+      <form id="otp-code-form" novalidate>
+        <div class="form-row">
+          <label for="otp-code">4-Digit Code *</label>
+          <input type="text" id="otp-code" placeholder="1234" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" style="text-align:center;font-size:24px;letter-spacing:12px;font-weight:700;" required autocomplete="one-time-code">
+        </div>
+        <button type="submit" class="btn-submit" id="otp-verify-btn">Verify →</button>
+        <p id="otp-code-error" style="display:none;color:var(--red);font-size:12px;margin-top:8px;text-align:center;"></p>
+      </form>
+      <p style="margin-top:12px;text-align:center;">
+        <button type="button" id="otp-resend-btn" style="background:none;border:none;color:var(--pink);font-size:12px;font-weight:600;cursor:pointer;" disabled>Resend code (30s)</button>
+      </p>
+      <p style="text-align:center;margin-top:6px;">
+        <button type="button" onclick="otpBackToEmail()" style="background:none;border:none;color:var(--gray-mid);font-size:12px;cursor:pointer;">&larr; Change email</button>
+      </p>
     </div>
+
+    <!-- Step 3: Name input (new users only) -->
+    <div id="otp-step-name" style="display:none;">
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:14px;">✅ Verified! What should we call you?</p>
+      <form id="otp-name-form" novalidate>
+        <div class="form-row"><label for="otp-name">Your Name *</label><input type="text" id="otp-name" placeholder="Your name" required autocomplete="name"></div>
+        <button type="submit" class="btn-submit">Continue →</button>
+        <p id="otp-name-error" role="alert" style="display:none;color:var(--red);font-size:12px;margin-top:8px;text-align:center;"></p>
+      </form>
+    </div>
+
   </div>
 </div>
 
@@ -4450,24 +4455,7 @@ document.getElementById('general-interest-form-standalone').addEventListener('su
 </script>
 
 <script>
-// ── AUTH SYSTEM (Sign Up / Sign In) ────────────────────────────────────────────
-// Uses localStorage for session state. Posts signup data to Google Sheets.
-// Apps Script Instructions for "Users" sheet:
-// ---- PASTE INTO APPS SCRIPT EDITOR (add to existing doPost): ----------------
-// // Handle "signup" action
-// if (d.action === 'signup') {
-//   var usersSheet = ss.getSheetByName('Users');
-//   if (!usersSheet) {
-//     usersSheet = ss.insertSheet('Users');
-//     usersSheet.appendRow(['Timestamp','Name','Email','Password']);
-//     usersSheet.setFrozenRows(1);
-//   }
-//   usersSheet.appendRow([new Date(), d.name||'', d.email||'', d.password||'']);
-//   return ContentService.createTextOutput(JSON.stringify({status:'ok'}))
-//                        .setMimeType(ContentService.MimeType.JSON);
-// }
-// -----------------------------------------------------------------------------
-
+// ── AUTH SYSTEM (OTP-based, passwordless) ──────────────────────────────────────
 var AUTH_STORAGE_KEY = 'furever_user';
 
 function getStoredUser() {
@@ -4480,9 +4468,37 @@ function setStoredUser(user) {
 
 function clearStoredUser() {
   localStorage.removeItem(AUTH_STORAGE_KEY);
-  // Clear pet data cache on logout (forces fresh fetch on next visit)
   localStorage.removeItem('furever_pets_cache');
-  // Note: furever_accounts is intentionally preserved so user can log back in
+}
+
+function validateEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function openAuthModal() {
+  document.getElementById('auth-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  // Reset to step 1
+  otpBackToEmail();
+}
+
+function closeAuthModal() {
+  document.getElementById('auth-modal').classList.remove('open');
+  document.body.style.overflow = '';
+  // Clear inputs
+  var emailEl = document.getElementById('otp-email');
+  var codeEl = document.getElementById('otp-code');
+  var nameEl = document.getElementById('otp-name');
+  if (emailEl) emailEl.value = '';
+  if (codeEl) codeEl.value = '';
+  if (nameEl) nameEl.value = '';
+}
+
+function otpBackToEmail() {
+  document.getElementById('otp-step-email').style.display = '';
+  document.getElementById('otp-step-code').style.display = 'none';
+  document.getElementById('otp-step-name').style.display = 'none';
+  document.getElementById('otp-email-error').style.display = 'none';
 }
 
 function updateAuthPill() {
@@ -4493,30 +4509,9 @@ function updateAuthPill() {
     if (pill) { pill.textContent = '👤 ' + user.name; pill.onclick = function() { showSignOutConfirm(); }; }
     if (mobilePill) { mobilePill.textContent = '👤 ' + user.name.split(' ')[0]; mobilePill.onclick = function() { showSignOutConfirm(); }; }
   } else {
-    if (pill) { pill.textContent = 'Sign Up / Sign In'; pill.onclick = function() { openAuthModal(); }; }
+    if (pill) { pill.textContent = 'Sign In'; pill.onclick = function() { openAuthModal(); }; }
     if (mobilePill) { mobilePill.textContent = '👤 Sign In'; mobilePill.onclick = function() { openAuthModal(); }; }
   }
-}
-
-function openAuthModal() {
-  var user = getStoredUser();
-  if (user && user.name) {
-    showSignOutConfirm();
-    return;
-  }
-  document.getElementById('auth-modal').classList.add('open');
-  document.body.style.overflow = 'hidden';
-  switchAuthTab('signin');
-}
-
-function closeAuthModal() {
-  document.getElementById('auth-modal').classList.remove('open');
-  document.body.style.overflow = '';
-  // Clear form fields for security (don't leave credentials visible)
-  var siEmail = document.getElementById('si-email');
-  var siPass = document.getElementById('si-password');
-  if (siEmail) siEmail.value = '';
-  if (siPass) siPass.value = '';
 }
 
 function showSignOutConfirm() {
@@ -4524,11 +4519,6 @@ function showSignOutConfirm() {
     clearStoredUser();
     clearWishlistUI();
     updateAuthPill();
-    // Clear sign-in form fields
-    var siEmail = document.getElementById('si-email');
-    var siPass = document.getElementById('si-password');
-    if (siEmail) siEmail.value = '';
-    if (siPass) siPass.value = '';
   }
 }
 
@@ -4537,478 +4527,172 @@ document.getElementById('auth-modal').addEventListener('click', function(e) {
   if (e.target === this) closeAuthModal();
 });
 
-function switchAuthTab(tab) {
-  var signinForm = document.getElementById('signin-form');
-  var signupForm = document.getElementById('signup-form');
-  var tabSI = document.getElementById('tab-signin');
-  var tabSU = document.getElementById('tab-signup');
+// ── OTP State ──────────────────────────────────────────────────────────────
+var _otpEmail = '';
+var _otpResendTimer = null;
 
-  if (tab === 'signin') {
-    signinForm.style.display = '';
-    signupForm.style.display = 'none';
-    tabSI.classList.add('active');
-    tabSU.classList.remove('active');
-  } else {
-    signinForm.style.display = 'none';
-    signupForm.style.display = '';
-    tabSI.classList.remove('active');
-    tabSU.classList.add('active');
-  }
-  // Clear errors
-  document.getElementById('si-error').style.display = 'none';
-  document.getElementById('su-error').style.display = 'none';
-  document.getElementById('su-success').style.display = 'none';
-}
-
-// Sign Up form submit
-document.getElementById('signup-form').addEventListener('submit', function(e) {
+// Step 1: Send OTP
+document.getElementById('otp-email-form').addEventListener('submit', function(e) {
   e.preventDefault();
-  var name     = document.getElementById('su-name').value.trim();
-  var email    = document.getElementById('su-email').value.trim();
-  var password = document.getElementById('su-password').value;
-  var errEl    = document.getElementById('su-error');
-  var sucEl    = document.getElementById('su-success');
-
+  var email = document.getElementById('otp-email').value.trim().toLowerCase();
+  var errEl = document.getElementById('otp-email-error');
+  var btn = document.getElementById('otp-send-btn');
   errEl.style.display = 'none';
-  sucEl.style.display = 'none';
 
-  if (!name || !email || !password) {
-    errEl.textContent = 'All fields are required.';
-    errEl.style.display = 'block';
-    return;
-  }
-  if (!validateEmail(email)) {
-    errEl.textContent = 'Please enter a valid email.';
-    errEl.style.display = 'block';
-    return;
-  }
-  if (password.length < 4) {
-    errEl.textContent = 'Password must be at least 4 characters.';
+  if (!email || !validateEmail(email)) {
+    errEl.textContent = 'Please enter a valid email address.';
     errEl.style.display = 'block';
     return;
   }
 
-  // Encode password (base64 for demo — NOT production-safe)
-  var encoded = btoa(password);
+  _otpEmail = email;
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
 
-  // Check localStorage first for duplicate
-  var accounts = JSON.parse(localStorage.getItem('furever_accounts') || '[]');
-  var existing = accounts.find(function(a) { return a.email.toLowerCase() === email.toLowerCase(); });
-  if (existing) {
-    errEl.textContent = 'An account with this email already exists. Please sign in.';
-    errEl.style.display = 'block';
-    return;
-  }
-
-  // Also check server for duplicate (in case localStorage was cleared)
-  var submitBtn = document.querySelector('#signup-form button[type="submit"]');
-  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Creating account...'; }
-
-  // Try server-side signup (which checks for duplicates)
   fetch(APPS_SCRIPT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({ action: 'signup', name: name, email: email, password: encoded })
+    body: JSON.stringify({ action: 'sendOTP', email: email })
   })
   .then(function(r) { return r.json(); })
   .then(function(resp) {
-    if (resp && resp.status === 'duplicate') {
-      errEl.textContent = 'An account with this email already exists. Please sign in.';
+    if (resp.status === 'error') {
+      errEl.textContent = resp.message || 'Failed to send code.';
       errEl.style.display = 'block';
-      // Still save to local so sign-in works next time
-      // (user might have lost localStorage but account exists on server)
       return;
     }
-    // Success — save locally and sign in
-    accounts.push({ name: name, email: email.toLowerCase(), password: encoded });
-    localStorage.setItem('furever_accounts', JSON.stringify(accounts));
-
-    setStoredUser({ name: name, email: email.toLowerCase() });
-    updateAuthPill();
-    loadUserWishlist();
-
-    sucEl.textContent = 'Account created! You are now signed in.';
-    sucEl.style.display = 'block';
-    setTimeout(function() { closeAuthModal(); }, 1500);
+    // Move to step 2
+    document.getElementById('otp-step-email').style.display = 'none';
+    document.getElementById('otp-step-code').style.display = '';
+    document.getElementById('otp-sent-email').textContent = email;
+    document.getElementById('otp-code').focus();
+    startResendTimer();
   })
   .catch(function() {
-    // Server unreachable — save locally anyway (offline-first)
-    accounts.push({ name: name, email: email.toLowerCase(), password: encoded });
-    localStorage.setItem('furever_accounts', JSON.stringify(accounts));
-
-    // POST in no-cors mode as fallback (fire and forget)
-    fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action: 'signup', name: name, email: email, password: encoded })
-    }).catch(function() {});
-
-    setStoredUser({ name: name, email: email.toLowerCase() });
-    updateAuthPill();
-    loadUserWishlist();
-
-    sucEl.textContent = 'Account created! You are now signed in.';
-    sucEl.style.display = 'block';
-    setTimeout(function() { closeAuthModal(); }, 1500);
+    errEl.textContent = 'Network error. Please try again.';
+    errEl.style.display = 'block';
   })
   .finally(function() {
-    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Create Account'; }
+    btn.disabled = false;
+    btn.textContent = 'Send Code →';
   });
 });
 
-// ── FAILED ATTEMPT TRACKER ──────────────────────────────────────────────────
-// Tracks consecutive failed sign-in attempts per email in sessionStorage.
-// Triggers password reset screen after 3 failed attempts.
-var FAILED_ATTEMPTS_KEY = 'furever_failed_attempts';
-
-function getFailedAttempts(email) {
-  try {
-    var data = JSON.parse(sessionStorage.getItem(FAILED_ATTEMPTS_KEY) || '{}');
-    return (data[email] && typeof data[email].count === 'number') ? data[email].count : 0;
-  } catch (e) {
-    return 0;
-  }
-}
-
-function incrementFailedAttempts(email) {
-  try {
-    var data = JSON.parse(sessionStorage.getItem(FAILED_ATTEMPTS_KEY) || '{}');
-    if (!data[email]) {
-      data[email] = { count: 0, lastAttempt: Date.now() };
-    }
-    data[email].count += 1;
-    data[email].lastAttempt = Date.now();
-    sessionStorage.setItem(FAILED_ATTEMPTS_KEY, JSON.stringify(data));
-    return data[email].count;
-  } catch (e) {
-    return 1;
-  }
-}
-
-function resetFailedAttempts(email) {
-  try {
-    var data = JSON.parse(sessionStorage.getItem(FAILED_ATTEMPTS_KEY) || '{}');
-    if (data[email]) {
-      data[email].count = 0;
-      data[email].lastAttempt = Date.now();
-      sessionStorage.setItem(FAILED_ATTEMPTS_KEY, JSON.stringify(data));
-    }
-  } catch (e) { /* ignore */ }
-}
-
-function isLockedOut(email) {
-  return getFailedAttempts(email) >= 3;
-}
-
-// ── PASSWORD RESET SCREEN FUNCTIONS ──────────────────────────────────────────
-// Shows/hides the password reset screen in response to lockout or back navigation.
-
-function showPasswordResetScreen(email) {
-  // Hide sign-in and sign-up forms
-  document.getElementById('signin-form').style.display = 'none';
-  document.getElementById('signup-form').style.display = 'none';
-  // Hide auth tabs
-  var authTabs = document.querySelector('.auth-tabs');
-  if (authTabs) authTabs.style.display = 'none';
-  // Show reset screen
-  document.getElementById('reset-screen').style.display = '';
-  // Clear any previous error/success messages
-  document.getElementById('reset-error').style.display = 'none';
-  document.getElementById('reset-error').textContent = '';
-  document.getElementById('reset-success').style.display = 'none';
-  document.getElementById('reset-success').textContent = '';
-
-  // Guard: check if account has a registered email (Req 4.2, 4.3)
-  var noEmailMsg = document.getElementById('reset-no-email-msg');
-  var resetEmailInput = document.getElementById('reset-email');
-  var resetSubmitBtn = document.getElementById('reset-submit-btn');
-  var resetLockoutMsg = document.getElementById('reset-lockout-msg');
-
-  if (!email) {
-    // No email on account — block access to reset form
-    resetEmailInput.parentElement.style.display = 'none';
-    resetSubmitBtn.style.display = 'none';
-    resetLockoutMsg.style.display = 'none';
-    noEmailMsg.textContent = 'Password reset is unavailable without a registered email. Please contact support at support@furever.home for account recovery.';
-    noEmailMsg.style.display = '';
-  } else {
-    // Valid email — show reset form normally
-    resetEmailInput.parentElement.style.display = '';
-    resetSubmitBtn.style.display = '';
-    resetLockoutMsg.style.display = '';
-    noEmailMsg.style.display = 'none';
-    noEmailMsg.textContent = '';
-    // Pre-populate email input with the failed email
-    resetEmailInput.value = email;
-  }
-}
-
-function hidePasswordResetScreen() {
-  // Hide reset screen
-  document.getElementById('reset-screen').style.display = 'none';
-  // Show sign-in form
-  document.getElementById('signin-form').style.display = '';
-  // Show auth tabs
-  var authTabs = document.querySelector('.auth-tabs');
-  if (authTabs) authTabs.style.display = '';
-  // Clear any error/success messages on reset screen
-  document.getElementById('reset-error').style.display = 'none';
-  document.getElementById('reset-error').textContent = '';
-  document.getElementById('reset-success').style.display = 'none';
-  document.getElementById('reset-success').textContent = '';
-  // NOTE: Failed attempt counter is NOT reset (Requirement 2.4)
-}
-
-// Wire back button to hidePasswordResetScreen
-document.getElementById('reset-back-btn').addEventListener('click', function() {
-  hidePasswordResetScreen();
-});
-
-// ── HANDLE RESET SUBMIT ──────────────────────────────────────────────────────
-// Validates email, checks rate limit, POSTs to Apps Script for password reset.
-function handleResetSubmit() {
-  var emailInput = document.getElementById('reset-email');
-  var errorEl = document.getElementById('reset-error');
-  var successEl = document.getElementById('reset-success');
-  var email = emailInput.value.trim();
-
-  // Clear previous messages
-  errorEl.style.display = 'none';
-  errorEl.textContent = '';
-  successEl.style.display = 'none';
-  successEl.textContent = '';
-
-  // 1. Validate email format
-  if (!validateEmail(email)) {
-    errorEl.textContent = 'Please enter a valid email address';
-    errorEl.style.display = 'block';
-    return;
-  }
-
-  // 2. Check rate limiter
-  if (!canRequestReset(email)) {
-    errorEl.textContent = 'Too many attempts. Please try again later.';
-    errorEl.style.display = 'block';
-    return;
-  }
-
-  // 3. Record the reset request timestamp
-  recordResetRequest(email);
-
-  // 4. POST to Apps Script
-  fetch(APPS_SCRIPT_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'resetPassword', email: email })
-  }).then(function() {
-    // 5. On success: show identical confirmation regardless of email existence
-    successEl.textContent = 'If an account exists for that email, a reset link has been sent.';
-    successEl.style.display = 'block';
-    errorEl.style.display = 'none';
-  }).catch(function() {
-    // 6. On fetch error (network failure): show error
-    errorEl.textContent = 'Request could not be completed. Try again later.';
-    errorEl.style.display = 'block';
-  });
-}
-
-// Wire reset submit button to handleResetSubmit
-document.getElementById('reset-submit-btn').addEventListener('click', function() {
-  handleResetSubmit();
-});
-
-// Sign In form submit
-document.getElementById('signin-form').addEventListener('submit', function(e) {
+// Step 2: Verify OTP
+document.getElementById('otp-code-form').addEventListener('submit', function(e) {
   e.preventDefault();
-  var email    = document.getElementById('si-email').value.trim();
-  var password = document.getElementById('si-password').value;
-  var errEl    = document.getElementById('si-error');
-
+  var code = document.getElementById('otp-code').value.trim();
+  var errEl = document.getElementById('otp-code-error');
+  var btn = document.getElementById('otp-verify-btn');
   errEl.style.display = 'none';
 
-  if (!email || !password) {
-    errEl.textContent = 'Please enter email and password.';
+  if (!code || code.length !== 4 || !/^\d{4}$/.test(code)) {
+    errEl.textContent = 'Please enter a 4-digit code.';
     errEl.style.display = 'block';
     return;
   }
 
-  // Check if already locked out before attempting sign-in
-  if (isLockedOut(email)) {
-    showPasswordResetScreen(email);
-    return;
-  }
+  btn.disabled = true;
+  btn.textContent = 'Verifying...';
 
-  var encoded = btoa(password);
-  var accounts = JSON.parse(localStorage.getItem('furever_accounts') || '[]');
-  var match = accounts.find(function(a) { return a.email.toLowerCase() === email.toLowerCase() && a.password === encoded; });
-
-  if (match) {
-    // Successful sign-in from localStorage
-    resetFailedAttempts(email);
-    setStoredUser({ name: match.name, email: match.email });
-    updateAuthPill();
-    loadUserWishlist();
-    closeAuthModal();
-    return;
-  }
-
-  // Not found locally — try server (Google Sheets) for accounts created on other devices
-  if (APPS_SCRIPT_URL) {
-    var submitBtn = document.querySelector('#signin-form button[type="submit"]');
-    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Signing in...'; }
-
-    fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action: 'login', email: email, password: encoded })
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(resp) {
-      if (resp.status === 'ok' && resp.name) {
-        // Found on server — save locally for future logins
-        accounts.push({ name: resp.name, email: resp.email || email, password: encoded });
-        localStorage.setItem('furever_accounts', JSON.stringify(accounts));
-        resetFailedAttempts(email);
-        setStoredUser({ name: resp.name, email: resp.email || email });
-        updateAuthPill();
-        loadUserWishlist();
-        closeAuthModal();
-      } else {
-        handleSignInFailure(email, errEl);
-      }
-    })
-    .catch(function() {
-      // Server unreachable — fail based on local data only
-      handleSignInFailure(email, errEl);
-    })
-    .finally(function() {
-      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Sign In'; }
-    });
-  } else {
-    handleSignInFailure(email, errEl);
-  }
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ action: 'verifyOTP', email: _otpEmail, code: code })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(resp) {
+    if (resp.status === 'error') {
+      errEl.textContent = resp.message || 'Invalid code.';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (resp.isNew) {
+      // New user — ask for name
+      document.getElementById('otp-step-code').style.display = 'none';
+      document.getElementById('otp-step-name').style.display = '';
+      document.getElementById('otp-name').focus();
+    } else {
+      // Existing user — sign in directly
+      setStoredUser({ name: resp.name, email: resp.email || _otpEmail });
+      updateAuthPill();
+      if (typeof loadUserWishlist === 'function') loadUserWishlist();
+      closeAuthModal();
+    }
+  })
+  .catch(function() {
+    errEl.textContent = 'Network error. Please try again.';
+    errEl.style.display = 'block';
+  })
+  .finally(function() {
+    btn.disabled = false;
+    btn.textContent = 'Verify →';
+  });
 });
 
-function handleSignInFailure(email, errEl) {
-  incrementFailedAttempts(email);
-  if (isLockedOut(email)) {
-    showPasswordResetScreen(email);
+// Step 3: Set name (new users)
+document.getElementById('otp-name-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var name = document.getElementById('otp-name').value.trim();
+  var errEl = document.getElementById('otp-name-error');
+  errEl.style.display = 'none';
+
+  if (!name) {
+    errEl.textContent = 'Please enter your name.';
+    errEl.style.display = 'block';
     return;
   }
-  errEl.textContent = 'Invalid email or password. Please try again or sign up.';
-  errEl.style.display = 'block';
+
+  // Save to server
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ action: 'verifyOTP', email: _otpEmail, code: document.getElementById('otp-code').value.trim(), name: name })
+  })
+  .then(function(r) { return r.json(); })
+  .catch(function() { return { status: 'ok' }; }) // Even if server fails, proceed locally
+  .then(function() {
+    setStoredUser({ name: name, email: _otpEmail });
+    updateAuthPill();
+    if (typeof loadUserWishlist === 'function') loadUserWishlist();
+    closeAuthModal();
+  });
+});
+
+// Resend timer
+function startResendTimer() {
+  var btn = document.getElementById('otp-resend-btn');
+  var seconds = 30;
+  btn.disabled = true;
+  btn.textContent = 'Resend code (' + seconds + 's)';
+
+  if (_otpResendTimer) clearInterval(_otpResendTimer);
+  _otpResendTimer = setInterval(function() {
+    seconds--;
+    if (seconds <= 0) {
+      clearInterval(_otpResendTimer);
+      btn.disabled = false;
+      btn.textContent = 'Resend code';
+    } else {
+      btn.textContent = 'Resend code (' + seconds + 's)';
+    }
+  }, 1000);
 }
+
+document.getElementById('otp-resend-btn').addEventListener('click', function() {
+  if (this.disabled) return;
+  // Re-trigger send OTP
+  document.getElementById('otp-email').value = _otpEmail;
+  document.getElementById('otp-email-form').dispatchEvent(new Event('submit'));
+});
+
+// OTP code input: only allow digits
+document.getElementById('otp-code').addEventListener('input', function() {
+  this.value = this.value.replace(/[^0-9]/g, '');
+});
 
 // On page load, check if user is already signed in
 updateAuthPill();
-
-// ── RESET RATE LIMITER ─────────────────────────────────────────────────────
-// Limits password reset requests to 3 per 15-minute window per email.
-// Uses sessionStorage so data auto-clears when the browser tab closes.
-var RESET_TIMESTAMPS_KEY = 'furever_reset_timestamps';
-var RESET_WINDOW_MS = 15 * 60 * 1000; // 15 minutes in milliseconds
-var RESET_MAX_REQUESTS = 3;
-
-function getResetTimestamps() {
-  try {
-    return JSON.parse(sessionStorage.getItem(RESET_TIMESTAMPS_KEY)) || {};
-  } catch (e) {
-    return {};
-  }
-}
-
-function saveResetTimestamps(data) {
-  sessionStorage.setItem(RESET_TIMESTAMPS_KEY, JSON.stringify(data));
-}
-
-function filterRecentTimestamps(timestamps) {
-  var now = Date.now();
-  return timestamps.filter(function(ts) {
-    return (now - ts) < RESET_WINDOW_MS;
-  });
-}
-
-function canRequestReset(email) {
-  var data = getResetTimestamps();
-  var timestamps = data[email] || [];
-  var recent = filterRecentTimestamps(timestamps);
-  return recent.length < RESET_MAX_REQUESTS;
-}
-
-function recordResetRequest(email) {
-  var data = getResetTimestamps();
-  var timestamps = data[email] || [];
-  timestamps.push(Date.now());
-  data[email] = timestamps;
-  saveResetTimestamps(data);
-}
-
-function getTimeUntilNextReset(email) {
-  var data = getResetTimestamps();
-  var timestamps = data[email] || [];
-  var recent = filterRecentTimestamps(timestamps);
-  if (recent.length < RESET_MAX_REQUESTS) {
-    return 0;
-  }
-  // Find the oldest timestamp in the recent window — that's the one that will expire first
-  var oldest = Math.min.apply(null, recent);
-  var now = Date.now();
-  var timeUntilExpiry = (oldest + RESET_WINDOW_MS) - now;
-  return Math.max(0, timeUntilExpiry);
-}
-
-// ── EMAIL VALIDATION (shared between sign-up and reset forms) ──────────────
-// Validates: non-empty (after trim), at most 254 chars, exactly one "@",
-// domain part (after "@") contains at least one dot.
-function validateEmail(email) {
-  if (typeof email !== 'string') return false;
-  var trimmed = email.trim();
-  if (!trimmed) return false;
-  if (trimmed.length > 254) return false;
-  var parts = trimmed.split('@');
-  if (parts.length !== 2) return false; // exactly one "@"
-  var local = parts[0];
-  var domain = parts[1];
-  if (!local || !domain) return false;
-  if (domain.indexOf('.') === -1) return false; // domain must have at least one dot
-  return true;
-}
-
-// ── MOBILE DROPDOWN TOGGLE (tap to open on touch devices) ──────────────────
-(function() {
-  var navItems = document.querySelectorAll('.ni');
-  navItems.forEach(function(ni) {
-    var label = ni.querySelector(':scope > label');
-    var dd = ni.querySelector('.dd');
-    if (!label || !dd) return;
-    label.addEventListener('click', function(e) {
-      // Close all other dropdowns first
-      document.querySelectorAll('.dd.dd-open').forEach(function(d) {
-        if (d !== dd) d.classList.remove('dd-open');
-      });
-      dd.classList.toggle('dd-open');
-    });
-  });
-  // Close dropdowns when clicking outside
-  document.addEventListener('click', function(e) {
-    if (!e.target.closest('.ni')) {
-      document.querySelectorAll('.dd.dd-open').forEach(function(d) {
-        d.classList.remove('dd-open');
-      });
-    }
-  });
-  // Close dropdown when a menu item is clicked AND close detail view if open
-  document.querySelectorAll('.dd label').forEach(function(lbl) {
-    lbl.addEventListener('click', function() {
-      closeDetailNoRedirect();
-      document.querySelectorAll('.dd.dd-open').forEach(function(d) {
-        d.classList.remove('dd-open');
-      });
-    });
-  });
-})();
 </script>
 
 </body>

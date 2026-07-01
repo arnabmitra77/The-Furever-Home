@@ -4591,34 +4591,70 @@ document.getElementById('signup-form').addEventListener('submit', function(e) {
   // Encode password (base64 for demo — NOT production-safe)
   var encoded = btoa(password);
 
-  // Save to localStorage for later sign-in verification
+  // Check localStorage first for duplicate
   var accounts = JSON.parse(localStorage.getItem('furever_accounts') || '[]');
-  // Check if email already exists
-  var existing = accounts.find(function(a) { return a.email === email; });
+  var existing = accounts.find(function(a) { return a.email.toLowerCase() === email.toLowerCase(); });
   if (existing) {
     errEl.textContent = 'An account with this email already exists. Please sign in.';
     errEl.style.display = 'block';
     return;
   }
-  accounts.push({ name: name, email: email, password: encoded });
-  localStorage.setItem('furever_accounts', JSON.stringify(accounts));
 
-  // POST to Apps Script
+  // Also check server for duplicate (in case localStorage was cleared)
+  var submitBtn = document.querySelector('#signup-form button[type="submit"]');
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Creating account...'; }
+
+  // Try server-side signup (which checks for duplicates)
   fetch(APPS_SCRIPT_URL, {
     method: 'POST',
-    mode: 'no-cors',
     headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify({ action: 'signup', name: name, email: email, password: encoded })
-  }).catch(function() { /* ignore */ });
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(resp) {
+    if (resp && resp.status === 'duplicate') {
+      errEl.textContent = 'An account with this email already exists. Please sign in.';
+      errEl.style.display = 'block';
+      // Still save to local so sign-in works next time
+      // (user might have lost localStorage but account exists on server)
+      return;
+    }
+    // Success — save locally and sign in
+    accounts.push({ name: name, email: email.toLowerCase(), password: encoded });
+    localStorage.setItem('furever_accounts', JSON.stringify(accounts));
 
-  // Auto sign in
-  setStoredUser({ name: name, email: email });
-  updateAuthPill();
-  loadUserWishlist();
+    setStoredUser({ name: name, email: email.toLowerCase() });
+    updateAuthPill();
+    loadUserWishlist();
 
-  sucEl.textContent = 'Account created! You are now signed in.';
-  sucEl.style.display = 'block';
-  setTimeout(function() { closeAuthModal(); }, 1500);
+    sucEl.textContent = 'Account created! You are now signed in.';
+    sucEl.style.display = 'block';
+    setTimeout(function() { closeAuthModal(); }, 1500);
+  })
+  .catch(function() {
+    // Server unreachable — save locally anyway (offline-first)
+    accounts.push({ name: name, email: email.toLowerCase(), password: encoded });
+    localStorage.setItem('furever_accounts', JSON.stringify(accounts));
+
+    // POST in no-cors mode as fallback (fire and forget)
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'signup', name: name, email: email, password: encoded })
+    }).catch(function() {});
+
+    setStoredUser({ name: name, email: email.toLowerCase() });
+    updateAuthPill();
+    loadUserWishlist();
+
+    sucEl.textContent = 'Account created! You are now signed in.';
+    sucEl.style.display = 'block';
+    setTimeout(function() { closeAuthModal(); }, 1500);
+  })
+  .finally(function() {
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Create Account'; }
+  });
 });
 
 // ── FAILED ATTEMPT TRACKER ──────────────────────────────────────────────────
@@ -4806,7 +4842,7 @@ document.getElementById('signin-form').addEventListener('submit', function(e) {
 
   var encoded = btoa(password);
   var accounts = JSON.parse(localStorage.getItem('furever_accounts') || '[]');
-  var match = accounts.find(function(a) { return a.email === email && a.password === encoded; });
+  var match = accounts.find(function(a) { return a.email.toLowerCase() === email.toLowerCase() && a.password === encoded; });
 
   if (match) {
     // Successful sign-in from localStorage

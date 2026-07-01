@@ -15,6 +15,31 @@ function doPost(e) {
     return ContentService.createTextOutput(JSON.stringify({status:'ok'})).setMimeType(ContentService.MimeType.JSON);
   }
 
+  // ── GOOGLE SIGN-IN LOG ───────────────────────────────────────────
+  if (d.action === 'googleSignIn') {
+    var usersSheet = ss.getSheetByName('User Accounts');
+    if (!usersSheet) {
+      usersSheet = ss.insertSheet('User Accounts');
+      usersSheet.appendRow(['Timestamp', 'Full Name', 'Email', 'Sign-In Method']);
+      usersSheet.setFrozenRows(1);
+    }
+    var email = (d.email || '').trim().toLowerCase();
+    var name = d.name || '';
+    // Check if user already exists — if not, add them
+    var data = usersSheet.getDataRange().getValues();
+    var exists = false;
+    for (var i = 1; i < data.length; i++) {
+      if ((data[i][2] || '').trim().toLowerCase() === email) {
+        exists = true;
+        break;
+      }
+    }
+    if (!exists) {
+      usersSheet.appendRow([new Date(), name, email, 'Google']);
+    }
+    return ContentService.createTextOutput(JSON.stringify({status:'ok'})).setMimeType(ContentService.MimeType.JSON);
+  }
+
   // ── SEND OTP ───────────────────────────────────────────────────────
   if (d.action === 'sendOTP') {
     var email = (d.email || '').trim().toLowerCase();

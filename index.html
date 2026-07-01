@@ -11,6 +11,7 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <title>The Furever Home — Dog Adoption, Cat Adoption & Rescue Pets Near You</title>
 <meta name="description" content="Adopt pets from local shelters. Browse rescue dogs, puppies, and cats available for adoption near you. Find your perfect companion at The Furever Home.">
 <meta name="keywords" content="dog adoption, puppy adoption, cat adoption, adopt pets, rescue dogs, pet shelters, adopt near me, pet adoption Bay Area">
@@ -808,51 +809,27 @@ footer { background: var(--gunmetal); color: #ccc; padding: 40px 24px; margin-to
   </div>
 </div>
 
-<!-- ── AUTH MODAL (OTP Login) ─────────────────────────────────────────────── -->
+<!-- ── AUTH MODAL (Google Sign-In) ──────────────────────────────────────────── -->
 <div class="modal-overlay" id="auth-modal">
-  <div class="modal-box" style="max-width:380px;">
+  <div class="modal-box" style="max-width:380px;text-align:center;">
     <button class="modal-close" onclick="closeAuthModal()" aria-label="Close">&#x2715;</button>
-    <h3 id="auth-modal-title">🐾 Welcome to Furever Home</h3>
-    <p class="modal-sub">Enter your email to sign in or create an account. We'll send you a 4-digit code.</p>
-
-    <!-- Step 1: Email input -->
-    <div id="otp-step-email">
-      <form id="otp-email-form" novalidate autocomplete="off">
-        <div class="form-row"><label for="otp-email">Email Address *</label><input type="email" id="otp-email" placeholder="your@email.com" required autocomplete="off"></div>
-        <button type="submit" class="btn-submit" id="otp-send-btn">Send Code →</button>
-        <p id="otp-email-error" style="display:none;color:var(--red);font-size:12px;margin-top:8px;text-align:center;"></p>
-      </form>
+    <h3 style="margin-bottom:8px;">🐾 Welcome to Furever Home</h3>
+    <p class="modal-sub" style="margin-bottom:24px;">Sign in to save your favorite pets and track your adoption journey.</p>
+    <div id="g_id_onload"
+      data-client_id="510822939791-2on40cce15dpkon28l4s90rjloqg7h3o.apps.googleusercontent.com"
+      data-callback="handleGoogleSignIn"
+      data-auto_prompt="false">
     </div>
-
-    <!-- Step 2: OTP input -->
-    <div id="otp-step-code" style="display:none;">
-      <p style="font-size:13px;color:var(--text-light);margin-bottom:14px;">📧 Code sent to <strong id="otp-sent-email"></strong></p>
-      <form id="otp-code-form" novalidate>
-        <div class="form-row">
-          <label for="otp-code">4-Digit Code *</label>
-          <input type="text" id="otp-code" placeholder="1234" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" style="text-align:center;font-size:24px;letter-spacing:12px;font-weight:700;" required autocomplete="one-time-code">
-        </div>
-        <button type="submit" class="btn-submit" id="otp-verify-btn">Verify →</button>
-        <p id="otp-code-error" style="display:none;color:var(--red);font-size:12px;margin-top:8px;text-align:center;"></p>
-      </form>
-      <p style="margin-top:12px;text-align:center;">
-        <button type="button" id="otp-resend-btn" style="background:none;border:none;color:var(--pink);font-size:12px;font-weight:600;cursor:pointer;" disabled>Resend code (30s)</button>
-      </p>
-      <p style="text-align:center;margin-top:6px;">
-        <button type="button" onclick="otpBackToEmail()" style="background:none;border:none;color:var(--gray-mid);font-size:12px;cursor:pointer;">&larr; Change email</button>
-      </p>
+    <div class="g_id_signin"
+      data-type="standard"
+      data-shape="pill"
+      data-theme="outline"
+      data-text="sign_in_with"
+      data-size="large"
+      data-logo_alignment="left"
+      data-width="320">
     </div>
-
-    <!-- Step 3: Name input (new users only) -->
-    <div id="otp-step-name" style="display:none;">
-      <p style="font-size:13px;color:var(--text-light);margin-bottom:14px;">✅ Verified! What should we call you?</p>
-      <form id="otp-name-form" novalidate>
-        <div class="form-row"><label for="otp-name">Your Name *</label><input type="text" id="otp-name" placeholder="Your name" required autocomplete="name"></div>
-        <button type="submit" class="btn-submit">Continue →</button>
-        <p id="otp-name-error" role="alert" style="display:none;color:var(--red);font-size:12px;margin-top:8px;text-align:center;"></p>
-      </form>
-    </div>
-
+    <p style="font-size:11px;color:var(--gray-mid);margin-top:16px;">By signing in, you agree to our use of cookies to save your preferences.</p>
   </div>
 </div>
 
@@ -4455,7 +4432,7 @@ document.getElementById('general-interest-form-standalone').addEventListener('su
 </script>
 
 <script>
-// ── AUTH SYSTEM (OTP-based, passwordless) ──────────────────────────────────────
+// ── AUTH SYSTEM (Google Sign-In) ───────────────────────────────────────────────
 var AUTH_STORAGE_KEY = 'furever_user';
 
 function getStoredUser() {
@@ -4471,34 +4448,14 @@ function clearStoredUser() {
   localStorage.removeItem('furever_pets_cache');
 }
 
-function validateEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
 function openAuthModal() {
   document.getElementById('auth-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
-  // Reset to step 1
-  otpBackToEmail();
 }
 
 function closeAuthModal() {
   document.getElementById('auth-modal').classList.remove('open');
   document.body.style.overflow = '';
-  // Clear inputs
-  var emailEl = document.getElementById('otp-email');
-  var codeEl = document.getElementById('otp-code');
-  var nameEl = document.getElementById('otp-name');
-  if (emailEl) emailEl.value = '';
-  if (codeEl) codeEl.value = '';
-  if (nameEl) nameEl.value = '';
-}
-
-function otpBackToEmail() {
-  document.getElementById('otp-step-email').style.display = '';
-  document.getElementById('otp-step-code').style.display = 'none';
-  document.getElementById('otp-step-name').style.display = 'none';
-  document.getElementById('otp-email-error').style.display = 'none';
 }
 
 function updateAuthPill() {
@@ -4517,178 +4474,43 @@ function updateAuthPill() {
 function showSignOutConfirm() {
   if (confirm('Sign out of your account?')) {
     clearStoredUser();
-    clearWishlistUI();
+    if (typeof clearWishlistUI === 'function') clearWishlistUI();
     updateAuthPill();
+    // Revoke Google session
+    google.accounts.id.disableAutoSelect();
+  }
+}
+
+// Google Sign-In callback
+function handleGoogleSignIn(response) {
+  // Decode the JWT token to get user info
+  var payload = JSON.parse(atob(response.credential.split('.')[1]));
+  var user = {
+    name: payload.name,
+    email: payload.email,
+    picture: payload.picture
+  };
+
+  // Save locally
+  setStoredUser(user);
+  updateAuthPill();
+  if (typeof loadUserWishlist === 'function') loadUserWishlist();
+  closeAuthModal();
+
+  // Log to Google Sheets (fire and forget)
+  if (typeof APPS_SCRIPT_URL !== 'undefined' && APPS_SCRIPT_URL) {
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'googleSignIn', name: user.name, email: user.email })
+    }).catch(function() {});
   }
 }
 
 // Auth modal overlay click to close
 document.getElementById('auth-modal').addEventListener('click', function(e) {
   if (e.target === this) closeAuthModal();
-});
-
-// ── OTP State ──────────────────────────────────────────────────────────────
-var _otpEmail = '';
-var _otpResendTimer = null;
-
-// Step 1: Send OTP
-document.getElementById('otp-email-form').addEventListener('submit', function(e) {
-  e.preventDefault();
-  var email = document.getElementById('otp-email').value.trim().toLowerCase();
-  var errEl = document.getElementById('otp-email-error');
-  var btn = document.getElementById('otp-send-btn');
-  errEl.style.display = 'none';
-
-  if (!email || !validateEmail(email)) {
-    errEl.textContent = 'Please enter a valid email address.';
-    errEl.style.display = 'block';
-    return;
-  }
-
-  _otpEmail = email;
-  btn.disabled = true;
-  btn.textContent = 'Sending...';
-
-  fetch(APPS_SCRIPT_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({ action: 'sendOTP', email: email })
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(resp) {
-    if (resp.status === 'error') {
-      errEl.textContent = resp.message || 'Failed to send code.';
-      errEl.style.display = 'block';
-      return;
-    }
-    // Move to step 2
-    document.getElementById('otp-step-email').style.display = 'none';
-    document.getElementById('otp-step-code').style.display = '';
-    document.getElementById('otp-sent-email').textContent = email;
-    document.getElementById('otp-code').focus();
-    startResendTimer();
-  })
-  .catch(function() {
-    errEl.textContent = 'Network error. Please try again.';
-    errEl.style.display = 'block';
-  })
-  .finally(function() {
-    btn.disabled = false;
-    btn.textContent = 'Send Code →';
-  });
-});
-
-// Step 2: Verify OTP
-document.getElementById('otp-code-form').addEventListener('submit', function(e) {
-  e.preventDefault();
-  var code = document.getElementById('otp-code').value.trim();
-  var errEl = document.getElementById('otp-code-error');
-  var btn = document.getElementById('otp-verify-btn');
-  errEl.style.display = 'none';
-
-  if (!code || code.length !== 4 || !/^\d{4}$/.test(code)) {
-    errEl.textContent = 'Please enter a 4-digit code.';
-    errEl.style.display = 'block';
-    return;
-  }
-
-  btn.disabled = true;
-  btn.textContent = 'Verifying...';
-
-  fetch(APPS_SCRIPT_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({ action: 'verifyOTP', email: _otpEmail, code: code })
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(resp) {
-    if (resp.status === 'error') {
-      errEl.textContent = resp.message || 'Invalid code.';
-      errEl.style.display = 'block';
-      return;
-    }
-    if (resp.isNew) {
-      // New user — ask for name
-      document.getElementById('otp-step-code').style.display = 'none';
-      document.getElementById('otp-step-name').style.display = '';
-      document.getElementById('otp-name').focus();
-    } else {
-      // Existing user — sign in directly
-      setStoredUser({ name: resp.name, email: resp.email || _otpEmail });
-      updateAuthPill();
-      if (typeof loadUserWishlist === 'function') loadUserWishlist();
-      closeAuthModal();
-    }
-  })
-  .catch(function() {
-    errEl.textContent = 'Network error. Please try again.';
-    errEl.style.display = 'block';
-  })
-  .finally(function() {
-    btn.disabled = false;
-    btn.textContent = 'Verify →';
-  });
-});
-
-// Step 3: Set name (new users)
-document.getElementById('otp-name-form').addEventListener('submit', function(e) {
-  e.preventDefault();
-  var name = document.getElementById('otp-name').value.trim();
-  var errEl = document.getElementById('otp-name-error');
-  errEl.style.display = 'none';
-
-  if (!name) {
-    errEl.textContent = 'Please enter your name.';
-    errEl.style.display = 'block';
-    return;
-  }
-
-  // Save to server
-  fetch(APPS_SCRIPT_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({ action: 'verifyOTP', email: _otpEmail, code: document.getElementById('otp-code').value.trim(), name: name })
-  })
-  .then(function(r) { return r.json(); })
-  .catch(function() { return { status: 'ok' }; }) // Even if server fails, proceed locally
-  .then(function() {
-    setStoredUser({ name: name, email: _otpEmail });
-    updateAuthPill();
-    if (typeof loadUserWishlist === 'function') loadUserWishlist();
-    closeAuthModal();
-  });
-});
-
-// Resend timer
-function startResendTimer() {
-  var btn = document.getElementById('otp-resend-btn');
-  var seconds = 30;
-  btn.disabled = true;
-  btn.textContent = 'Resend code (' + seconds + 's)';
-
-  if (_otpResendTimer) clearInterval(_otpResendTimer);
-  _otpResendTimer = setInterval(function() {
-    seconds--;
-    if (seconds <= 0) {
-      clearInterval(_otpResendTimer);
-      btn.disabled = false;
-      btn.textContent = 'Resend code';
-    } else {
-      btn.textContent = 'Resend code (' + seconds + 's)';
-    }
-  }, 1000);
-}
-
-document.getElementById('otp-resend-btn').addEventListener('click', function() {
-  if (this.disabled) return;
-  // Re-trigger send OTP
-  document.getElementById('otp-email').value = _otpEmail;
-  document.getElementById('otp-email-form').dispatchEvent(new Event('submit'));
-});
-
-// OTP code input: only allow digits
-document.getElementById('otp-code').addEventListener('input', function() {
-  this.value = this.value.replace(/[^0-9]/g, '');
 });
 
 // On page load, check if user is already signed in

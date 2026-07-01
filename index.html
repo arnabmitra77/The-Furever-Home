@@ -2587,7 +2587,7 @@ var RG_CATS_URL = RG_PROXY_BASE + 'animals/search/available/cats/haspic?limit=50
 var RG_LOCATION_FILTER = JSON.stringify({ data: { filterRadius: { postalcode: "94536", miles: 100 } } });
 
 // Pagination settings
-var PETS_PER_PAGE = 27;
+var PETS_PER_PAGE = 50;
 var currentDogPage = 1;
 var currentCatPage = 1;
 
@@ -3331,25 +3331,34 @@ function renderPagination(type, currentPage, totalPages, totalItems) {
     grid.parentNode.insertBefore(container, grid.nextSibling);
   }
 
-  if (totalPages <= 1) { container.innerHTML = ''; return; }
+  var currentTotal = ALL_PETS.filter(function(p) { return p.species.toLowerCase() === type; }).length;
+  var canLoadMore = currentTotal < RG_MAX_PETS;
 
-  var html = '<span style="font-size:12px;color:var(--gray-mid);margin-right:12px;">Showing ' + ((currentPage-1)*PETS_PER_PAGE+1) + '-' + Math.min(currentPage*PETS_PER_PAGE, totalItems) + ' of ' + totalItems + '</span>';
+  // Always show pagination — either page controls or "Load More" button
+  var html = '<span style="font-size:12px;color:var(--gray-mid);margin-right:12px;">Showing ' + ((currentPage-1)*PETS_PER_PAGE+1) + '-' + Math.min(currentPage*PETS_PER_PAGE, totalItems) + ' of ' + totalItems + ' loaded</span>';
 
-  // Prev button
-  html += '<button onclick="changePage(\'' + type + '\',' + (currentPage-1) + ')" ' + (currentPage===1?'disabled':'') + ' style="padding:6px 12px;border:1.5px solid var(--gray-border);border-radius:8px;background:var(--white);cursor:pointer;font-size:12px;font-weight:600;' + (currentPage===1?'opacity:0.4;cursor:not-allowed;':'') + '">&laquo; Prev</button>';
+  if (totalPages > 1) {
+    // Prev button
+    html += '<button onclick="changePage(\'' + type + '\',' + (currentPage-1) + ')" ' + (currentPage===1?'disabled':'') + ' style="padding:6px 12px;border:1.5px solid var(--gray-border);border-radius:8px;background:var(--white);cursor:pointer;font-size:12px;font-weight:600;' + (currentPage===1?'opacity:0.4;cursor:not-allowed;':'') + '">&laquo; Prev</button>';
 
-  // Page numbers (show max 5 pages around current)
-  var startPage = Math.max(1, currentPage - 2);
-  var endPage = Math.min(totalPages, startPage + 4);
-  if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
+    // Page numbers (show max 5 pages around current)
+    var startPage = Math.max(1, currentPage - 2);
+    var endPage = Math.min(totalPages, startPage + 4);
+    if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
 
-  for (var i = startPage; i <= endPage; i++) {
-    var isActive = i === currentPage;
-    html += '<button onclick="changePage(\'' + type + '\',' + i + ')" style="padding:6px 10px;border:1.5px solid ' + (isActive?'var(--pink)':'var(--gray-border)') + ';border-radius:8px;background:' + (isActive?'var(--pink)':'var(--white)') + ';color:' + (isActive?'#fff':'var(--text)') + ';cursor:pointer;font-size:12px;font-weight:600;">' + i + '</button>';
+    for (var i = startPage; i <= endPage; i++) {
+      var isActive = i === currentPage;
+      html += '<button onclick="changePage(\'' + type + '\',' + i + ')" style="padding:6px 10px;border:1.5px solid ' + (isActive?'var(--pink)':'var(--gray-border)') + ';border-radius:8px;background:' + (isActive?'var(--pink)':'var(--white)') + ';color:' + (isActive?'#fff':'var(--text)') + ';cursor:pointer;font-size:12px;font-weight:600;">' + i + '</button>';
+    }
+
+    // Next button
+    html += '<button onclick="changePage(\'' + type + '\',' + (currentPage+1) + ')" ' + (currentPage===totalPages && !canLoadMore?'disabled':'') + ' style="padding:6px 12px;border:1.5px solid var(--gray-border);border-radius:8px;background:var(--white);cursor:pointer;font-size:12px;font-weight:600;' + (currentPage===totalPages && !canLoadMore?'opacity:0.4;cursor:not-allowed;':'') + '">Next &raquo;</button>';
   }
 
-  // Next button
-  html += '<button onclick="changePage(\'' + type + '\',' + (currentPage+1) + ')" ' + (currentPage===totalPages?'disabled':'') + ' style="padding:6px 12px;border:1.5px solid var(--gray-border);border-radius:8px;background:var(--white);cursor:pointer;font-size:12px;font-weight:600;' + (currentPage===totalPages?'opacity:0.4;cursor:not-allowed;':'') + '">Next &raquo;</button>';
+  // Always show "Load More" button if we can fetch more from API
+  if (canLoadMore) {
+    html += '<button onclick="loadMorePets(\'' + type + '\')" style="padding:8px 16px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--pink),var(--deep-orange));color:#fff;cursor:pointer;font-size:12px;font-weight:700;margin-left:8px;">' + (RG_LOADING ? 'Loading...' : 'Load More Pets →') + '</button>';
+  }
 
   container.innerHTML = html;
 }

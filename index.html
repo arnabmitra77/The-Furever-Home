@@ -2904,15 +2904,17 @@ function loadPets() {
         bindFilterEvents();
         refreshWishlistUI();
         showLastUpdated(true); // true = from cache
-        // Refresh in background: try RescueGroups first, then sheets
+        // Refresh in background
         loadPetsFromRescueGroupsSilent();
         return;
       }
     }
   } catch(e) { /* ignore bad cache */ }
 
-  // No valid cache — try RescueGroups as primary source
-  loadPetsFromRescueGroups();
+  // No valid cache — load Google Sheets FIRST (fast, reliable), then try RescueGroups in background
+  fetchSheet(false);
+  // Also try RescueGroups in parallel — if it succeeds, it replaces Sheet data
+  setTimeout(function() { loadPetsFromRescueGroupsSilent(); }, 2000);
 }
 
 // ── SILENT BACKGROUND REFRESH VIA RESCUEGROUPS ────────────────────────────────

@@ -2002,25 +2002,60 @@ var ChatbotWidget = {
     this.showTyping();
 
     try {
-      // Step 1: Try to retrieve relevant articles from the knowledge base
-      var articles = [];
-      try {
-        articles = await Retriever.search(trimmed);
-      } catch (kbErr) {
-        // KB fetch failed (empty sheet, network issue, etc.) — continue without articles
-        articles = [];
+      // Call the LangGraph chatbot backend API
+      var CHATBOT_API_URL = (window.SITE_CONFIG && window.SITE_CONFIG.chatbotApiUrl)
+        || 'https://the-furever-home.onrender.com/chat';
+
+      var sessionId = localStorage.getItem('furever_chat_session') || '';
+
+      var apiResponse = await fetch(CHATBOT_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: trimmed, session_id: sessionId })
+      });
+
+      if (!apiResponse.ok) {
+        if (apiResponse.status === 429) {
+          throw new Error('RATE_LIMITED');
+        }
+        throw new Error('API_ERROR_' + apiResponse.status);
       }
 
-      // Step 2: Generate AI answer (with or without articles as context)
-      var response = await AIResponder.generateAnswer(trimmed, articles);
+      var data = await apiResponse.json();
 
-      // Step 3: Handle successful AI response
-      this.handleAIResponse(response, articles);
+      // Save session ID for conversation continuity
+      if (data.session_id) {
+        localStorage.setItem('furever_chat_session', data.session_id);
+      }
+
+      // Display the response
+      this.hideTyping();
+      this.setInputEnabled(true);
+
+      var msg = {
+        role: 'assistant',
+        text: data.answer,
+        timestamp: Date.now()
+      };
+      if (data.sources && data.sources.length > 0) {
+        msg.sources = data.sources;
+      }
+      this.addMessage(msg);
 
     } catch (err) {
-      // Handle any error from AIResponder (timeout, HTTP error, API failure)
       console.error('[Chatbot] Submit error:', err);
-      this.handleAIError();
+      this.hideTyping();
+      this.setInputEnabled(true);
+
+      var errorText = err.message === 'RATE_LIMITED'
+        ? "You're sending messages too quickly. Please wait a moment and try again."
+        : "I\u2019m having trouble connecting right now \u2014 please try again shortly.";
+
+      this.addMessage({
+        role: 'assistant',
+        text: errorText,
+        timestamp: Date.now()
+      });
     }
   },
 

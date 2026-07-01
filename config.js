@@ -10,5 +10,6 @@ window.CHATBOT_CONFIG = {
 window.SITE_CONFIG = {
   sheetId: '1Xg4T3vmhoLxN0C2lEBFaN88Y2LSvoF6DQVoCxL3dt80',
   appsScriptUrl: 'https://script.google.com/macros/s/AKfycbwmtLgxXy3hhXM3XVULRLSgNrm8lcjtD7wlLpg3bB691tQhXl5hnqqCdi_MdKzKzu5a/exec',
-  rescueGroupsApiKey: 'GaOYfCI7'
+  rescueGroupsApiKey: 'GaOYfCI7',
+  chatbotApiUrl: 'https://the-furever-home.onrender.com/chat'
 };

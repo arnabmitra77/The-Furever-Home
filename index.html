@@ -2582,8 +2582,8 @@ var RG_API_KEY = (window.SITE_CONFIG && window.SITE_CONFIG.rescueGroupsApiKey) |
 var RG_PROXY_BASE = (window.SITE_CONFIG && window.SITE_CONFIG.chatbotApiUrl)
   ? window.SITE_CONFIG.chatbotApiUrl.replace('/chat', '/api/rescuegroups/')
   : 'https://the-furever-home.onrender.com/api/rescuegroups/';
-var RG_DOGS_URL = RG_PROXY_BASE + 'animals/search/available/dogs/haspic?limit=200&sort=random&include=pictures,colors,locations,orgs';
-var RG_CATS_URL = RG_PROXY_BASE + 'animals/search/available/cats/haspic?limit=200&sort=random&include=pictures,colors,locations,orgs';
+var RG_DOGS_URL = RG_PROXY_BASE + 'animals/search/available/dogs/haspic?limit=50&sort=random&include=pictures,colors,locations,orgs';
+var RG_CATS_URL = RG_PROXY_BASE + 'animals/search/available/cats/haspic?limit=50&sort=random&include=pictures,colors,locations,orgs';
 var RG_LOCATION_FILTER = JSON.stringify({ data: { filterRadius: { postalcode: "94536", miles: 100 } } });
 
 // Pagination settings
@@ -2740,7 +2740,7 @@ function loadPetsFromRescueGroups() {
 
   // Fetch multiple pages to ensure at least 5 pets per shelter
   var MIN_PETS_PER_SHELTER = 5;
-  var MAX_PAGES = 5; // Max pages to fetch per species (200 * 5 = 1000 max per species)
+  var MAX_PAGES = 1; // Single page fetch — keeps load fast on free tier
 
   function fetchAllPages(baseUrl) {
     var allData = [];
@@ -2924,7 +2924,7 @@ function loadPetsFromRescueGroupsSilent() {
   var fetchOpts = { method: 'POST', headers: headers, body: RG_LOCATION_FILTER };
 
   var MIN_PETS_PER_SHELTER = 5;
-  var MAX_PAGES = 5;
+  var MAX_PAGES = 1;
 
   function fetchAllPages(baseUrl) {
     var allData = [];

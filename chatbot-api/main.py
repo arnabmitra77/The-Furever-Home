@@ -178,7 +178,7 @@ async def proxy_rescuegroups(path: str, request: Request):
         "Authorization": auth_header,
     }
 
-    async with httpx.AsyncClient(timeout=30.0) as client:
+    async with httpx.AsyncClient(timeout=60.0) as client:
         try:
             resp = await client.post(target_url, content=body, headers=headers)
             return resp.json()

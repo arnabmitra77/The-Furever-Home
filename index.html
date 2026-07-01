@@ -2589,8 +2589,12 @@ var SHEET_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq
 
 // ── RESCUEGROUPS.ORG API v5 — PRIMARY PET DATA SOURCE ─────────────────────────
 var RG_API_KEY = (window.SITE_CONFIG && window.SITE_CONFIG.rescueGroupsApiKey) || '';
-var RG_DOGS_URL = 'https://api.rescuegroups.org/v5/public/animals/search/available/dogs/haspic?limit=200&sort=random&include=pictures,colors,locations,orgs';
-var RG_CATS_URL = 'https://api.rescuegroups.org/v5/public/animals/search/available/cats/haspic?limit=200&sort=random&include=pictures,colors,locations,orgs';
+// Route through our backend proxy to avoid CORS issues
+var RG_PROXY_BASE = (window.SITE_CONFIG && window.SITE_CONFIG.chatbotApiUrl)
+  ? window.SITE_CONFIG.chatbotApiUrl.replace('/chat', '/api/rescuegroups/')
+  : 'https://the-furever-home.onrender.com/api/rescuegroups/';
+var RG_DOGS_URL = RG_PROXY_BASE + 'animals/search/available/dogs/haspic?limit=200&sort=random&include=pictures,colors,locations,orgs';
+var RG_CATS_URL = RG_PROXY_BASE + 'animals/search/available/cats/haspic?limit=200&sort=random&include=pictures,colors,locations,orgs';
 var RG_LOCATION_FILTER = JSON.stringify({ data: { filterRadius: { postalcode: "94536", miles: 100 } } });
 
 // Pagination settings

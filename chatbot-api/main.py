@@ -69,7 +69,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["POST", "OPTIONS"],
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -151,6 +151,41 @@ async def chat(request: ChatRequest, req: Request):
 async def health():
     """Health check endpoint."""
     return {"status": "ok", "service": "furever-home-chatbot"}
+
+
+# ── RescueGroups API Proxy ──────────────────────────────────────────────────
+# Proxies requests to RescueGroups.org API to avoid CORS restrictions
+
+@app.post("/api/rescuegroups/{path:path}")
+async def proxy_rescuegroups(path: str, request: Request):
+    """Proxy POST requests to RescueGroups.org API (bypasses CORS)."""
+    import httpx
+
+    # Read the incoming request body and headers
+    body = await request.body()
+    target_url = f"https://api.rescuegroups.org/v5/public/{path}"
+
+    # Forward query params
+    query_string = str(request.url.query)
+    if query_string:
+        target_url += f"?{query_string}"
+
+    # Get the Authorization header from the request
+    auth_header = request.headers.get("Authorization", "")
+
+    headers = {
+        "Content-Type": "application/vnd.api+json",
+        "Authorization": auth_header,
+    }
+
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        try:
+            resp = await client.post(target_url, content=body, headers=headers)
+            return resp.json()
+        except httpx.TimeoutException:
+            raise HTTPException(status_code=504, detail="RescueGroups API timeout")
+        except Exception as e:
+            raise HTTPException(status_code=502, detail=f"Proxy error: {str(e)}")
 
 
 @app.post("/refresh-kb")

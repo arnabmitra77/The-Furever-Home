@@ -2582,8 +2582,8 @@ var RG_API_KEY = (window.SITE_CONFIG && window.SITE_CONFIG.rescueGroupsApiKey) |
 var RG_PROXY_BASE = (window.SITE_CONFIG && window.SITE_CONFIG.chatbotApiUrl)
   ? window.SITE_CONFIG.chatbotApiUrl.replace('/chat', '/api/rescuegroups/')
   : 'https://the-furever-home.onrender.com/api/rescuegroups/';
-var RG_DOGS_URL = RG_PROXY_BASE + 'animals/search/available/dogs/haspic?limit=27&sort=random&include=pictures,colors,locations,orgs';
-var RG_CATS_URL = RG_PROXY_BASE + 'animals/search/available/cats/haspic?limit=27&sort=random&include=pictures,colors,locations,orgs';
+var RG_DOGS_URL = RG_PROXY_BASE + 'animals/search/available/dogs/haspic?limit=50&sort=random&include=pictures,colors,locations,orgs';
+var RG_CATS_URL = RG_PROXY_BASE + 'animals/search/available/cats/haspic?limit=50&sort=random&include=pictures,colors,locations,orgs';
 var RG_LOCATION_FILTER = JSON.stringify({ data: { filterRadius: { postalcode: "94536", miles: 100 } } });
 
 // Pagination settings
@@ -3146,13 +3146,13 @@ function populateShelterDropdown() {
     dogCitySel.innerHTML = '<option value="">All Cities</option>';
     dogCities.forEach(function(c) {
       var opt = document.createElement('option');
-      opt.value = c; opt.textContent = c;
+      opt.value = c.toLowerCase(); opt.textContent = c;
       dogCitySel.appendChild(opt);
     });
     // When city changes, update shelter dropdown to show only shelters in that city
-    dogCitySel.addEventListener('change', function() {
-      var selectedCity = dogCitySel.value;
-      if (selectedCity && dogCityShelterMap[selectedCity]) {
+    dogCitySel.onchange = function() {
+      var selectedCity = dogCitySel.options[dogCitySel.selectedIndex].textContent;
+      if (selectedCity && selectedCity !== 'All Cities' && dogCityShelterMap[selectedCity]) {
         var sheltersInCity = dogCityShelterMap[selectedCity].slice().sort();
         populateShelterOptions(dogSel, sheltersInCity);
       } else {
@@ -3160,19 +3160,19 @@ function populateShelterDropdown() {
       }
       currentDogPage = 1;
       renderGrid('dog');
-    });
+    };
   }
   if (catCitySel) {
     catCitySel.innerHTML = '<option value="">All Cities</option>';
     catCities.forEach(function(c) {
       var opt = document.createElement('option');
-      opt.value = c; opt.textContent = c;
+      opt.value = c.toLowerCase(); opt.textContent = c;
       catCitySel.appendChild(opt);
     });
     // When city changes, update shelter dropdown to show only shelters in that city
-    catCitySel.addEventListener('change', function() {
-      var selectedCity = catCitySel.value;
-      if (selectedCity && catCityShelterMap[selectedCity]) {
+    catCitySel.onchange = function() {
+      var selectedCity = catCitySel.options[catCitySel.selectedIndex].textContent;
+      if (selectedCity && selectedCity !== 'All Cities' && catCityShelterMap[selectedCity]) {
         var sheltersInCity = catCityShelterMap[selectedCity].slice().sort();
         populateShelterOptions(catSel, sheltersInCity);
       } else {
@@ -3180,7 +3180,7 @@ function populateShelterDropdown() {
       }
       currentCatPage = 1;
       renderGrid('cat');
-    });
+    };
   }
 }
 

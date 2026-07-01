@@ -2582,14 +2582,20 @@ var RG_API_KEY = (window.SITE_CONFIG && window.SITE_CONFIG.rescueGroupsApiKey) |
 var RG_PROXY_BASE = (window.SITE_CONFIG && window.SITE_CONFIG.chatbotApiUrl)
   ? window.SITE_CONFIG.chatbotApiUrl.replace('/chat', '/api/rescuegroups/')
   : 'https://the-furever-home.onrender.com/api/rescuegroups/';
-var RG_DOGS_URL = RG_PROXY_BASE + 'animals/search/available/dogs/haspic?limit=50&sort=random&include=pictures,colors,locations,orgs';
-var RG_CATS_URL = RG_PROXY_BASE + 'animals/search/available/cats/haspic?limit=50&sort=random&include=pictures,colors,locations,orgs';
+var RG_DOGS_URL = RG_PROXY_BASE + 'animals/search/available/dogs/haspic?limit=27&sort=random&include=pictures,colors,locations,orgs';
+var RG_CATS_URL = RG_PROXY_BASE + 'animals/search/available/cats/haspic?limit=27&sort=random&include=pictures,colors,locations,orgs';
 var RG_LOCATION_FILTER = JSON.stringify({ data: { filterRadius: { postalcode: "94536", miles: 100 } } });
 
 // Pagination settings
 var PETS_PER_PAGE = 27;
 var currentDogPage = 1;
 var currentCatPage = 1;
+
+// Lazy loading state
+var RG_CURRENT_DOG_PAGE = 1; // API page counter for dogs
+var RG_CURRENT_CAT_PAGE = 1; // API page counter for cats
+var RG_MAX_PETS = 150; // Max total pets to fetch from API
+var RG_LOADING = false; // Prevent concurrent fetches
 
 // All pets loaded (from RescueGroups or Google Sheet fallback)
 var ALL_PETS  = [];
@@ -3209,11 +3215,22 @@ function applyFilters(pets, f) {
 function bindFilterEvents() {
   ['dog-filter-size','dog-filter-age','dog-filter-gender','dog-filter-shelter','dog-filter-city'].forEach(function(id) {
     var el = document.getElementById(id);
-    if (el) el.addEventListener('change', function() { currentDogPage = 1; renderGrid('dog'); });
+    if (el) el.addEventListener('change', function() {
+      currentDogPage = 1;
+      renderGrid('dog');
+      // If filtered results are few, try loading more from API
+      var filtered = applyFilters(ALL_PETS.filter(function(p){return p.species.toLowerCase()==='dog';}), getFilters('dog'));
+      if (filtered.length < PETS_PER_PAGE && DATA_SOURCE === 'rescuegroups') loadMorePets('dog');
+    });
   });
   ['cat-filter-size','cat-filter-age','cat-filter-gender','cat-filter-shelter','cat-filter-city'].forEach(function(id) {
     var el = document.getElementById(id);
-    if (el) el.addEventListener('change', function() { currentCatPage = 1; renderGrid('cat'); });
+    if (el) el.addEventListener('change', function() {
+      currentCatPage = 1;
+      renderGrid('cat');
+      var filtered = applyFilters(ALL_PETS.filter(function(p){return p.species.toLowerCase()==='cat';}), getFilters('cat'));
+      if (filtered.length < PETS_PER_PAGE && DATA_SOURCE === 'rescuegroups') loadMorePets('cat');
+    });
   });
 }
 
@@ -3323,10 +3340,73 @@ function renderPagination(type, currentPage, totalPages, totalItems) {
 function changePage(type, page) {
   if (page < 1) return;
   if (type === 'dog') currentDogPage = page; else currentCatPage = page;
+
+  // Check if we need more pets from the API (user is on the last page or beyond loaded data)
+  var pets = ALL_PETS.filter(function(p) { return p.species.toLowerCase() === type; });
+  var filters = getFilters(type);
+  var filtered = applyFilters(pets, filters);
+  var totalPages = Math.ceil(filtered.length / PETS_PER_PAGE);
+
+  // If requesting a page beyond what we have, or near the end, fetch more
+  if (page >= totalPages && DATA_SOURCE === 'rescuegroups') {
+    loadMorePets(type);
+  }
+
   renderGrid(type);
-  // Scroll to top of grid
   var grid = document.getElementById(type + 's-grid');
   if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── LOAD MORE PETS FROM API (lazy loading) ─────────────────────────────────────
+function loadMorePets(type) {
+  if (RG_LOADING) return;
+  var currentTotal = ALL_PETS.filter(function(p) { return p.species.toLowerCase() === type; }).length;
+  if (currentTotal >= RG_MAX_PETS) return; // Hit the cap
+
+  RG_LOADING = true;
+  var baseUrl = type === 'dog' ? RG_DOGS_URL : RG_CATS_URL;
+  var apiPage = type === 'dog' ? ++RG_CURRENT_DOG_PAGE : ++RG_CURRENT_CAT_PAGE;
+  var url = baseUrl + '&page=' + apiPage;
+
+  var headers = { 'Authorization': RG_API_KEY, 'Content-Type': 'application/vnd.api+json' };
+
+  fetch(url, { method: 'POST', headers: headers, body: RG_LOCATION_FILTER })
+    .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function(json) {
+      if (!json.data || json.data.length === 0) return;
+
+      // Build maps from included data
+      var orgsMap = {}, picturesMap = {}, locationsMap = {}, colorsMap = {};
+      (json.included || []).forEach(function(inc) {
+        if (inc.type === 'orgs') orgsMap[inc.id] = inc.attributes || {};
+        else if (inc.type === 'pictures' && inc.attributes) {
+          picturesMap[inc.id] = { small: (inc.attributes.small && inc.attributes.small.url) || '', large: (inc.attributes.large && inc.attributes.large.url) || '' };
+        } else if (inc.type === 'locations' && inc.attributes) {
+          locationsMap[inc.id] = { citystate: inc.attributes.citystate || '', city: inc.attributes.city || '', state: inc.attributes.state || '', phone: inc.attributes.phone || '' };
+        } else if (inc.type === 'colors' && inc.attributes) {
+          colorsMap[inc.id] = inc.attributes.name || '';
+        }
+      });
+
+      var species = type === 'dog' ? 'Dog' : 'Cat';
+      var newPets = json.data.map(function(a) { return mapRescueGroupsAnimal(a, species, orgsMap, picturesMap, locationsMap, colorsMap); });
+
+      // Deduplicate and add
+      var seen = {};
+      ALL_PETS.forEach(function(p) { seen[p.petId] = true; });
+      newPets.forEach(function(p) {
+        if (p.petId && !seen[p.petId]) {
+          ALL_PETS.push(p);
+          seen[p.petId] = true;
+        }
+      });
+
+      // Re-render and update filters
+      renderGrid(type);
+      populateShelterDropdown();
+    })
+    .catch(function() { /* silent fail — user keeps existing data */ })
+    .finally(function() { RG_LOADING = false; });
 }
 
 // ── EVENT DELEGATION FOR PET CARDS (works regardless of render timing) ─────────

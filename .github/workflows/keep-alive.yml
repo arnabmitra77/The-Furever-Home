@@ -1,0 +1,16 @@
+name: Keep Render Alive
+
+on:
+  schedule:
+    # Ping every 14 minutes during active hours (6am-11pm PST)
+    - cron: '*/14 6-23 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render health endpoint
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" https://the-furever-home.onrender.com/health || true
+          echo "Pinged at $(date)"

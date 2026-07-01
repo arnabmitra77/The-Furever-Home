@@ -2733,7 +2733,7 @@ function mapRescueGroupsAnimal(animal, species, orgsMap, picturesMap, locationsM
 }
 
 // ── FETCH FROM RESCUEGROUPS API ───────────────────────────────────────────────
-function loadPetsFromRescueGroups() {
+function loadPetsFromRescueGroups(onSuccess, onError) {
   var headers = {
     'Authorization': RG_API_KEY,
     'Content-Type': 'application/vnd.api+json'
@@ -2858,11 +2858,12 @@ function loadPetsFromRescueGroups() {
     bindFilterEvents();
     refreshWishlistUI();
     showLastUpdated(false);
+    if (onSuccess) onSuccess();
   })
   .catch(function(err) {
-    console.warn('RescueGroups API failed, falling back to Google Sheets:', err.message);
+    console.warn('RescueGroups API failed:', err.message);
     showApiNote(err.message);
-    fetchSheet(false);
+    if (onError) onError(err);
   });
 }
 
@@ -2880,7 +2881,7 @@ function showApiNote(errMsg) {
 
 // ── FETCH FROM GOOGLE SHEET — FALLBACK ────────────────────────────────────────
 var CACHE_KEY = 'furever_pets_cache';
-var CACHE_VERSION = 'v4'; // Increment to force cache invalidation after code changes
+var CACHE_VERSION = 'v5'; // Increment to force cache invalidation after code changes
 var CACHE_TTL = 30 * 60 * 1000; // 30 minutes in milliseconds
 
 // Clear stale cache on load (ensures fresh data after code updates)
@@ -2917,10 +2918,26 @@ function loadPets() {
     }
   } catch(e) { /* ignore bad cache */ }
 
-  // No valid cache — load Google Sheets FIRST (fast, reliable), then try RescueGroups in background
-  fetchSheet(false);
-  // Also try RescueGroups in parallel — if it succeeds, it replaces Sheet data
-  setTimeout(function() { loadPetsFromRescueGroupsSilent(); }, 2000);
+  // No valid cache — try RescueGroups first with a timeout fallback to Sheets
+  var sheetsLoaded = false;
+
+  // Set a 8-second timer: if RescueGroups hasn't responded, load Sheets as fallback
+  var fallbackTimer = setTimeout(function() {
+    if (ALL_PETS.length === 0) {
+      sheetsLoaded = true;
+      fetchSheet(false);
+    }
+  }, 8000);
+
+  // Try RescueGroups as primary
+  loadPetsFromRescueGroups(function onSuccess() {
+    clearTimeout(fallbackTimer);
+  }, function onError() {
+    clearTimeout(fallbackTimer);
+    if (!sheetsLoaded && ALL_PETS.length === 0) {
+      fetchSheet(false);
+    }
+  });
 }
 
 // ── SILENT BACKGROUND REFRESH VIA RESCUEGROUPS ────────────────────────────────
